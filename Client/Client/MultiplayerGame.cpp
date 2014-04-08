@@ -1,12 +1,15 @@
 #include "MultiplayerGame.h"
+#include "Protocol.h"
+
+#include <SFML\Network\Packet.hpp>
 
 #include <iostream>
 
 MultiplayerGame::MultiplayerGame() : 
 	m_window(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close),
-	m_running(true)
+	m_running(true),
+	m_socket()
 {
-	run();
 }
 
 MultiplayerGame::~MultiplayerGame()
@@ -14,9 +17,9 @@ MultiplayerGame::~MultiplayerGame()
 	m_window.close();
 }
 
-void MultiplayerGame::run()
+void MultiplayerGame::run(sf::IpAddress p_address, unsigned short p_port)
 {
-	initialize();
+	initialize(p_address, p_port);
 
 	sf::Clock dt;
 	sf::Time lag;
@@ -37,9 +40,15 @@ void MultiplayerGame::run()
 	}
 }
 
-void MultiplayerGame::initialize()
+void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 {
-
+	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
+		std::cout << "Failed to bind socket" << std::endl;
+		exit(-1);
+	}
+	sf::Packet packet;
+	packet << sf::String("nigga");
+	m_socket.send(packet, p_address, p_port);
 }
 
 void MultiplayerGame::handleEvents()
