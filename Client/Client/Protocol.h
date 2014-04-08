@@ -2,8 +2,9 @@ namespace cn
 {
 	enum PacketType
 	{
-		PlayerConnected,
-		PlayerDisconnected,
-		PlayerMove,
+/*0*/	PlayerConnected,
+/*1*/	PlayerDisconnected,
+/*2*/	PlayerMove,
+/*3*/	PlayerMessage,
 	};
 };

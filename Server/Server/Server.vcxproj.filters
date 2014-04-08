@@ -29,5 +29,8 @@
     <ClInclude Include="Server.h">
       <Filter>Source Files\Server</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Client\Client\Protocol.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

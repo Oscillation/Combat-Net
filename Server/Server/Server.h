@@ -2,6 +2,7 @@
 #include <SFML\Network.hpp>
 #include <map>
 #include <iostream>
+#include "..\..\Client\Client\Protocol.h"
 
 struct Client{
 	Client();

@@ -4,6 +4,7 @@
 #include <SFML\System\Clock.hpp>
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Window\Event.hpp>
+#include <SFML\System\Sleep.hpp>
 
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\Network\UdpSocket.hpp>
@@ -31,4 +32,6 @@ private:
 	bool m_running;
 	sf::UdpSocket m_socket;
 
+	sf::IpAddress server_address;
+	unsigned short server_port;
 };
