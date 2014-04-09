@@ -58,7 +58,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	std::cout << "Username: ";
 	std::cin >> username;
 	m_name = username;
-	
+
 	packet << (int)cn::PlayerConnected << sf::String(username);
 	m_socket.send(packet, p_address, p_port);
 
@@ -119,6 +119,36 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			newPlayer->setPosition(position);
 			m_players[name] = std::move(newPlayer);
 		}
+	}
+
+	sf::Packet receive_packet;
+
+	sf::Packet send_packet;
+	std::vector<cn::InputType> inputs;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		inputs.push_back(cn::MoveUp);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		inputs.push_back(cn::MoveDown);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		inputs.push_back(cn::MoveLeft);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		inputs.push_back(cn::MoveRight);
+	}
+
+	if (!inputs.empty())
+	{
+		send_packet << cn::PlayerInput << m_name << inputs.size();
+		for(auto it = inputs.begin(); it != inputs.end(); ++it){
+			send_packet << *it;
+		}
+		m_socket.send(send_packet, server_address, server_port);
 	}
 }
 
