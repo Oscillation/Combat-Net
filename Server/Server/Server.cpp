@@ -49,11 +49,10 @@ void Server::run(){
 		sf::Packet packet;
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{
-			std::string from = "[" + address.toString() + ":" + std::to_string(port) + "]: ";
-
 			sf::String msg;
 			int pt;
 			packet >> pt;
+			std::string from = "[" + address.toString() + ":" + std::to_string(port) + "]-" + std::to_string(pt) + ":";
 			std::string str_msg = msg.toAnsiString();
 			switch ((cn::PacketType)pt)
 			{
