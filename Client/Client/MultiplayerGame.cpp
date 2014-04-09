@@ -62,6 +62,10 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	packet << (int)cn::PlayerConnected << sf::String(username);
 	m_socket.send(packet, p_address, p_port);
 
+	// Wait for the PlayerConnected packet from the server
+	// When the client get's the PlayerConnected packet with the players name
+	// it is connected to the server
+
 	while (m_socket.receive(packet, p_address, p_port) == sf::Socket::Done)
 	{
 		int type;
@@ -116,29 +120,41 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		int type;
 		packet >> type;
-		if ((cn::PacketType)type == cn::PlayerConnected) {
-			sf::String name;
-			sf::Vector2f position;
-			packet >> name >> position.x >> position.y;
-			std::unique_ptr<Player> newPlayer(new Player(true));
-			newPlayer->setPosition(position);
-			m_players[name] = std::move(newPlayer);
+		if ((cn::PacketType)type == cn::PlayerConnected) 
+		{
+			handlePlayerConnect(packet);
 		}
 		else if ((cn::PacketType)type == cn::PlayerMove)
 		{
-			sf::String name;
-			sf::Vector2f pos;
-			packet >> name >> pos.x >> pos.y;
-			m_players[name].get()->setPosition(pos);
+			handlePlayerMove(packet);
 		}
-		else if ((cn::PacketType)type == cn::PlayerDisconnected) {
-			sf::String name;
-			packet >> name;
-			m_players.erase(name);
+		else if ((cn::PacketType)type == cn::PlayerDisconnected) 
+		{
+			handlePlayerDisconnect(packet);
 		}
 	}
 
 	sf::Packet send_packet;
+	bool shouldSend = handleInput(send_packet);
+
+	if (shouldSend)
+		m_socket.send(send_packet, server_address, server_port);
+
+}
+
+void MultiplayerGame::render()
+{
+	m_window.clear(sf::Color::Black);
+
+	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
+		m_window.draw(*(i->second));
+	}
+
+	m_window.display();
+}
+
+bool MultiplayerGame::handleInput(sf::Packet& packet)
+{
 	std::vector<cn::InputType> inputs;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -160,22 +176,37 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 
 	if (!inputs.empty())
 	{
-		send_packet << cn::PlayerInput << m_name << inputs.size();
+		packet << cn::PlayerInput << m_name << inputs.size();
 		for(auto it = inputs.begin(); it != inputs.end(); ++it){
-			send_packet << *it;
+			packet << *it;
 		}
-		
-		m_socket.send(send_packet, server_address, server_port);
+		return true;
 	}
+	return false;
 }
 
-void MultiplayerGame::render()
+void MultiplayerGame::handlePlayerConnect(sf::Packet& packet)
 {
-	m_window.clear(sf::Color::Black);
+	sf::String name;
+	sf::Vector2f position;
+	packet >> name >> position.x >> position.y;
+	std::unique_ptr<Player> newPlayer(new Player(true));
+	newPlayer->setPosition(position);
+	m_players[name] = std::move(newPlayer);
+}
 
-	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
-		m_window.draw(*(i->second));
-	}
 
-	m_window.display();
+void MultiplayerGame::handlePlayerDisconnect(sf::Packet& packet)
+{
+	sf::String name;
+	packet >> name;
+	m_players.erase(name);
+}
+
+void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
+{
+	sf::String name;
+	sf::Vector2f pos;
+	packet >> name >> pos.x >> pos.y;
+	m_players[name].get()->setPosition(pos);
 }
