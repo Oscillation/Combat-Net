@@ -125,9 +125,10 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			m_players[name] = std::move(newPlayer);
 		}else if ((cn::PacketType)type == cn::PlayerMove)
 		{
-			sf::String name, data;
-			packet >> name >> data;
-			std::cout << name.toAnsiString() << data.toAnsiString() << "\n";
+			sf::String name;
+			sf::Vector2f pos;
+			packet >> name >> pos.x >> pos.y;
+			m_players[name].get()->setPosition(pos);
 		}
 	}
 
@@ -157,6 +158,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		for(auto it = inputs.begin(); it != inputs.end(); ++it){
 			send_packet << *it;
 		}
+		
 		m_socket.send(send_packet, server_address, server_port);
 	}
 }

@@ -19,6 +19,13 @@ unsigned short Client::getPort(){
 	return m_port;
 }
 
+sf::Vector2f Client::getPosition(){
+	return m_position;
+}
+
+void Client::setPosition(const sf::Vector2f & p_position){
+	m_position = p_position;
+}
 
 
 
@@ -63,8 +70,8 @@ void Server::run(){
 				packet >> data;
 
 				m_clientList[data.toAnsiString()] = Client(address, port);
-
-				retPacket << (int)cn::PlayerConnected << data << (float)math::random(0, 600) << (float)math::random(0,400);
+				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
+				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y;
 				shouldSend = true;
 				std::cout << from << data.toAnsiString() << " has connected.\n";
 
@@ -84,20 +91,40 @@ void Server::run(){
 				int input;
 				int inputCount;
 				packet >> name >> inputCount;
+				sf::Vector2f pos = m_clientList[name.toAnsiString()].getPosition();
 				for (int i = 0; i < inputCount; i++)
 				{
 					packet >> input;
-					data = data + std::to_string(input);
+					switch (input)
+					{
+					case 0:
+						pos.y -= 10;
+						break;
+					case 1:
+						pos.y += 10;
+						break;
+					case 2:
+						pos.x -= 10;
+						break;
+					case 3:
+						pos.x += 10;
+						break;
+					default:
+						break;
+					}
 				}
+				m_clientList[name.toAnsiString()].setPosition(pos);
+
 				retPacket.clear();
-				retPacket << cn::PlayerMove << name << data;
+				retPacket << cn::PlayerMove << name << pos.x << pos.y;
+				shouldSend = true;
 				std::cout << from << name.toAnsiString() << data.toAnsiString() << "\n";
 			}else
 			{
 				packet >> data;
 				std::cout << from << "Unrecognized packet type: " << pt << ". Consult the protocol.\n" << data.toAnsiString()<< "\n";
 			}
-			
+
 		}
 		if (shouldSend)
 		{
