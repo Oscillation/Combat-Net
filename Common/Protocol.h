@@ -2,11 +2,12 @@ namespace cn
 {
 	enum PacketType
 	{
-/*0*/	PlayerConnected,
-/*1*/	PlayerDisconnected,
-/*2*/	PlayerInput,
-/*3*/	PlayerMessage,
-/*4*/	PlayerMove,
+		PlayerConnected,
+		PlayerDisconnected,
+		PlayerInput,
+		PlayerMessage,
+		PlayerMove,
+		Map,
 	};
 
 	enum InputType

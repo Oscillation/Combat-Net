@@ -3,6 +3,7 @@
 #include <SFML\System\Time.hpp>
 #include <SFML\System\Clock.hpp>
 #include <SFML\Graphics\RenderWindow.hpp>
+#include <SFML\Graphics\RectangleShape.hpp>
 #include <SFML\Window\Event.hpp>
 #include <SFML\System\Sleep.hpp>
 
@@ -10,6 +11,7 @@
 #include <SFML\Network\UdpSocket.hpp>
 
 #include "Player.h"
+#include "..\..\Common\Map.h"
 
 #include <map>
 #include <memory>
@@ -45,4 +47,6 @@ private:
 	sf::String m_name;
 
 	std::map<sf::String, std::unique_ptr<Player>> m_players;
+
+	Map m_map;
 };

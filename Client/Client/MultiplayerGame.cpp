@@ -113,7 +113,6 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	{
 		if (address != server_address || port != server_port || packet.endOfPacket())
 			break;
-
 		int type;
 		packet >> type;
 		if ((cn::PacketType)type == cn::PlayerConnected) {
@@ -123,6 +122,9 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			std::unique_ptr<Player> newPlayer(new Player(true));
 			newPlayer->setPosition(position);
 			m_players[name] = std::move(newPlayer);
+		}else if ((cn::PacketType)type == cn::Map)
+		{
+			packet >> m_map;
 		}else if ((cn::PacketType)type == cn::PlayerMove)
 		{
 			sf::String name;
@@ -175,9 +177,32 @@ void MultiplayerGame::render()
 {
 	m_window.clear(sf::Color::Black);
 
+	for (int x = 0, y = 0; x < m_map.m_tiles.size(); x++)
+	{
+		for (y = 0; y < m_map.m_tiles[x].size(); y++)
+		{
+			sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
+			tile.setPosition(sf::Vector2f(x*64, y*64));
+			switch (m_map.m_tiles[x][y].m_type)
+			{
+			case Floor:
+				tile.setFillColor(sf::Color::Green);
+				break;
+			case Wall:
+				tile.setFillColor(sf::Color::Magenta);
+				break;
+			default:
+				break;
+			}
+			m_window.draw(tile);
+		}
+	}
+
 	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
 		m_window.draw(*(i->second));
 	}
+
+	
 
 	m_window.display();
 }

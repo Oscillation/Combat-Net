@@ -1,5 +1,5 @@
 #include "Server.h"
-#include "GeneralMath.h"
+
 
 Client::Client(){}
 
@@ -48,6 +48,9 @@ void Server::run(){
 	bool run = true;
 	m_socket.setBlocking(false);
 
+	Map* map = new Map();
+	map->m_tiles[0][0].m_type = Wall;
+	map->m_tiles[1][0].m_type = Wall;
 	while (run)
 	{
 		sf::IpAddress address;
@@ -73,6 +76,11 @@ void Server::run(){
 				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
 
 				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y;
+				
+				m_socket.send(retPacket, address, port);
+
+				retPacket.clear();
+				retPacket << cn::Map << *map;
 				m_socket.send(retPacket, address, port);
 
 				for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
@@ -86,8 +94,7 @@ void Server::run(){
 
 				
 				shouldSend = true;
-				std::cout << from << data.toAnsiString() << " has connected.\n";
-
+				std::cout << from << data.toAnsiString() << " has connected. Sending map...\n";
 			}else if (pt == cn::PlayerDisconnected)
 			{
 				packet >> data;

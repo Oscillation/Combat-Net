@@ -2,9 +2,13 @@
 #include <SFML\Network.hpp>
 #include <map>
 #include <iostream>
-#include "..\..\Common\Protocol.h"
-#include <SFML\System\Vector2.hpp>
+#include <memory>
 
+#include "..\..\Common\Protocol.h"
+#include "..\..\Common\Map.h"
+#include "GeneralMath.h"
+
+#include <SFML\System\Vector2.hpp>
 #include <SFML\System\String.hpp>
 
 struct Client{

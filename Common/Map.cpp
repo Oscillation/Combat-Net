@@ -1,0 +1,83 @@
+#include "Map.h"
+
+Tile::Tile(const unsigned short & p_x, const unsigned short & p_y, const Type & p_type) : m_x(p_x), m_y(p_y), m_type(p_type){
+
+}
+
+Tile::Tile() : m_type(Floor){
+
+}
+
+Tile::~Tile(){
+
+}
+
+Map::Map(){
+	m_tiles.resize(16, std::vector<Tile>(16, Tile()));
+	for (int x = 0, y = 0; x < m_tiles.size(); x++){
+		for (int y = 0; y < m_tiles[x].size(); y++){
+			m_tiles[x][y].m_x = x;
+			m_tiles[x][y].m_y = y;
+		}
+	}
+}
+
+Map::Map(const std::string & p_path){
+	m_tiles.resize(16, std::vector<Tile>(16, Tile()));
+	for (int x = 0, y = 0; x < m_tiles.size(); x++){
+		for (int y = 0; y < m_tiles[x].size(); y++){
+			m_tiles[x][y].m_x = x;
+			m_tiles[x][y].m_y = y;
+		}
+	}
+}
+
+Map::~Map(){
+
+}
+
+sf::Packet& operator<<(sf::Packet& packet, const Type& type){
+	int i = type;
+	return packet << i;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, Type& type){
+	int i;
+	packet >> i;
+	type = (Type)i;
+	return packet;
+}
+
+sf::Packet& operator<<(sf::Packet& packet, const Tile& tile){
+	return packet << tile.m_x << tile.m_y << tile.m_type;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, Tile& tile){
+	return packet >> tile.m_x >> tile.m_y >> tile.m_type;
+}
+
+sf::Packet& operator<<(sf::Packet& packet, const std::vector<std::vector<Tile>>& tiles){
+	for (auto x = tiles.begin(); x != tiles.end(); ++x){
+		for (auto y = x->begin(); y != x->end(); ++y){
+			packet << *y;
+		}
+	}
+	return packet;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, std::vector<std::vector<Tile>>& tiles){
+	for (auto x = tiles.begin(); x != tiles.end(); ++x){
+		for (auto y = x->begin(); y != x->end(); ++y){
+			packet >> *y;
+		}
+	}
+	return packet;
+}
+
+sf::Packet& operator<<(sf::Packet& packet, const Map& map){
+	return packet << map.m_tiles;
+}
+
+sf::Packet& operator>>(sf::Packet& packet, Map& map){
+	return packet >> map.m_tiles;
+}
