@@ -74,6 +74,11 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 			if (name == m_name)
 			{
 				std::cout << "Connected to server\n";
+				sf::Vector2f position;
+				packet >> position.x >> position.y;
+				std::unique_ptr<Player> newPlayer(new Player(false));
+				newPlayer->setPosition(position);
+				m_players[name] = std::move(newPlayer);
 				break;
 			}
 		}
@@ -101,10 +106,34 @@ void MultiplayerGame::handleEvents()
 
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
-	sf::Packet receive_packet;
+	sf::Packet packet;
+	sf::IpAddress address;
+	unsigned short port;
+	while (m_socket.receive(packet, address, port) == sf::Socket::Done)
+	{
+		if (address != server_address || port != server_port || packet.endOfPacket())
+			break;
+
+		int type;
+		packet >> type;
+		if ((cn::PacketType)type == cn::PlayerConnected) {
+			sf::String name;
+			sf::Vector2f position;
+			packet >> name >> position.x >> position.y;
+			std::unique_ptr<Player> newPlayer(new Player(true));
+			newPlayer->setPosition(position);
+			m_players[name] = std::move(newPlayer);
+		}else if ((cn::PacketType)type == cn::PlayerMove)
+		{
+			sf::String name, data;
+			packet >> name >> data;
+			std::cout << name.toAnsiString() << data.toAnsiString() << "\n";
+		}
+	}
 
 	sf::Packet send_packet;
 	std::vector<cn::InputType> inputs;
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		inputs.push_back(cn::MoveUp);
@@ -134,6 +163,11 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 
 void MultiplayerGame::render()
 {
-	m_window.clear(sf::Color::Red);
+	m_window.clear(sf::Color::Black);
+
+	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
+		m_window.draw(*(i->second));
+	}
+
 	m_window.display();
 }

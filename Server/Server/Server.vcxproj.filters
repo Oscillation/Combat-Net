@@ -16,6 +16,9 @@
     <Filter Include="Source Files\Server">
       <UniqueIdentifier>{c2a8c108-60d3-4a9d-a8cb-15f5d57b2f4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{29535f6e-f5fb-48e7-8dc8-1dff9e70f563}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -23,6 +26,9 @@
     </ClCompile>
     <ClCompile Include="Server.cpp">
       <Filter>Source Files\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralMath.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -32,5 +38,13 @@
     <ClInclude Include="..\..\Common\Protocol.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneralMath.h">
+      <Filter>Source Files\Math</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GeneralMath.inl">
+      <Filter>Source Files\Math</Filter>
+    </None>
   </ItemGroup>
 </Project>

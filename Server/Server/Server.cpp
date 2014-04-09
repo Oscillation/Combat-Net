@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "GeneralMath.h"
 
 Client::Client(){}
 
@@ -61,7 +62,7 @@ void Server::run(){
 
 				m_clientList[data.toAnsiString()] = Client(address, port);
 
-				retPacket << (int)cn::PlayerConnected << data;
+				retPacket << (int)cn::PlayerConnected << data << (float)math::random(0, 600) << (float)math::random(0,400);
 
 				std::cout << from << data.toAnsiString() << " has connected.\n";
 			}else if (pt == cn::PlayerDisconnected)
@@ -85,12 +86,15 @@ void Server::run(){
 					packet >> input;
 					data = data + std::to_string(input);
 				}
+				retPacket.clear();
+				retPacket << cn::PlayerMove << name << data;
 				std::cout << from << name.toAnsiString() << data.toAnsiString() << "\n";
 			}else
 			{
 				packet >> data;
 				std::cout << from << "Unrecognized packet type: " << pt << ". Consult the protocol.\n" << data.toAnsiString()<< "\n";
 			}
+			
 		}
 		for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 			m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
