@@ -107,8 +107,15 @@ void MultiplayerGame::handleEvents()
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
 	sf::Packet packet;
-	while (m_socket.receive(packet, server_address, server_port) == sf::Socket::Done)
+	sf::IpAddress ip;
+	unsigned short port;
+	std::cout << "update\n";
+	while (m_socket.receive(packet, ip, port) == sf::Socket::Done)
 	{
+		if (packet.endOfPacket())
+			break;
+		if (ip != server_address || port != server_port)
+			break;
 		int type;
 		packet >> type;
 		if ((cn::PacketType)type == cn::PlayerConnected) {
@@ -118,10 +125,10 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			std::unique_ptr<Player> newPlayer(new Player(true));
 			newPlayer->setPosition(position);
 			m_players[name] = std::move(newPlayer);
+			std::cout << name.toAnsiString() << " connected\n";
 		}
+		packet.clear();
 	}
-
-	sf::Packet receive_packet;
 
 	sf::Packet send_packet;
 	std::vector<cn::InputType> inputs;
