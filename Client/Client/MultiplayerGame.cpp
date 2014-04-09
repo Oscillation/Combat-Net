@@ -123,12 +123,18 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			std::unique_ptr<Player> newPlayer(new Player(true));
 			newPlayer->setPosition(position);
 			m_players[name] = std::move(newPlayer);
-		}else if ((cn::PacketType)type == cn::PlayerMove)
+		}
+		else if ((cn::PacketType)type == cn::PlayerMove)
 		{
 			sf::String name;
 			sf::Vector2f pos;
 			packet >> name >> pos.x >> pos.y;
 			m_players[name].get()->setPosition(pos);
+		}
+		else if ((cn::PacketType)type == cn::PlayerDisconnected) {
+			sf::String name;
+			packet >> name;
+			m_players.erase(name);
 		}
 	}
 
