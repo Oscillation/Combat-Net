@@ -5,8 +5,7 @@
 
 #include <iostream>
 
-MultiplayerGame::MultiplayerGame() : 
-	//m_window(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close),
+MultiplayerGame::MultiplayerGame() :
 	m_running(true),
 	m_socket()
 {
@@ -48,18 +47,38 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	server_address = p_address;
 	server_port = p_port;
 	int r = 0;
-	while (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
-		r++;
-		if (r == 10)
-		{
-			exit(-1);
-		}
-		sf::sleep(sf::milliseconds(100));
+	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
+		std::cout << "Failed to bind to port" << std::endl;	
+		exit(-1);
 	}
 	sf::Packet packet;
+
+	std::string username;
+	std::cout << "Username: ";
+	std::cin >> username;
 	
-	packet << (int)cn::PlayerConnected << sf::String("Player");;
+	packet << (int)cn::PlayerConnected << sf::String(username);
 	m_socket.send(packet, p_address, p_port);
+
+	while (m_socket.receive(packet, p_address, p_port) == sf::Socket::Done)
+	{
+		int type;
+		sf::String name;
+		packet >> type;
+
+		if ((cn::PacketType)type == cn::PlayerConnected)
+		{
+			packet >> name;
+			if (name == username)
+			{
+				std::cout << "Connected to server\n";
+				break;
+			}
+		}
+	}
+
+	m_socket.setBlocking(false);
+	m_window.create(sf::VideoMode(600, 400), "Combat Net");
 }
 
 void MultiplayerGame::handleEvents()

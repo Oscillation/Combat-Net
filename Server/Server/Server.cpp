@@ -18,10 +18,8 @@ unsigned short Client::getPort(){
 	return m_port;
 }
 
-//
-//
-//
-//
+
+
 
 Server::Server(const unsigned short & p_port) : m_port(p_port){
 	while (m_socket.bind(m_port) != sf::Socket::Done)
@@ -54,21 +52,31 @@ void Server::run(){
 			sf::String msg;
 			int pt;
 			packet >> pt;
-			std::string str_msg = msg.toAnsiString();
+
+			sf::Packet retPacket;
+
 			switch ((cn::PacketType)pt)
 			{
 			case cn::PlayerConnected:
-				for (auto it = m_clienList.begin(); it != m_clienList.end(); ++it){
-					m_socket.send(packet, it->second.getAddress(), it->second.getPort());
-				}
+				
 				packet >> msg;
+				
 				m_clienList[msg.toAnsiString()] = Client(address, port);
+
+				retPacket << (int)cn::PlayerConnected << msg;
+
+				for (auto it = m_clienList.begin(); it != m_clienList.end(); ++it){
+					m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
+				}
+				
 				std::cout << from << msg.toAnsiString() << " has connected.\n";
 				break;
+
 			case cn::PlayerMessage:
 				packet >> msg;
 				std::cout << from << msg.toAnsiString() << "\n";
 				break;
+
 			default:
 				packet >> msg;
 				std::cout << from << "Unrecognized packet type: " << pt << ". Consult the protocol.\n" << msg.toAnsiString()<< "\n";
