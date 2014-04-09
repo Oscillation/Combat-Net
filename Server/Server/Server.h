@@ -4,6 +4,8 @@
 #include <iostream>
 #include "..\..\Client\Client\Protocol.h"
 
+#include <SFML\System\String.hpp>
+
 struct Client{
 	Client();
 	Client(const sf::IpAddress & p_address, const unsigned short & p_port);
@@ -29,7 +31,7 @@ private:
 	sf::TcpListener m_listener;
 	sf::UdpSocket m_socket;
 	
-	std::map<std::string, Client> m_clienList;
+	std::map<sf::String, Client> m_clienList;
 
 	void run();
 };

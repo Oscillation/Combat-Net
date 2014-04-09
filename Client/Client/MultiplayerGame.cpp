@@ -7,7 +7,8 @@
 
 MultiplayerGame::MultiplayerGame() :
 	m_running(true),
-	m_socket()
+	m_socket(),
+	m_window()
 {
 }
 
@@ -33,7 +34,7 @@ void MultiplayerGame::run(sf::IpAddress p_address, unsigned short p_port)
 		dt.restart();
 
 		handleEvents();
-		//render();
+		render();
 		while (lag >= updateTime)
 		{
 			update(updateTime);
@@ -56,6 +57,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	std::string username;
 	std::cout << "Username: ";
 	std::cin >> username;
+	m_name = username;
 	
 	packet << (int)cn::PlayerConnected << sf::String(username);
 	m_socket.send(packet, p_address, p_port);
@@ -69,7 +71,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 		if ((cn::PacketType)type == cn::PlayerConnected)
 		{
 			packet >> name;
-			if (name == username)
+			if (name == m_name)
 			{
 				std::cout << "Connected to server\n";
 				break;
@@ -78,7 +80,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	}
 
 	m_socket.setBlocking(false);
-	m_window.create(sf::VideoMode(600, 400), "Combat Net");
+	m_window.create(sf::VideoMode(600, 400), "Combat Net", sf::Style::Close);
 }
 
 void MultiplayerGame::handleEvents()
@@ -88,25 +90,22 @@ void MultiplayerGame::handleEvents()
 	{
 		if (event.type == sf::Event::Closed || (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)))
 		{
+			sf::Packet packet;
+			packet << cn::PlayerDisconnected << m_name;
+			m_socket.send(packet, server_address, server_port);
 			m_running = false;
+			exit(0);
 		}
 	}
 }
 
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
-	sf::Packet packet;
-	sf::String msg;
-	std::string str_msg;
-	std::cin >> str_msg;
-	msg = str_msg;
-	packet << (int)cn::PlayerMessage << msg;
 
-	m_socket.send(packet, server_address, server_port);
 }
 
 void MultiplayerGame::render()
 {
-	m_window.clear();
+	m_window.clear(sf::Color::Red);
 	m_window.display();
 }

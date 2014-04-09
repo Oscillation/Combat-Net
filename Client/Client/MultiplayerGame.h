@@ -34,4 +34,6 @@ private:
 
 	sf::IpAddress server_address;
 	unsigned short server_port;
+
+	sf::String m_name;
 };
