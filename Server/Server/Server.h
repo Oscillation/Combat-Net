@@ -2,7 +2,7 @@
 #include <SFML\Network.hpp>
 #include <map>
 #include <iostream>
-#include "..\..\Client\Client\Protocol.h"
+#include "..\..\Common\Protocol.h"
 
 #include <SFML\System\String.hpp>
 

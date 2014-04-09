@@ -70,8 +70,8 @@
     <ClCompile Include="MultiplayerGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Common\Protocol.h" />
     <ClInclude Include="MultiplayerGame.h" />
-    <ClInclude Include="Protocol.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

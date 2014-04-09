@@ -1,5 +1,5 @@
 #include "MultiplayerGame.h"
-#include "Protocol.h"
+#include "..\..\Common\Protocol.h"
 
 #include <SFML\Network\Packet.hpp>
 
