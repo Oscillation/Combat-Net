@@ -62,6 +62,10 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	packet << (int)cn::PlayerConnected << sf::String(username);
 	m_socket.send(packet, p_address, p_port);
 
+	// Wait for the PlayerConnected packet from the server
+	// When the client get's the PlayerConnected packet with the players name
+	// it is connected to the server
+
 	while (m_socket.receive(packet, p_address, p_port) == sf::Socket::Done)
 	{
 		int type;
@@ -115,62 +119,28 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			break;
 		int type;
 		packet >> type;
-		if ((cn::PacketType)type == cn::PlayerConnected) {
-			sf::String name;
-			sf::Vector2f position;
-			packet >> name >> position.x >> position.y;
-			std::unique_ptr<Player> newPlayer(new Player(true));
-			newPlayer->setPosition(position);
-			m_players[name] = std::move(newPlayer);
+		if ((cn::PacketType)type == cn::PlayerConnected) 
+		{
+			handlePlayerConnect(packet);
 		}else if ((cn::PacketType)type == cn::Map)
 		{
 			packet >> m_map;
-		}else if ((cn::PacketType)type == cn::PlayerMove)
+		}
+		else if ((cn::PacketType)type == cn::PlayerMove)
 		{
-			sf::String name;
-			sf::Vector2f pos;
-			packet >> name >> pos.x >> pos.y;
-			m_players[name].get()->setPosition(pos);
-		}else if ((cn::PacketType)type == cn::PlayerDisconnected)
+			handlePlayerMove(packet);
+		}
+		else if ((cn::PacketType)type == cn::PlayerDisconnected) 
 		{
-			sf::String name;
-			packet >> name;
-			m_players.erase(name);
+			handlePlayerDisconnect(packet);
 		}
 	}
 	
-	sendInput();
-}
+	sf::Packet send_packet;
+	bool shouldSend = handleInput(send_packet);
 
-void MultiplayerGame::sendInput(){
-	sf::Packet packet;
-	std::vector<cn::InputType> inputs;
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
-		inputs.push_back(cn::MoveUp);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		inputs.push_back(cn::MoveDown);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		inputs.push_back(cn::MoveLeft);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		inputs.push_back(cn::MoveRight);
-	}
-
-	if (!inputs.empty())
-	{
-		packet << cn::PlayerInput << m_name << inputs.size();
-		for(auto it = inputs.begin(); it != inputs.end(); ++it){
-			packet << *it;
-		}
-		m_socket.send(packet, server_address, server_port);
-	}
+	if (shouldSend)
+		m_socket.send(send_packet, server_address, server_port);
 }
 
 void MultiplayerGame::render()
@@ -202,7 +172,90 @@ void MultiplayerGame::render()
 		m_window.draw(*(i->second));
 	}
 
+	m_window.display();
+}
+
+bool MultiplayerGame::handleInput(sf::Packet& packet)
+{
+	std::vector<cn::InputType> inputs;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		inputs.push_back(cn::MoveUp);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		inputs.push_back(cn::MoveDown);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		inputs.push_back(cn::MoveLeft);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		inputs.push_back(cn::MoveRight);
+	}
+
+	if (!inputs.empty())
+	{
+		packet << cn::PlayerInput << m_name << inputs.size();
+		for(auto it = inputs.begin(); it != inputs.end(); ++it){
+			packet << *it;
+		}
+		return true;
+	}
+	return false;
+}
+
+void MultiplayerGame::handlePlayerConnect(sf::Packet& packet)
+{
+	sf::String name;
+	sf::Vector2f position;
+	packet >> name >> position.x >> position.y;
+	std::unique_ptr<Player> newPlayer(new Player(true));
+	newPlayer->setPosition(position);
+	m_players[name] = std::move(newPlayer);
+	for (int x = 0, y = 0; x < m_map.m_tiles.size(); x++)
+	{
+		for (y = 0; y < m_map.m_tiles[x].size(); y++)
+		{
+			sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
+			tile.setPosition(sf::Vector2f(x*64, y*64));
+			switch (m_map.m_tiles[x][y].m_type)
+			{
+			case Floor:
+				tile.setFillColor(sf::Color::Green);
+				break;
+			case Wall:
+				tile.setFillColor(sf::Color::Magenta);
+				break;
+			default:
+				break;
+			}
+			m_window.draw(tile);
+		}
+	}
+
+	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
+		m_window.draw(*(i->second));
+	}
+
 	
 
 	m_window.display();
+}
+
+void MultiplayerGame::handlePlayerDisconnect(sf::Packet& packet)
+{
+	sf::String name;
+	packet >> name;
+	m_players.erase(name);
+}
+
+void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
+{
+	sf::String name;
+	sf::Vector2f pos;
+	packet >> name >> pos.x >> pos.y;
+	m_players[name].get()->setPosition(pos);
 }

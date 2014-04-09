@@ -137,7 +137,6 @@ void Server::run(){
 
 				retPacket << cn::PlayerMove << name << pos.x << pos.y;
 				shouldSend = true;
-				std::cout << from << name.toAnsiString() << data.toAnsiString() << "\n";
 			}else
 			{
 				packet >> data;

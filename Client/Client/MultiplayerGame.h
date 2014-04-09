@@ -35,14 +35,19 @@ private:
 
 private:
 
+	// Returns true if the packet has been filled with data
+	bool handleInput(sf::Packet& packet);
+
+	void handlePlayerConnect(sf::Packet& packet);
+	void handlePlayerDisconnect(sf::Packet& packet);
+	void handlePlayerMove(sf::Packet& packet);
+
 	sf::RenderWindow m_window;
 	bool m_running;
 	sf::UdpSocket m_socket;
 
 	sf::IpAddress server_address;
 	unsigned short server_port;
-
-	void sendInput();
 
 	sf::String m_name;
 
