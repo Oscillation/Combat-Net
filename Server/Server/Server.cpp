@@ -48,6 +48,8 @@ void Server::run(){
 		sf::Packet packet;
 		sf::Packet retPacket;
 
+		bool shouldSend = false;
+
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{
 			std::string from = "[" + address.toString() + ":" + std::to_string(port) + "]: ";
@@ -63,17 +65,18 @@ void Server::run(){
 				m_clientList[data.toAnsiString()] = Client(address, port);
 
 				retPacket << (int)cn::PlayerConnected << data << (float)math::random(0, 600) << (float)math::random(0,400);
-
+				shouldSend = true;
 				std::cout << from << data.toAnsiString() << " has connected.\n";
+
 			}else if (pt == cn::PlayerDisconnected)
 			{
 				packet >> data;
 				m_clientList.erase(data);
 				retPacket << cn::PlayerDisconnected << data;
+				shouldSend = true;
 				std::cout << from << data.toAnsiString() << " has disconnected." << std::endl;
 			}else if (pt == cn::PlayerMessage)
 			{
-
 				packet >> data;
 				std::cout << from << data.toAnsiString() << "\n";
 			}else if (pt == cn::PlayerInput)
@@ -96,8 +99,13 @@ void Server::run(){
 			}
 			
 		}
-		for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-			m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
+		if (shouldSend)
+		{
+			for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+				m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
+			}
 		}
+		retPacket.clear();
+		shouldSend = false;
 	}
 }
