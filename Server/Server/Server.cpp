@@ -48,9 +48,7 @@ void Server::run(){
 	bool run = true;
 	m_socket.setBlocking(false);
 
-	Map* map = new Map();
-	map->m_tiles[0][0].m_type = Wall;
-	map->m_tiles[1][0].m_type = Wall;
+	Map map = Map("Maps/map.txt");
 	while (run)
 	{
 		sf::IpAddress address;
@@ -75,11 +73,11 @@ void Server::run(){
 				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
 
 				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
-				
+
 				m_socket.send(retPacket, address, port);
 
 				retPacket.clear();
-				retPacket << cn::Map << *map;
+				retPacket << cn::Map << map;
 				m_socket.send(retPacket, address, port);
 
 				for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
@@ -100,7 +98,6 @@ void Server::run(){
 					}
 				}
 
-				
 				shouldSend = true;
 				std::cout << from << data.toAnsiString() << " has connected. Sending map...\n";
 			}else if (pt == cn::PlayerDisconnected)
@@ -127,20 +124,63 @@ void Server::run(){
 					{
 					case 0:
 						pos.y -= 10;
+						for (int x = (pos.x + 10)/64 - 1, y = (pos.y + 10)/64 - 1; x < (pos.x + 10)/64 + 1; x++)
+						{
+							for (y = (pos.y + 10)/64 - 1; y < (pos.y + 10)/64 + 1; y++)
+							{
+								if (map.m_tiles[x][y].m_type == Wall)
+								{
+
+								}
+							}
+						}
 						break;
 					case 1:
 						pos.y += 10;
+						for (int x = (pos.x + 10)/64 - 1, y = (pos.y + 10)/64 - 1; x < (pos.x + 10)/64 + 1; x++)
+						{
+							for (y = (pos.y + 10)/64 - 1; y < (pos.y + 10)/64 + 1; y++)
+							{
+								if (map.m_tiles[x][y].m_type == Wall)
+								{
+
+								}
+							}
+						}
 						break;
 					case 2:
 						pos.x -= 10;
+						for (int x = (pos.x + 10)/64 - 1, y = (pos.y + 10)/64 - 1; x < (pos.x + 10)/64 + 1; x++)
+						{
+							for (y = (pos.y + 10)/64 - 1; y < (pos.y + 10)/64 + 1; y++)
+							{
+								if (map.m_tiles[x][y].m_type == Wall)
+								{
+
+								}
+							}
+						}
 						break;
 					case 3:
 						pos.x += 10;
+						for (int x = (pos.x + 10)/64 - 1, y = (pos.y + 10)/64 - 1; x < (pos.x + 10)/64 + 1; x++)
+						{
+							for (y = (pos.y + 10)/64 - 1; y < (pos.y + 10)/64 + 1; y++)
+							{
+								if (map.m_tiles[x][y].m_type == Wall)
+								{
+
+								}
+							}
+						}
 						break;
 					default:
 						break;
 					}
 				}
+
+
+
 				m_clientList[data.toAnsiString()].setPosition(pos);
 
 				retPacket << cn::PlayerMove << data << pos.x << pos.y;

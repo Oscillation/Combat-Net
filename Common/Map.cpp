@@ -30,6 +30,53 @@ Map::Map(const std::string & p_path){
 			m_tiles[x][y].m_y = y;
 		}
 	}
+
+	std::ifstream read;
+
+	int height = 0;
+
+	read.open(p_path);
+	if (read.is_open())
+	{
+		std::string line;
+
+		while (!read.eof())
+		{
+			std::getline(read, line);
+			height++;
+		}
+	}
+	read.close();
+
+	read.open(p_path);
+	if (read.is_open())
+	{
+		std::string line;
+
+		while (!read.eof())
+		{
+			for (int y = 0; y < height; y++)
+			{
+				std::getline(read, line);
+				for (int x = 0; x < line.length(); x++)
+				{
+					switch (line[x])
+					{
+					case '#':
+						m_tiles[x][y].m_type = Floor;
+						break;
+					case 'x':
+						m_tiles[x][y].m_type = Wall;
+						break;
+					case '\n':
+						y++;
+						std::getline(read, line);
+						break;
+					}
+				}
+			}
+		}
+	}
 }
 
 Map::~Map(){

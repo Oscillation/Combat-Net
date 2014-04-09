@@ -86,13 +86,15 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
 				newPlayer->setPosition(position);
 				m_players[name] = std::move(newPlayer);
+				m_view.setCenter(m_players[name].get()->getPosition());
 				break;
 			}
 		}
 	}
 
 	m_socket.setBlocking(false);
-	m_window.create(sf::VideoMode(600, 400), "Combat Net", sf::Style::Close);
+	m_window.create(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close);
+	m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
 }
 
 void MultiplayerGame::handleEvents()
@@ -156,6 +158,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 void MultiplayerGame::render()
 {
 	m_window.clear(sf::Color::Black);
+	m_window.setView(m_view);
 
 	for (int x = 0, y = 0; x < m_map.m_tiles.size(); x++)
 	{
@@ -242,4 +245,8 @@ void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
 	sf::Vector2f pos;
 	packet >> name >> pos.x >> pos.y;
 	m_players[name].get()->setPosition(pos);
+	if (name == m_name)
+	{
+		m_view.setCenter(m_players[name].get()->getPosition());
+	}
 }

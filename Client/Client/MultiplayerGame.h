@@ -45,6 +45,8 @@ private:
 	void handlePlayerMove(sf::Packet& packet);
 
 	sf::RenderWindow m_window;
+	sf::View m_view;
+
 	bool m_running, m_active;
 	sf::UdpSocket m_socket;
 

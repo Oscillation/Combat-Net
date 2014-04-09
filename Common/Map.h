@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <fstream>
 #include <SFML\Network\Packet.hpp>
 
 enum Type{
