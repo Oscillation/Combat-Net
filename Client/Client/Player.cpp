@@ -3,10 +3,13 @@
 #include <SFML\Graphics\CircleShape.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 
-Player::Player(bool p_remote)
+Player::Player(sf::String p_name, sf::Font& p_font, bool p_remote)
 	: 
-	m_remote(p_remote)
+	m_remote(p_remote),
+	nameText(p_name, p_font, 14)
 {
+	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
+	nameText.setColor(sf::Color::Black);
 }
 
 Player::~Player()
@@ -21,8 +24,10 @@ bool Player::isRemote() const
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	states.transform *= getTransform();
 	sf::CircleShape shape(20);
 	shape.setFillColor(sf::Color::Red);
-	shape.setPosition(getPosition());
-	target.draw(shape);
+	shape.setOrigin(20, 20);
+	target.draw(shape, states);
+	target.draw(nameText, states);
 }

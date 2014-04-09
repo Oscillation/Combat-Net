@@ -2,6 +2,7 @@
 #include "..\..\Common\Protocol.h"
 
 #include <SFML\Network\Packet.hpp>
+#include <SFML\Graphics\Text.hpp>
 
 #include <iostream>
 
@@ -45,6 +46,8 @@ void MultiplayerGame::run(sf::IpAddress p_address, unsigned short p_port)
 
 void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 {
+	gameFont.loadFromFile("visitor1.ttf");
+
 	server_address = p_address;
 	server_port = p_port;
 	int r = 0;
@@ -80,7 +83,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 				std::cout << "Connected to server\n";
 				sf::Vector2f position;
 				packet >> position.x >> position.y;
-				std::unique_ptr<Player> newPlayer(new Player(false));
+				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
 				newPlayer->setPosition(position);
 				m_players[name] = std::move(newPlayer);
 				break;
@@ -221,7 +224,7 @@ void MultiplayerGame::handlePlayerConnect(sf::Packet& packet)
 	packet >> name >> position.x >> position.y;
 	std::cout << "Adding: " << name.toAnsiString() << " to list of players.\n";
 
-	std::unique_ptr<Player> newPlayer(new Player(true));
+	std::unique_ptr<Player> newPlayer(new Player(name, gameFont, true));
 	newPlayer->setPosition(position);
 	m_players[name] = std::move(newPlayer);
 }

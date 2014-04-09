@@ -10,6 +10,8 @@
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\Network\UdpSocket.hpp>
 
+#include <SFML\Graphics\Font.hpp>
+
 #include "Player.h"
 #include "..\..\Common\Map.h"
 
@@ -54,4 +56,6 @@ private:
 	std::map<sf::String, std::unique_ptr<Player>> m_players;
 
 	Map m_map;
+
+	sf::Font gameFont;
 };
