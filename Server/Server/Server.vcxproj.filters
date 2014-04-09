@@ -24,6 +24,9 @@
     <ClCompile Include="Server.cpp">
       <Filter>Source Files\Server</Filter>
     </ClCompile>
+    <ClCompile Include="GeneralMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -32,5 +35,13 @@
     <ClInclude Include="..\..\Client\Client\Protocol.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneralMath.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GeneralMath.inl">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

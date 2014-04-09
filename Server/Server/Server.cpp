@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "GeneralMath.h"
 
 Client::Client(){}
 
@@ -63,7 +64,7 @@ void Server::run(){
 				
 				m_clientList[data.toAnsiString()] = Client(address, port);
 
-				retPacket << (int)cn::PlayerConnected << data;
+				retPacket << (int)cn::PlayerConnected << data << (float)math::random(0, 600) << (float)math::random(0,400);
 
 				std::cout << from << data.toAnsiString() << " has connected.\n";
 				break;

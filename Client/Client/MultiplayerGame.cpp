@@ -74,6 +74,11 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 			if (name == m_name)
 			{
 				std::cout << "Connected to server\n";
+				sf::Vector2f position;
+				packet >> position.x >> position.y;
+				std::unique_ptr<Player> newPlayer(new Player(false));
+				newPlayer->setPosition(position);
+				m_players[name] = std::move(newPlayer);
 				break;
 			}
 		}
@@ -101,11 +106,29 @@ void MultiplayerGame::handleEvents()
 
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
-
+	sf::Packet packet;
+	while (m_socket.receive(packet, server_address, server_port) == sf::Socket::Done)
+	{
+		int type;
+		packet >> type;
+		if ((cn::PacketType)type == cn::PlayerConnected) {
+			sf::String name;
+			sf::Vector2f position;
+			packet >> name >> position.x >> position.y;
+			std::unique_ptr<Player> newPlayer(new Player(true));
+			newPlayer->setPosition(position);
+			m_players[name] = std::move(newPlayer);
+		}
+	}
 }
 
 void MultiplayerGame::render()
 {
-	m_window.clear(sf::Color::Red);
+	m_window.clear(sf::Color::Black);
+
+	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
+		m_window.draw(*(i->second));
+	}
+
 	m_window.display();
 }
