@@ -128,7 +128,6 @@ void Server::run(){
 				}
 				m_clientList[name.toAnsiString()].setPosition(pos);
 
-				retPacket.clear();
 				retPacket << cn::PlayerMove << name << pos.x << pos.y;
 				shouldSend = true;
 			}else

@@ -133,13 +133,12 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			handlePlayerDisconnect(packet);
 		}
 	}
-
+	
 	sf::Packet send_packet;
 	bool shouldSend = handleInput(send_packet);
 
 	if (shouldSend)
 		m_socket.send(send_packet, server_address, server_port);
-
 }
 
 void MultiplayerGame::render()
