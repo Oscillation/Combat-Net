@@ -26,8 +26,8 @@ Server::Server(const unsigned short & p_port) : m_port(p_port){
 	{
 		std::cout << "Retry with port: ";
 		std::cin >> m_port;
-		sf::sleep(sf::seconds(1));
 	}
+	system("cls");
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
 	run();
 }
@@ -50,40 +50,45 @@ void Server::run(){
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{
 			std::string from = "[" + address.toString() + ":" + std::to_string(port) + "]: ";
-
 			sf::String data;
+			sf::String name;
+
 			int pt;
 			packet >> pt;
-
-			switch ((cn::PacketType)pt)
+			if (pt == cn::PlayerConnected)
 			{
-			case cn::PlayerConnected:
-				
 				packet >> data;
-				
+
 				m_clientList[data.toAnsiString()] = Client(address, port);
 
 				retPacket << (int)cn::PlayerConnected << data;
 
 				std::cout << from << data.toAnsiString() << " has connected.\n";
-				break;
-
-			case cn::PlayerDisconnected:
+			}else if (pt == cn::PlayerDisconnected)
+			{
 				packet >> data;
 				m_clientList.erase(data);
 				retPacket << cn::PlayerDisconnected << data;
 				std::cout << from << data.toAnsiString() << " has disconnected." << std::endl;
-				break;
-
-			case cn::PlayerMessage:
+			}else if (pt == cn::PlayerMessage)
+			{
 				packet >> data;
 				std::cout << from << data.toAnsiString() << "\n";
-				break;
-
-			default:
+			}else if (pt == cn::PlayerInput)
+			{
+				int input;
+				int inputCount;
+				packet >> name >> inputCount;
+				for (int i = 0; i < inputCount; i++)
+				{
+					packet >> input;
+					data = data + std::to_string(input);
+				}
+				std::cout << from << name.toAnsiString() << data.toAnsiString() << "\n";
+			}else
+			{
 				packet >> data;
 				std::cout << from << "Unrecognized packet type: " << pt << ". Consult the protocol.\n" << data.toAnsiString()<< "\n";
-				break;
 			}
 		}
 		for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
