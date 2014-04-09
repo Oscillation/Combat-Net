@@ -104,6 +104,10 @@ void MultiplayerGame::handleEvents()
 			m_socket.send(packet, server_address, server_port);
 			m_running = false;
 			exit(0);
+		}else if (event.type == sf::Event::GainedFocus){
+			m_active = true;
+		} else if (event.type == sf::Event::LostFocus) {
+			m_active = false;
 		}
 	}
 }
@@ -135,12 +139,15 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			handlePlayerDisconnect(packet);
 		}
 	}
-	
-	sf::Packet send_packet;
-	bool shouldSend = handleInput(send_packet);
 
-	if (shouldSend)
-		m_socket.send(send_packet, server_address, server_port);
+	sf::Packet send_packet;
+	if (m_active)
+	{
+		bool shouldSend = handleInput(send_packet);
+
+		if (shouldSend)
+			m_socket.send(send_packet, server_address, server_port);
+	}
 }
 
 void MultiplayerGame::render()
@@ -212,37 +219,11 @@ void MultiplayerGame::handlePlayerConnect(sf::Packet& packet)
 	sf::String name;
 	sf::Vector2f position;
 	packet >> name >> position.x >> position.y;
+	std::cout << "Adding: " << name.toAnsiString() << " to list of players.\n";
+
 	std::unique_ptr<Player> newPlayer(new Player(true));
 	newPlayer->setPosition(position);
 	m_players[name] = std::move(newPlayer);
-	for (int x = 0, y = 0; x < m_map.m_tiles.size(); x++)
-	{
-		for (y = 0; y < m_map.m_tiles[x].size(); y++)
-		{
-			sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
-			tile.setPosition(sf::Vector2f(x*64, y*64));
-			switch (m_map.m_tiles[x][y].m_type)
-			{
-			case Floor:
-				tile.setFillColor(sf::Color::Green);
-				break;
-			case Wall:
-				tile.setFillColor(sf::Color::Magenta);
-				break;
-			default:
-				break;
-			}
-			m_window.draw(tile);
-		}
-	}
-
-	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
-		m_window.draw(*(i->second));
-	}
-
-	
-
-	m_window.display();
 }
 
 void MultiplayerGame::handlePlayerDisconnect(sf::Packet& packet)

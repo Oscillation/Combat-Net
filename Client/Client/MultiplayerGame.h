@@ -43,7 +43,7 @@ private:
 	void handlePlayerMove(sf::Packet& packet);
 
 	sf::RenderWindow m_window;
-	bool m_running;
+	bool m_running, m_active;
 	sf::UdpSocket m_socket;
 
 	sf::IpAddress server_address;

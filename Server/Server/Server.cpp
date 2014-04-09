@@ -64,7 +64,6 @@ void Server::run(){
 		{
 			std::string from = "[" + address.toString() + ":" + std::to_string(port) + "]: ";
 			sf::String data;
-			sf::String name;
 
 			int pt;
 			packet >> pt;
@@ -75,7 +74,7 @@ void Server::run(){
 				m_clientList[data.toAnsiString()] = Client(address, port);
 				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
 
-				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y;
+				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
 				
 				m_socket.send(retPacket, address, port);
 
@@ -87,7 +86,16 @@ void Server::run(){
 				{
 					if (i->first != data) {
 						sf::Packet specialDelivery;
-						specialDelivery << cn::PlayerConnected << i->first << i->second.getPosition().x << i->second.getPosition().y;
+						specialDelivery << cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
+						m_socket.send(specialDelivery, i->second.getAddress(), i->second.getPort());
+					}
+				}
+
+				for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+				{
+					if (i->first != data) {
+						sf::Packet specialDelivery;
+						specialDelivery << cn::PlayerConnected << i->first << m_clientList[i->first.toAnsiString()].getPosition().x << m_clientList[i->first.toAnsiString()].getPosition().y;
 						m_socket.send(specialDelivery, address, port);
 					}
 				}
@@ -110,8 +118,8 @@ void Server::run(){
 			{
 				int input;
 				int inputCount;
-				packet >> name >> inputCount;
-				sf::Vector2f pos = m_clientList[name.toAnsiString()].getPosition();
+				packet >> data >> inputCount;
+				sf::Vector2f pos = m_clientList[data.toAnsiString()].getPosition();
 				for (int i = 0; i < inputCount; i++)
 				{
 					packet >> input;
@@ -133,9 +141,9 @@ void Server::run(){
 						break;
 					}
 				}
-				m_clientList[name.toAnsiString()].setPosition(pos);
+				m_clientList[data.toAnsiString()].setPosition(pos);
 
-				retPacket << cn::PlayerMove << name << pos.x << pos.y;
+				retPacket << cn::PlayerMove << data << pos.x << pos.y;
 				shouldSend = true;
 			}else
 			{
