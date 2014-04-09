@@ -71,7 +71,20 @@ void Server::run(){
 
 				m_clientList[data.toAnsiString()] = Client(address, port);
 				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
+
 				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y;
+				m_socket.send(retPacket, address, port);
+
+				for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+				{
+					if (i->first != data) {
+						sf::Packet specialDelivery;
+						specialDelivery << cn::PlayerConnected << i->first << i->second.getPosition().x << i->second.getPosition().y;
+						m_socket.send(specialDelivery, address, port);
+					}
+				}
+
+				
 				shouldSend = true;
 				std::cout << from << data.toAnsiString() << " has connected.\n";
 
