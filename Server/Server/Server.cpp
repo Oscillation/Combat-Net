@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "GeneralMath.h"
 
 Client::Client(){}
 
@@ -18,18 +19,23 @@ unsigned short Client::getPort(){
 	return m_port;
 }
 
-//
-//
-//
-//
+sf::Vector2f Client::getPosition(){
+	return m_position;
+}
+
+void Client::setPosition(const sf::Vector2f & p_position){
+	m_position = p_position;
+}
+
+
 
 Server::Server(const unsigned short & p_port) : m_port(p_port){
 	while (m_socket.bind(m_port) != sf::Socket::Done)
 	{
 		std::cout << "Retry with port: ";
 		std::cin >> m_port;
-		sf::sleep(sf::seconds(1));
 	}
+	system("cls");
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
 	run();
 }
@@ -47,32 +53,98 @@ void Server::run(){
 		sf::IpAddress address;
 		unsigned short port;
 		sf::Packet packet;
+		sf::Packet retPacket;
+
+		bool shouldSend = false;
+
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{
-			sf::String msg;
+			std::string from = "[" + address.toString() + ":" + std::to_string(port) + "]: ";
+			sf::String data;
+			sf::String name;
+
 			int pt;
 			packet >> pt;
-			std::string from = "[" + address.toString() + ":" + std::to_string(port) + "]-" + std::to_string(pt) + ":";
-			std::string str_msg = msg.toAnsiString();
-			switch ((cn::PacketType)pt)
+			if (pt == cn::PlayerConnected)
 			{
-			case cn::PlayerConnected:
-				for (auto it = m_clienList.begin(); it != m_clienList.end(); ++it){
-					m_socket.send(packet, it->second.getAddress(), it->second.getPort());
+				packet >> data;
+
+				m_clientList[data.toAnsiString()] = Client(address, port);
+				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
+
+				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y;
+				m_socket.send(retPacket, address, port);
+
+				for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+				{
+					if (i->first != data) {
+						sf::Packet specialDelivery;
+						specialDelivery << cn::PlayerConnected << i->first << i->second.getPosition().x << i->second.getPosition().y;
+						m_socket.send(specialDelivery, address, port);
+					}
 				}
-				packet >> msg;
-				m_clienList[msg.toAnsiString()] = Client(address, port);
-				std::cout << from << msg.toAnsiString() << " has connected.\n";
-				break;
-			case cn::PlayerMessage:
-				packet >> msg;
-				std::cout << from << msg.toAnsiString() << "\n";
-				break;
-			default:
-				packet >> msg;
-				std::cout << from << "Unrecognized packet type: " << pt << ". Consult the protocol.\n" << msg.toAnsiString()<< "\n";
-				break;
+
+				
+				shouldSend = true;
+				std::cout << from << data.toAnsiString() << " has connected.\n";
+
+			}else if (pt == cn::PlayerDisconnected)
+			{
+				packet >> data;
+				m_clientList.erase(data);
+				retPacket << cn::PlayerDisconnected << data;
+				shouldSend = true;
+				std::cout << from << data.toAnsiString() << " has disconnected." << std::endl;
+			}else if (pt == cn::PlayerMessage)
+			{
+				packet >> data;
+				std::cout << from << data.toAnsiString() << "\n";
+			}else if (pt == cn::PlayerInput)
+			{
+				int input;
+				int inputCount;
+				packet >> name >> inputCount;
+				sf::Vector2f pos = m_clientList[name.toAnsiString()].getPosition();
+				for (int i = 0; i < inputCount; i++)
+				{
+					packet >> input;
+					switch (input)
+					{
+					case 0:
+						pos.y -= 10;
+						break;
+					case 1:
+						pos.y += 10;
+						break;
+					case 2:
+						pos.x -= 10;
+						break;
+					case 3:
+						pos.x += 10;
+						break;
+					default:
+						break;
+					}
+				}
+				m_clientList[name.toAnsiString()].setPosition(pos);
+
+				retPacket << cn::PlayerMove << name << pos.x << pos.y;
+				shouldSend = true;
+				std::cout << from << name.toAnsiString() << data.toAnsiString() << "\n";
+			}else
+			{
+				packet >> data;
+				std::cout << from << "Unrecognized packet type: " << pt << ". Consult the protocol.\n" << data.toAnsiString()<< "\n";
+			}
+
+		}
+		if (shouldSend)
+		{
+			for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+				m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
 			}
 		}
+		retPacket.clear();
+		shouldSend = false;
 	}
 }

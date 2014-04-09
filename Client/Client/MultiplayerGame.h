@@ -9,6 +9,11 @@
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\Network\UdpSocket.hpp>
 
+#include "Player.h"
+
+#include <map>
+#include <memory>
+
 class MultiplayerGame
 {
 public:
@@ -34,4 +39,10 @@ private:
 
 	sf::IpAddress server_address;
 	unsigned short server_port;
+
+	void sendInput();
+
+	sf::String m_name;
+
+	std::map<sf::String, std::unique_ptr<Player>> m_players;
 };

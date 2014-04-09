@@ -2,7 +2,10 @@
 #include <SFML\Network.hpp>
 #include <map>
 #include <iostream>
-#include "..\..\Client\Client\Protocol.h"
+#include "..\..\Common\Protocol.h"
+#include <SFML\System\Vector2.hpp>
+
+#include <SFML\System\String.hpp>
 
 struct Client{
 	Client();
@@ -13,9 +16,15 @@ struct Client{
 
 	unsigned short getPort();
 
+	sf::Vector2f getPosition();
+
+	void setPosition(const sf::Vector2f & p_position);
+
 private:
 	sf::IpAddress m_address;
 	unsigned short m_port;
+
+	sf::Vector2f m_position;
 };
 
 class Server{
@@ -29,7 +38,7 @@ private:
 	sf::TcpListener m_listener;
 	sf::UdpSocket m_socket;
 	
-	std::map<std::string, Client> m_clienList;
+	std::map<sf::String, Client> m_clientList;
 
 	void run();
 };
