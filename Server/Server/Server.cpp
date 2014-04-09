@@ -72,6 +72,7 @@ void Server::run(){
 				std::cout << from << data.toAnsiString() << " has disconnected." << std::endl;
 			}else if (pt == cn::PlayerMessage)
 			{
+
 				packet >> data;
 				std::cout << from << data.toAnsiString() << "\n";
 			}else if (pt == cn::PlayerInput)
