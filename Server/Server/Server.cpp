@@ -61,7 +61,7 @@ void Server::run(){
 				
 				packet >> data;
 				
-				m_clienList[data.toAnsiString()] = Client(address, port);
+				m_clientList[data.toAnsiString()] = Client(address, port);
 
 				retPacket << (int)cn::PlayerConnected << data;
 
@@ -70,7 +70,7 @@ void Server::run(){
 
 			case cn::PlayerDisconnected:
 				packet >> data;
-				m_clienList.erase(data);
+				m_clientList.erase(data);
 				retPacket << cn::PlayerDisconnected << data;
 				std::cout << from << data.toAnsiString() << " has disconnected." << std::endl;
 				break;
@@ -86,7 +86,7 @@ void Server::run(){
 				break;
 			}
 		}
-		for (auto it = m_clienList.begin(); it != m_clienList.end(); ++it){
+		for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 			m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
 		}
 	}

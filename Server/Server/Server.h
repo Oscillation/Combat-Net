@@ -31,7 +31,7 @@ private:
 	sf::TcpListener m_listener;
 	sf::UdpSocket m_socket;
 	
-	std::map<sf::String, Client> m_clienList;
+	std::map<sf::String, Client> m_clientList;
 
 	void run();
 };
