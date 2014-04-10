@@ -9,6 +9,7 @@ Player::Player(sf::String p_name, sf::Font& p_font, bool p_remote)
 	nameText(p_name, p_font, 14)
 {
 	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
+	nameText.setStyle(sf::Text::Bold);
 	nameText.setColor(sf::Color::Black);
 }
 
