@@ -90,17 +90,6 @@ bool Map::intersectsWall(const sf::Vector2<float> & p_position, const unsigned s
 	switch (p_dir)
 	{
 	case 0:
-		for (unsigned int x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < (p_position.x + 20*2)/64 + 1; x++)
-		{
-			if (m_tiles[x][p_position.y/64].m_type == Wall)
-			{
-				sf::Rect<int> tile = sf::Rect<int>(x*64, p_position.y, 64, 64);
-				if (rect.intersects(tile))
-				{
-					return true;
-				}
-			}
-		}
 		break;
 	case 1:
 		break;

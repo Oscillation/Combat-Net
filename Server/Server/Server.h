@@ -11,6 +11,7 @@
 
 #include <SFML\System\Vector2.hpp>
 #include <SFML\System\String.hpp>
+#include <SFML\System\Clock.hpp>
 
 class Server{
 public:
@@ -26,4 +27,8 @@ private:
 	std::map<sf::String, Client> m_clientList;
 
 	void run();
+
+	void pingClients();
+
+	sf::Clock pingTimer;
 };

@@ -7,6 +7,7 @@ namespace cn
 		PlayerInput,
 		PlayerMessage,
 		PlayerMove,
+		Ping,
 		Map,
 	};
 
