@@ -7,29 +7,10 @@
 #include "..\..\Common\Protocol.h"
 #include "..\..\Common\Map.h"
 #include "GeneralMath.h"
+#include "Client.h"
 
 #include <SFML\System\Vector2.hpp>
 #include <SFML\System\String.hpp>
-
-struct Client{
-	Client();
-	Client(const sf::IpAddress & p_address, const unsigned short & p_port);
-	~Client();
-
-	sf::IpAddress getAddress();
-
-	unsigned short getPort();
-
-	sf::Vector2f getPosition();
-
-	void setPosition(const sf::Vector2f & p_position);
-
-private:
-	sf::IpAddress m_address;
-	unsigned short m_port;
-
-	sf::Vector2f m_position;
-};
 
 class Server{
 public:

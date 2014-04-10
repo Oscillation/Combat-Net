@@ -83,6 +83,25 @@ Map::~Map(){
 
 }
 
+sf::Vector2<float> Map::resolveCollision(Circle & p_circle) {
+	sf::Vector2<float> pos = sf::Vector2<float>(p_circle.getPosition());
+	for (unsigned int x =p_circle.getPosition().x/64 - 1, y = p_circle.getPosition().y/64 - 1; x < (p_circle.getPosition().x + p_circle.getRadius()*2)/64 + 1; x++)
+	{
+		for (y = p_circle.getPosition().y/64 - 1; y < (p_circle.getPosition().y + p_circle.getRadius()*2)/64 + 1; y++)
+		{
+			if (m_tiles[x][y].m_type == Wall)
+			{
+				sf::Rect<int> tile = sf::Rect<int>(x*64, y*64, 64, 64);
+				if (p_circle.intersects(tile))
+				{
+					
+				}
+			}
+		}
+	}
+	return pos;
+}
+
 sf::Packet& operator<<(sf::Packet& packet, const Type& type){
 	int i = type;
 	return packet << i;

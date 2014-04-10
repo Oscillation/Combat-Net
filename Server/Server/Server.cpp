@@ -1,34 +1,5 @@
 #include "Server.h"
 
-
-Client::Client(){}
-
-Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) : m_address(p_address), m_port(p_port){
-
-}
-
-Client::~Client(){
-
-}
-
-sf::IpAddress Client::getAddress(){
-	return m_address;
-}
-
-unsigned short Client::getPort(){
-	return m_port;
-}
-
-sf::Vector2f Client::getPosition(){
-	return m_position;
-}
-
-void Client::setPosition(const sf::Vector2f & p_position){
-	m_position = p_position;
-}
-
-
-
 Server::Server(const unsigned short & p_port) : m_port(p_port){
 	while (m_socket.bind(m_port) != sf::Socket::Done)
 	{
@@ -69,7 +40,7 @@ void Server::run(){
 			{
 				packet >> data;
 
-				m_clientList[data.toAnsiString()] = Client(address, port);
+				m_clientList[data.toAnsiString()] = Client(Circle(sf::CircleShape(20)), address, port);
 				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
 
 				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
@@ -113,7 +84,7 @@ void Server::run(){
 				std::cout << from << data.toAnsiString() << "\n";
 			}else if (pt == cn::PlayerInput)
 			{
-				int input;
+				short input;
 				int inputCount;
 				packet >> data >> inputCount;
 				sf::Vector2f pos = m_clientList[data.toAnsiString()].getPosition();
@@ -124,62 +95,21 @@ void Server::run(){
 					{
 					case 0:
 						pos.y -= 10;
-						for (int x = (pos.x + 10)/64 - 1, y = (pos.y + 10)/64 - 1; x < (pos.x + 10)/64 + 1; x++)
-						{
-							for (y = (pos.y + 10)/64 - 1; y < (pos.y + 10)/64 + 1; y++)
-							{
-								if (map.m_tiles[x][y].m_type == Wall)
-								{
-
-								}
-							}
-						}
+						//pos = map.resolveCollision(m_clientList[data.toAnsiString()].getCircle());
 						break;
 					case 1:
 						pos.y += 10;
-						for (int x = (pos.x + 10)/64 - 1, y = (pos.y + 10)/64 - 1; x < (pos.x + 10)/64 + 1; x++)
-						{
-							for (y = (pos.y + 10)/64 - 1; y < (pos.y + 10)/64 + 1; y++)
-							{
-								if (map.m_tiles[x][y].m_type == Wall)
-								{
-
-								}
-							}
-						}
 						break;
 					case 2:
 						pos.x -= 10;
-						for (int x = (pos.x + 10)/64 - 1, y = (pos.y + 10)/64 - 1; x < (pos.x + 10)/64 + 1; x++)
-						{
-							for (y = (pos.y + 10)/64 - 1; y < (pos.y + 10)/64 + 1; y++)
-							{
-								if (map.m_tiles[x][y].m_type == Wall)
-								{
-
-								}
-							}
-						}
 						break;
 					case 3:
 						pos.x += 10;
-						for (int x = (pos.x + 10)/64 - 1, y = (pos.y + 10)/64 - 1; x < (pos.x + 10)/64 + 1; x++)
-						{
-							for (y = (pos.y + 10)/64 - 1; y < (pos.y + 10)/64 + 1; y++)
-							{
-								if (map.m_tiles[x][y].m_type == Wall)
-								{
-
-								}
-							}
-						}
 						break;
 					default:
 						break;
 					}
 				}
-
-
 
 				m_clientList[data.toAnsiString()].setPosition(pos);
 

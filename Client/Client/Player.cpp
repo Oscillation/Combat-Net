@@ -22,6 +22,10 @@ bool Player::isRemote() const
 	return m_remote;
 }
 
+float Player::getRadius() const{
+	return m_radius;
+}
+
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();

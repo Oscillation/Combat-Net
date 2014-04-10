@@ -95,6 +95,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	m_socket.setBlocking(false);
 	m_window.create(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close);
 	m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
+	m_view.setCenter(m_players[m_name].get()->getPosition());
 }
 
 void MultiplayerGame::handleEvents()
@@ -213,7 +214,7 @@ bool MultiplayerGame::handleInput(sf::Packet& packet)
 	{
 		packet << cn::PlayerInput << m_name << inputs.size();
 		for(auto it = inputs.begin(); it != inputs.end(); ++it){
-			packet << *it;
+			packet << (short)*it;
 		}
 		return true;
 	}

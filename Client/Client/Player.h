@@ -15,9 +15,13 @@ public:
 	~Player();
 	bool isRemote() const;
 
+	float getRadius() const;
+
 private:
 	bool m_remote;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	sf::Text nameText;
+
+	float m_radius;
 };

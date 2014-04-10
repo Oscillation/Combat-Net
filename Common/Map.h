@@ -2,6 +2,8 @@
 #include <vector>
 #include <fstream>
 #include <SFML\Network\Packet.hpp>
+#include <SFML\Graphics\Rect.hpp>
+#include "..\Server\Server\Circle.h"
 
 enum Type{
 	Floor,
@@ -25,6 +27,8 @@ public:
 	~Map();
 
 	std::vector<std::vector<Tile>> m_tiles;
+
+	sf::Vector2<float> resolveCollision(Circle & p_circle);
 };
 
 	sf::Packet& operator <<(sf::Packet& packet, const Type& type);
