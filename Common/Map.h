@@ -3,7 +3,6 @@
 #include <fstream>
 #include <SFML\Network\Packet.hpp>
 #include <SFML\Graphics\Rect.hpp>
-#include "..\Server\Server\Circle.h"
 
 enum Type{
 	Floor,
@@ -28,7 +27,7 @@ public:
 
 	std::vector<std::vector<Tile>> m_tiles;
 
-	sf::Vector2<float> resolveCollision(Circle & p_circle);
+	bool intersectsWall(const sf::Vector2<float> & p_position, const unsigned short & p_dir);
 };
 
 	sf::Packet& operator <<(sf::Packet& packet, const Type& type);

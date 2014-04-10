@@ -2,7 +2,7 @@
 
 Client::Client(){}
 
-Client::Client(const Circle & p_circle, const sf::IpAddress & p_address, const unsigned short & p_port) : m_circle(p_circle), m_address(p_address), m_port(p_port){
+Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) : m_address(p_address), m_port(p_port){
 
 }
 
@@ -19,13 +19,9 @@ unsigned short Client::getPort(){
 }
 
 sf::Vector2<float> Client::getPosition() const{
-	return m_circle.getPosition();
-}
-
-Circle Client::getCircle() const{
-	return m_circle;
+	return m_position;
 }
 
 void Client::setPosition(const sf::Vector2f & p_position){
-	m_circle.setPosition(p_position);
+	m_position = p_position;
 }

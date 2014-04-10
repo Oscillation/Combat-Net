@@ -69,7 +69,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Common\Map.cpp" />
-    <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="GeneralMath.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -78,7 +77,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Common\Map.h" />
     <ClInclude Include="..\..\Common\Protocol.h" />
-    <ClInclude Include="Circle.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="GeneralMath.h" />
     <ClInclude Include="Server.h" />

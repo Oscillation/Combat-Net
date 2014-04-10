@@ -42,9 +42,6 @@
     <ClCompile Include="Client.cpp">
       <Filter>Source Files\Client</Filter>
     </ClCompile>
-    <ClCompile Include="Circle.cpp">
-      <Filter>Source Files\Server</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -61,9 +58,6 @@
     </ClInclude>
     <ClInclude Include="Client.h">
       <Filter>Source Files\Client</Filter>
-    </ClInclude>
-    <ClInclude Include="Circle.h">
-      <Filter>Source Files\Server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
