@@ -46,7 +46,7 @@ void MultiplayerGame::run(sf::IpAddress p_address, unsigned short p_port)
 
 void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 {
-	gameFont.loadFromFile("visitor1.ttf");
+	gameFont.loadFromFile("Segan-Light.ttf");
 
 	server_address = p_address;
 	server_port = p_port;
