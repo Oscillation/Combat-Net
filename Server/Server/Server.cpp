@@ -8,7 +8,9 @@ Server::Server(const unsigned short & p_port) : m_port(p_port){
 	}
 	system("cls");
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
+	pingTimer.restart();
 	run();
+
 }
 
 Server::~Server(){
@@ -42,6 +44,7 @@ void Server::run(){
 
 				m_clientList[data.toAnsiString()] = Client(Circle(sf::CircleShape(20)), address, port);
 				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
+				m_clientList[data.toAnsiString()].hasRespondedToPing = true;
 
 				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
 
@@ -115,6 +118,11 @@ void Server::run(){
 
 				retPacket << cn::PlayerMove << data << pos.x << pos.y;
 				shouldSend = true;
+			}else if (pt == cn::Ping) 
+			{
+				sf::String name;
+				packet >> name;
+				m_clientList[name].hasRespondedToPing = true;
 			}else
 			{
 				packet >> data;
@@ -130,5 +138,38 @@ void Server::run(){
 		}
 		retPacket.clear();
 		shouldSend = false;
+
+		if (pingTimer.getElapsedTime() > sf::seconds(1)){
+			pingClients();
+			pingTimer.restart();
+		}
+	}
+}
+
+void Server::pingClients()
+{
+	// Check which clients are still connected
+	for (auto it = m_clientList.begin(); it != m_clientList.end();){
+		if (!it->second.hasRespondedToPing) {
+
+			sf::Packet retPacket;
+			retPacket << cn::PlayerDisconnected << it->first;
+
+			for (auto it2 = m_clientList.begin(); it2 != m_clientList.end(); ++it2){
+				m_socket.send(retPacket, it2->second.getAddress(), it2->second.getPort());
+			}
+
+			m_clientList.erase(it++);
+		} else {
+			++it;
+		}
+	}
+
+	// Ping clients
+	sf::Packet pingPacket;
+	pingPacket << cn::Ping;
+	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+		m_socket.send(pingPacket, it->second.getAddress(), it->second.getPort());
+		it->second.hasRespondedToPing = false;
 	}
 }

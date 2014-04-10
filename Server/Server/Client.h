@@ -17,6 +17,8 @@ struct Client{
 
 	void setPosition(const sf::Vector2f & p_position);
 
+	bool hasRespondedToPing;
+
 private:
 	sf::IpAddress m_address;
 	unsigned short m_port;

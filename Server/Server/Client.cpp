@@ -3,7 +3,6 @@
 Client::Client(){}
 
 Client::Client(const Circle & p_circle, const sf::IpAddress & p_address, const unsigned short & p_port) : m_circle(p_circle), m_address(p_address), m_port(p_port){
-
 }
 
 Client::~Client(){

@@ -143,7 +143,10 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		else if ((cn::PacketType)type == cn::PlayerDisconnected) 
 		{
 			handlePlayerDisconnect(packet);
-		}
+		} else if ((cn::PacketType)type == cn::Ping) 
+		{
+			handlePing();
+		}	
 	}
 
 	sf::Packet send_packet;
@@ -244,10 +247,22 @@ void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
 {
 	sf::String name;
 	sf::Vector2f pos;
+
 	packet >> name >> pos.x >> pos.y;
-	m_players[name].get()->setPosition(pos);
-	if (name == m_name)
-	{
-		m_view.setCenter(m_players[name].get()->getPosition());
+	auto found = m_players.find(name);
+	if (found != m_players.end()) {
+
+		m_players[name].get()->setPosition(pos);
+		if (name == m_name)
+		{
+			m_view.setCenter(m_players[name].get()->getPosition());
+		}
 	}
+}
+
+void MultiplayerGame::handlePing()
+{
+	sf::Packet pingPacket;
+	pingPacket << cn::Ping << m_name;
+	m_socket.send(pingPacket, server_address, server_port);
 }
