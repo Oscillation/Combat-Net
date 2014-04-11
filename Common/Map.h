@@ -27,7 +27,7 @@ public:
 
 	std::vector<std::vector<Tile>> m_tiles;
 
-	bool intersectsWall(const sf::Vector2<float> & p_position, const unsigned short & p_dir);
+	bool intersectsWall(const sf::Vector2<float> & p_position);
 };
 
 	sf::Packet& operator <<(sf::Packet& packet, const Type& type);

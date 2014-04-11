@@ -82,23 +82,22 @@ Map::Map(const std::string & p_path){
 Map::~Map(){
 
 }
-#include <iostream>
 
-bool Map::intersectsWall(const sf::Vector2<float> & p_position, const unsigned short & p_dir) {
-	sf::Rect<int> rect = sf::Rect<int>(p_position.x - 20, p_position.y + 20, 40, 40);
+bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
+	sf::Rect<int> rect = sf::Rect<int>(p_position.x - 20, p_position.y - 20, 40, 40);
 
-	switch (p_dir)
+	for (int x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
 	{
-	case 0:
-		break;
-	case 1:
-		break;
-	case 2:
-		break;
-	case 3:
-		break;
-	default:
-		break;
+		for (y = p_position.y/64 - 1; y < p_position.y/64 + 1; y++)
+		{
+			if (m_tiles[x][y].m_type == Wall)
+			{
+				if (rect.intersects(sf::Rect<int>(x*64, y*64, 64, 64)))
+				{
+					return true;
+				}
+			}
+		}
 	}
 	return false;
 }

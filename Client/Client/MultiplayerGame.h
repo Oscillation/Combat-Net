@@ -39,7 +39,7 @@ private:
 
 	// Returns true if the packet has been filled with data
 	bool handleInput(sf::Packet& packet);
-
+		
 	void handlePlayerConnect(sf::Packet& packet);
 	void handlePlayerDisconnect(sf::Packet& packet);
 	void handlePlayerMove(sf::Packet& packet);
