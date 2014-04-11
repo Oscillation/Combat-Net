@@ -31,4 +31,8 @@ private:
 	void pingClients();
 
 	sf::Clock pingTimer;
+
+	sf::Vector2<float> getSpawnPos();
+
+	bool nameTaken(const std::string & p_name);
 };

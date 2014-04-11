@@ -50,11 +50,16 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 
 	server_address = p_address;
 	server_port = p_port;
-	int r = 0;
+
 	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
 		std::cout << "Failed to bind to port" << std::endl;	
 		exit(-1);
 	}
+
+	while(!connect()){}
+}
+
+bool MultiplayerGame::connect(){
 	sf::Packet packet;
 
 	std::string username;
@@ -63,13 +68,13 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	m_name = username;
 
 	packet << (int)cn::PlayerConnected << sf::String(username);
-	m_socket.send(packet, p_address, p_port);
+	m_socket.send(packet, server_address, server_port);
 
 	// Wait for the PlayerConnected packet from the server
 	// When the client get's the PlayerConnected packet with the players name
 	// it is connected to the server
 
-	while (m_socket.receive(packet, p_address, p_port) == sf::Socket::Done)
+	while (m_socket.receive(packet, server_address, server_port) == sf::Socket::Done)
 	{
 		int type;
 		sf::String name;
@@ -86,16 +91,20 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
 				newPlayer->setPosition(position);
 				m_players[name] = std::move(newPlayer);
+				m_socket.setBlocking(false);
+				m_window.create(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close);
+				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
+				m_view.setCenter(m_players[m_name].get()->getPosition());
 				m_view.setCenter(m_players[name].get()->getPosition());
+				return true;
 				break;
 			}
+		}else if ((cn::PacketType)type == cn::NameTaken)
+		{
+			std::cout << "That name is already taken. Please try again with a different name.\n";
+			return false;
 		}
 	}
-
-	m_socket.setBlocking(false);
-	m_window.create(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close);
-	m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
-	m_view.setCenter(m_players[m_name].get()->getPosition());
 }
 
 void MultiplayerGame::handleEvents()

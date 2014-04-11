@@ -36,6 +36,7 @@ private:
 	void handleEvents();
 
 private:
+	bool connect();
 
 	// Returns true if the packet has been filled with data
 	bool handleInput(sf::Packet& packet);

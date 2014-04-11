@@ -9,6 +9,7 @@ namespace cn
 		PlayerMove,
 		Ping,
 		Map,
+		NameTaken,
 	};
 
 	enum InputType

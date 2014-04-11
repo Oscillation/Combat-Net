@@ -41,39 +41,46 @@ void Server::run(){
 			if (pt == cn::PlayerConnected)
 			{
 				packet >> data;
-
-				m_clientList[data.toAnsiString()] = Client(address, port);
-				m_clientList[data.toAnsiString()].setPosition(sf::Vector2f((float)math::random(0, 600),  (float)math::random(0, 400)));
-				m_clientList[data.toAnsiString()].hasRespondedToPing = true;
-
-				retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
-
-				m_socket.send(retPacket, address, port);
-
-				retPacket.clear();
-				retPacket << cn::Map << map;
-				m_socket.send(retPacket, address, port);
-
-				for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+				if (!nameTaken(data))
 				{
-					if (i->first != data) {
-						sf::Packet specialDelivery;
-						specialDelivery << cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
-						m_socket.send(specialDelivery, i->second.getAddress(), i->second.getPort());
-					}
-				}
+					m_clientList[data.toAnsiString()] = Client(address, port);
+					m_clientList[data.toAnsiString()].setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
+					m_clientList[data.toAnsiString()].hasRespondedToPing = true;
 
-				for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+					retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
+
+					m_socket.send(retPacket, address, port);
+
+					retPacket.clear();
+					retPacket << cn::Map << map;
+					m_socket.send(retPacket, address, port);
+
+					for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+					{
+						if (i->first != data) {
+							sf::Packet specialDelivery;
+							specialDelivery << cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
+							m_socket.send(specialDelivery, i->second.getAddress(), i->second.getPort());
+						}
+					}
+
+					for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+					{
+						if (i->first != data) {
+							sf::Packet specialDelivery;
+							specialDelivery << cn::PlayerConnected << i->first << m_clientList[i->first.toAnsiString()].getPosition().x << m_clientList[i->first.toAnsiString()].getPosition().y;
+							m_socket.send(specialDelivery, address, port);
+						}
+					}
+					retPacket.clear();
+
+					std::cout << from << data.toAnsiString() << " has connected. Sending map...\n";
+				}else
 				{
-					if (i->first != data) {
-						sf::Packet specialDelivery;
-						specialDelivery << cn::PlayerConnected << i->first << m_clientList[i->first.toAnsiString()].getPosition().x << m_clientList[i->first.toAnsiString()].getPosition().y;
-						m_socket.send(specialDelivery, address, port);
-					}
+					retPacket << cn::NameTaken;
+					m_socket.send(retPacket, address, port);
+					std::cout << from << " attempted to connect with an already existing name...\n";
 				}
-
-				shouldSend = true;
-				std::cout << from << data.toAnsiString() << " has connected. Sending map...\n";
 			}else if (pt == cn::PlayerDisconnected)
 			{
 				packet >> data;
@@ -157,6 +164,11 @@ void Server::run(){
 			pingTimer.restart();
 		}
 	}
+}
+
+bool Server::nameTaken(const std::string & p_name){
+	std::map<sf::String, Client>::const_iterator it = m_clientList.find(p_name);
+	return it != m_clientList.end();
 }
 
 void Server::pingClients()

@@ -9,6 +9,7 @@
 enum Type{
 	Floor,
 	Wall,
+	Spawn,
 };
 
 struct Tile{
@@ -30,6 +31,8 @@ public:
 	std::vector<std::vector<Tile>> m_tiles;
 
 	bool intersectsWall(const sf::Vector2<float> & p_position);
+
+	std::vector<sf::Vector2<int>> m_spawnPositions;
 };
 
 	sf::Packet& operator <<(sf::Packet& packet, const Type& type);

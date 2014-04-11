@@ -42,7 +42,7 @@ Tile::~Tile(){
 }
 
 Map::Map(){
-	m_tiles.resize(16, std::vector<Tile>(16, Tile()));
+	m_tiles.resize(32, std::vector<Tile>(16, Tile()));
 	for (int x = 0, y = 0; x < m_tiles.size(); x++){
 		for (int y = 0; y < m_tiles[x].size(); y++){
 			m_tiles[x][y].m_x = x;
@@ -52,7 +52,7 @@ Map::Map(){
 }
 
 Map::Map(const std::string & p_path){
-	m_tiles.resize(16, std::vector<Tile>(16, Tile()));
+	m_tiles.resize(32, std::vector<Tile>(16, Tile()));
 	for (int x = 0, y = 0; x < m_tiles.size(); x++){
 		for (int y = 0; y < m_tiles[x].size(); y++){
 			m_tiles[x][y].m_x = x;
@@ -97,6 +97,10 @@ Map::Map(const std::string & p_path){
 					case 'x':
 						m_tiles[x][y].m_type = Wall;
 						break;
+					case 'S':
+						m_tiles[x][y].m_type = Spawn;
+						m_spawnPositions.push_back(sf::Vector2<int>(x*64, y*64));
+						break;
 					case '\n':
 						y++;
 						std::getline(read, line);
@@ -128,9 +132,6 @@ bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
 						return true;
 					}
 				}
-			}else
-			{
-				return true;
 			}
 		}
 	}
