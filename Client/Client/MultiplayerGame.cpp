@@ -59,7 +59,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 
 	std::string username;
 	std::cout << "Username: ";
-	std::cin >> username;
+	std::getline(std::cin, username);
 	m_name = username;
 
 	packet << (int)cn::PlayerConnected << sf::String(username);

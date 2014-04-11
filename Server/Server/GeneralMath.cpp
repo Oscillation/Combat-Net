@@ -50,3 +50,4 @@ float math::toRadians(float x)
 {
 	return x / 180 * std::_Pi;
 }
+

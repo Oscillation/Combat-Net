@@ -4,6 +4,8 @@
 #include <SFML\Network\Packet.hpp>
 #include <SFML\Graphics\Rect.hpp>
 
+#include "..\Server\Server\GeneralMath.h"
+
 enum Type{
 	Floor,
 	Wall,

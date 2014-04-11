@@ -112,14 +112,22 @@ void Server::run(){
 					default:
 						break;
 					}
+					if (!map.intersectsWall(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y + vel.y)))
+					{
+						m_clientList[data.toAnsiString()].setPosition(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y + vel.y));
+					}else
+					{
+						//resolve
+					}
+					if (!map.intersectsWall(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x + vel.x, m_clientList[data.toAnsiString()].getPosition().y)))
+					{
+						m_clientList[data.toAnsiString()].setPosition(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x + vel.x, m_clientList[data.toAnsiString()].getPosition().y));
+					}else
+					{
+						//resolve
+					}
 				}
-				if (!map.intersectsWall(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x + vel.x, m_clientList[data.toAnsiString()].getPosition().y + vel.y)))
-				{
-					m_clientList[data.toAnsiString()].setPosition(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x + vel.x, m_clientList[data.toAnsiString()].getPosition().y + vel.y));
-				}else
-				{
-					//resolve
-				}
+
 
 				retPacket << cn::PlayerMove << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
 				shouldSend = true;

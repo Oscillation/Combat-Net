@@ -1,5 +1,34 @@
 #include "Map.h"
 
+template <typename  T>
+bool math::circleIntersectsRect(const sf::Vector2<T> & p_pos, const float & p_radius, const sf::Rect<T> & p_rect){
+	sf::Vector2<float> distance;
+	distance.x = std::abs(p_pos.x - p_rect.left);
+	distance.y = std::abs(p_pos.y - p_rect.top);
+
+	if (distance.x > (p_rect.width/2 + p_radius))
+	{
+		return false;
+	}
+	if (distance.y > (p_rect.height/2 + p_radius))
+	{
+		return false;
+	}
+
+	if (distance.x <= (p_rect.width/2))
+	{
+		return true;
+	} 
+	if (distance.y <= (p_rect.height/2))
+	{
+		return true;
+	}
+
+	float cornerDistance = std::pow((distance.x - p_rect.width/2), 2) + std::pow((distance.y - p_rect.height/2), 2);
+
+	return (cornerDistance <= std::pow(p_radius, 2));
+}
+
 Tile::Tile(const unsigned short & p_x, const unsigned short & p_y, const Type & p_type) : m_x(p_x), m_y(p_y), m_type(p_type){
 
 }
@@ -85,17 +114,23 @@ Map::~Map(){
 
 bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
 	sf::Rect<int> rect = sf::Rect<int>(p_position.x - 20, p_position.y - 20, 40, 40);
-
-	for (int x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
+	int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
+	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
 	{
 		for (y = p_position.y/64 - 1; y < p_position.y/64 + 1; y++)
 		{
-			if (m_tiles[x][y].m_type == Wall)
+			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
 			{
-				if (rect.intersects(sf::Rect<int>(x*64, y*64, 64, 64)))
+				if (m_tiles[x][y].m_type == Wall)
 				{
-					return true;
+					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33, p_position.y - 33), 17, sf::Rect<float>(x*64, y*64, 64, 64)))
+					{
+						return true;
+					}
 				}
+			}else
+			{
+				return true;
 			}
 		}
 	}
