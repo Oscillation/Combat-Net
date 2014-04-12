@@ -36,9 +36,6 @@
     <ClCompile Include="Server.cpp">
       <Filter>Source Files\Server</Filter>
     </ClCompile>
-    <ClCompile Include="GeneralMath.cpp">
-      <Filter>Source Files\Math</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Common\Map.cpp">
       <Filter>Source Files\Map</Filter>
     </ClCompile>
@@ -51,6 +48,9 @@
     <ClCompile Include="InputData.cpp">
       <Filter>Source Files\Server</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common\GeneralMath.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -58,9 +58,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Protocol.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneralMath.h">
-      <Filter>Source Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\Map.h">
       <Filter>Source Files\Map</Filter>
@@ -74,9 +71,12 @@
     <ClInclude Include="InputData.h">
       <Filter>Source Files\Server</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Common\GeneralMath.h">
+      <Filter>Source Files\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GeneralMath.inl">
+    <None Include="..\..\Common\GeneralMath.inl">
       <Filter>Source Files\Math</Filter>
     </None>
   </ItemGroup>

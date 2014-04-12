@@ -7,7 +7,7 @@
 #include "..\..\Common\Protocol.h"
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
-#include "GeneralMath.h"
+#include "..\..\Common\GeneralMath.h"
 #include "Client.h"
 
 #include <SFML\System\Vector2.hpp>

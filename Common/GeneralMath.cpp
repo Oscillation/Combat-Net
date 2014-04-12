@@ -51,3 +51,12 @@ float math::toRadians(float x)
 	return x / 180 * std::_Pi;
 }
 
+float math::interpolate(float v0, float v1, float t)
+{
+	return v0+(v1-v0)*t;
+}
+
+sf::Vector2f math::interpolateVector(sf::Vector2f v0, sf::Vector2f v1, float t)
+{
+	return sf::Vector2f(interpolate(v0.x, v1.x, t), interpolate(v0.y, v1.y, t));
+}
