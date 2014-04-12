@@ -81,6 +81,9 @@ sf::Packet Server::simulateGameState() {
 			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)))
 			{
 				client->move(0, -client->getSpeed()*deltaTime);
+			}else
+			{
+				client->setPosition(client->getPosition().x, map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)).y + 64 + 20);
 			}
 			break;
 
@@ -88,13 +91,19 @@ sf::Packet Server::simulateGameState() {
 			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)))
 			{
 				client->move(0, client->getSpeed()*deltaTime);
+			}else
+			{
+				client->setPosition(client->getPosition().x, map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)).y - 20);
 			}
 			break;
 
-			case cn::MoveLeft:
+		case cn::MoveLeft:
 			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)))
 			{
 				client->move(-client->getSpeed()*deltaTime, 0);
+			}else
+			{
+				client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)).x + 64 + 20, client->getPosition().y);
 			}
 			break;
 
@@ -102,7 +111,11 @@ sf::Packet Server::simulateGameState() {
 			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)))
 			{
 				client->move(client->getSpeed()*deltaTime, 0);
+			}else
+			{
+				client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);
 			}
+			break;
 
 		case cn::ShootUp:
 			break;
