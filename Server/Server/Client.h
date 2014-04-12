@@ -1,8 +1,9 @@
 #pragma once
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\System\Vector2.hpp>
+#include <SFML\Graphics\Transformable.hpp>
 
-struct Client{
+struct Client : public sf::Transformable {
 	Client();
 	Client(const sf::IpAddress & p_address, const unsigned short & p_port);
 	~Client();
@@ -11,15 +12,14 @@ struct Client{
 
 	unsigned short getPort();
 
-	sf::Vector2<float> getPosition() const;
-
-	void setPosition(const sf::Vector2f & p_position);
-
 	bool hasRespondedToPing;
+
+	void setSpeed(float p_speed);
+	float getSpeed() const;
 
 private:
 	sf::IpAddress m_address;
 	unsigned short m_port;
 
-	sf::Vector2<float> m_position;
+	float m_speed;
 };

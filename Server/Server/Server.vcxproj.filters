@@ -48,6 +48,9 @@
     <ClCompile Include="..\..\Common\Projectile.cpp">
       <Filter>Source Files\Projectile</Filter>
     </ClCompile>
+    <ClCompile Include="InputData.cpp">
+      <Filter>Source Files\Server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Projectile.h">
       <Filter>Source Files\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="InputData.h">
+      <Filter>Source Files\Server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

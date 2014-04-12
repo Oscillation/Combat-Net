@@ -9,8 +9,11 @@ Server::Server(const unsigned short & p_port) : m_port(p_port){
 	system("cls");
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
 	pingTimer.restart();
+	map = Map("Maps/map.txt");
+	m_clock.restart();
+	m_elapsed.restart();
+	m_updateTime = sf::milliseconds(100);
 	run();
-
 }
 
 Server::~Server(){
@@ -20,8 +23,6 @@ Server::~Server(){
 void Server::run(){
 	bool run = true;
 	m_socket.setBlocking(false);
-
-	Map map = Map("Maps/map.txt");
 	while (run)
 	{
 		sf::IpAddress address;
@@ -29,186 +30,170 @@ void Server::run(){
 		sf::Packet packet;
 		sf::Packet retPacket;
 
-		bool shouldSend = false;
-
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{
-			std::string from = "[" + address.toString() + ":" + std::to_string(port) + "]: ";
-			sf::String data;
-
-			int pt;
-			packet >> pt;
+			unsigned int pt, time;
+			packet >> time >> pt;
 			if (pt == cn::PlayerConnected)
 			{
-				packet >> data;
-				if (!nameTaken(data))
-				{
-					m_clientList[data.toAnsiString()] = Client(address, port);
-					m_clientList[data.toAnsiString()].setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
-					m_clientList[data.toAnsiString()].hasRespondedToPing = true;
-
-					retPacket << (int)cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
-
-					m_socket.send(retPacket, address, port);
-
-					retPacket.clear();
-					retPacket << cn::Map << map;
-					m_socket.send(retPacket, address, port);
-
-					for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
-					{
-						if (i->first != data) {
-							sf::Packet specialDelivery;
-							specialDelivery << cn::PlayerConnected << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
-							m_socket.send(specialDelivery, i->second.getAddress(), i->second.getPort());
-						}
-					}
-
-					for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
-					{
-						if (i->first != data) {
-							sf::Packet specialDelivery;
-							specialDelivery << cn::PlayerConnected << i->first << m_clientList[i->first.toAnsiString()].getPosition().x << m_clientList[i->first.toAnsiString()].getPosition().y;
-							m_socket.send(specialDelivery, address, port);
-						}
-					}
-					retPacket.clear();
-
-					std::cout << from << data.toAnsiString() << " has connected. Sending map...\n";
-				}else
-				{
-					retPacket << cn::NameTaken;
-					m_socket.send(retPacket, address, port);
-					std::cout << from << " attempted to connect with an already existing name...\n";
-				}
+				playerConnected(packet, address, port);
 			} if (pt == cn::PlayerDisconnected)
 			{
-				packet >> data;
-				m_clientList.erase(data);
-				retPacket << cn::PlayerDisconnected << data;
-				shouldSend = true;
-				std::cout << from << data.toAnsiString() << " has disconnected." << std::endl;
-			} if (pt == cn::PlayerMessage)
+				playerDisconnected(packet, address, port);
+			}if (pt == cn::PlayerInput)
 			{
-				packet >> data;
-				std::cout << from << data.toAnsiString() << "\n";
-			} if (pt == cn::PlayerInput)
-			{
-				short input;
-				int inputCount;
-				bool move = false;
-				sf::Vector2<float> vel;
-				
-				packet >> data >> inputCount;
-				m_clientList[data.toAnsiString()].setPosition(m_clientList[data.toAnsiString()].getPosition());
-
-				for (int i = 0; i < inputCount; i++)
-				{
-					packet >> input;
-					switch (input)
-					{
-					case 0:
-						vel.y -= 3;
-						move = true;
-						break;
-					case 1:
-						vel.y += 3;
-						move = true;
-						break;
-					case 2:
-						vel.x -= 3;
-						move = true;
-						break;
-					case 3:
-						vel.x += 3;
-						move = true;
-						break;
-					default:
-						break;
-					}
-					if (input == 4)
-					{
-						std::unique_ptr<Projectile> projectile(new Projectile());
-						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
-						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
-						retPacket << cn::Projectile << data << *m_projectileList[data.toAnsiString()].back();
-					}
-					if (input == 5)
-					{
-						std::unique_ptr<Projectile> projectile(new Projectile());
-						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
-						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
-						retPacket << cn::Projectile << data << *m_projectileList[data.toAnsiString()].back();
-					}
-					if (input == 6)
-					{
-						std::unique_ptr<Projectile> projectile(new Projectile());
-						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
-						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
-						retPacket << cn::Projectile << data << *m_projectileList[data.toAnsiString()].back();
-					}
-					if (input == 7)
-					{
-						std::unique_ptr<Projectile> projectile(new Projectile());
-						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
-						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
-						retPacket << cn::Projectile << data << *m_projectileList[data.toAnsiString()].back();
-					}
-					
-					if (!map.intersectsWall(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y + vel.y)))
-					{
-						m_clientList[data.toAnsiString()].setPosition(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y + vel.y));
-					}else
-					{
-						//resolve
-					}
-					if (!map.intersectsWall(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x + vel.x, m_clientList[data.toAnsiString()].getPosition().y)))
-					{
-						m_clientList[data.toAnsiString()].setPosition(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x + vel.x, m_clientList[data.toAnsiString()].getPosition().y));
-					}else
-					{
-						//resolve
-					}
-				}
-				if (move)
-				{
-					retPacket << cn::PlayerMove << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
-				}
-				shouldSend = true;
-			} if (pt == cn::Ping) 
+				playerInput(packet, address, port, time);
+			}
+			if (pt == cn::Ping) 
 			{
 				sf::String name;
 				packet >> name;
 				m_clientList[name].hasRespondedToPing = true;
 			} 
-			//for (auto it = m_projectileList.begin(); it != m_projectileList.end(); ++it){
-			//	for (unsigned int i = 0; i < it->second.size(); i++)
-			//	{
-			//		//it->second[i].get()->move(it->second[i].get()->getVelocity());
-			//		retPacket << cn::Projectile << it->first << it->second[i];
-			//		m_socket.send(retPacket, address, port);
-			//	}
-			//}
-		}
-		if (shouldSend)
-		{
-			for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-				m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
-			}
-		}
-		retPacket.clear();
-		shouldSend = false;
-
-		if (pingTimer.getElapsedTime() > sf::seconds(1)){
+			/*if (pingTimer.getElapsedTime() > sf::seconds(1)){
 			pingClients();
 			pingTimer.restart();
+			}*/
+		}
+
+		if (m_clock.getElapsedTime() > m_updateTime)
+		{
+			sf::Packet PACKET = simulateGameState();
+			for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+				m_socket.send(PACKET, it->second.getAddress(), it->second.getPort());
+				std::cout << "Sending mega packet to: " << it->first.toAnsiString() << std::endl;
+			}
+			m_clock.restart();
 		}
 	}
+}
+
+sf::Packet Server::simulateGameState() {
+	sf::Packet retPacket;
+	retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::MegaPacket;
+	for (InputData input : m_clientInputs) {
+
+		Client* client = &m_clientList[input.getPlayer()];
+		float deltaTime = (float)input.getDeltaTime()/1000.f;
+		switch (input.getInputType())
+		{
+		case cn::MoveUp:
+			client->move(0, -client->getSpeed()*deltaTime);
+			break;
+
+		case cn::MoveDown:
+			client->move(0, client->getSpeed()*deltaTime);
+			break;
+
+		case cn::MoveLeft: 
+			client->move(-client->getSpeed()*deltaTime, 0);
+			break;
+
+		case cn::MoveRight:
+			client->move(client->getSpeed()*deltaTime, 0);
+			break;
+
+		case cn::ShootUp:
+			break;
+
+		case cn::ShootDown:
+			break;
+
+		case cn::ShootLeft: 
+			break;
+
+		case cn::ShootRight:
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+		std::cout << it->first.toAnsiString() << "\n";
+		retPacket << m_clientInputs.size() << cn::PlayerMove << it->first << it->second.getPosition().x << it->second.getPosition().y;
+	}
+	m_clientInputs.clear();
+	return retPacket;
 }
 
 bool Server::nameTaken(const std::string & p_name){
 	std::map<sf::String, Client>::const_iterator it = m_clientList.find(p_name);
 	return it != m_clientList.end();
+}
+
+void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port){
+	std::string from = "[" + p_address.toString() + ":" + std::to_string(p_port) + "]: ";
+	sf::String data;
+	sf::Packet retPacket;
+	p_packet >> data;
+	if (!nameTaken(data))
+	{
+		m_clientList[data] = Client(p_address, p_port);
+		m_clientList[data].setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
+		m_clientList[data].hasRespondedToPing = true;
+
+		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << map;
+		m_socket.send(retPacket, p_address, p_port);
+
+		//Send connecting client to already connected clients
+		for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+		{
+			if (i->first != data) {
+				sf::Packet specialDelivery;
+				specialDelivery << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y;
+				m_socket.send(specialDelivery, i->second.getAddress(), i->second.getPort());
+			}
+		}
+
+		//Send clients to connecting client
+		for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+		{
+			if (i->first != data) {
+				sf::Packet specialDelivery;
+				specialDelivery << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << i->first << m_clientList[i->first].getPosition().x << m_clientList[i->first].getPosition().y;
+				m_socket.send(specialDelivery, p_address, p_port);
+			}
+		}
+		retPacket.clear();
+
+		std::cout << from << data.toAnsiString() << " has connected. Sending map...\n";
+	}else
+	{
+		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::NameTaken;
+		m_socket.send(retPacket, p_address, p_port);
+		std::cout << from << " attempted to connect with an already existing name...\n";
+	}
+}
+
+void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port){
+	std::string from = "[" + p_address.toString() + ":" + std::to_string(p_port) + "]: ";
+	sf::String name;
+	p_packet >> name;
+	m_clientList.erase(name);
+	sf::Packet packet;
+	packet << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerDisconnected << name;
+	std::cout << from << name.toAnsiString() << " has disconnected." << std::endl;
+
+	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+		m_socket.send(packet, it->second.getAddress(), it->second.getPort());
+	}
+}
+
+void Server::playerInput(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & port, const int & p_time){
+	sf::String name;
+	int length;
+
+	p_packet >> name >> length;
+
+	for (int i = 0; i < length; i++)
+	{
+		int inputType, deltaTime;
+		p_packet >> inputType >> deltaTime;
+		InputData data((cn::InputType)inputType, p_time, deltaTime, name);
+		m_clientInputs.push_back(data);
+	}
 }
 
 void Server::pingClients()
@@ -224,7 +209,7 @@ void Server::pingClients()
 				m_socket.send(retPacket, it2->second.getAddress(), it2->second.getPort());
 			}
 
-			m_clientList.erase(it++);
+			//m_clientList.erase(it++);
 		} else {
 			++it;
 		}

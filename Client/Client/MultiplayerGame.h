@@ -40,13 +40,13 @@ private:
 	bool connect();
 
 	// Returns true if the packet has been filled with data
-	bool handleInput(sf::Packet& packet);
+	bool handleInput(sf::Packet & p_packet, const int & p_deltaTime);
 		
-	void handlePlayerConnect(sf::Packet& packet);
-	void handlePlayerDisconnect(sf::Packet& packet);
-	void handlePlayerMove(sf::Packet& packet);
+	void handlePlayerConnect(sf::Packet & p_packet);
+	void handlePlayerDisconnect(sf::Packet & p_packet);
+	void handlePlayerMove(sf::Packet & p_packet);
 	void handlePing();
-	void handleProjectile(sf::Packet & p_packet);
+	void handleMegaPacket(sf::Packet & p_packet);
 
 	sf::RenderWindow m_window;
 	sf::View m_view;

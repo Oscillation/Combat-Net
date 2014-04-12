@@ -1,7 +1,10 @@
+#pragma once
+
 namespace cn
 {
 	enum PacketType
 	{
+		MegaPacket,
 		PlayerConnected,
 		PlayerDisconnected,
 		PlayerInput,

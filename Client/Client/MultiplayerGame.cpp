@@ -67,7 +67,7 @@ bool MultiplayerGame::connect(){
 	std::getline(std::cin, username);
 	m_name = username;
 
-	packet << (int)cn::PlayerConnected << sf::String(username);
+	packet << 0 << (int)cn::PlayerConnected << sf::String(username);
 	m_socket.send(packet, server_address, server_port);
 
 	// Wait for the PlayerConnected packet from the server
@@ -76,9 +76,9 @@ bool MultiplayerGame::connect(){
 
 	while (m_socket.receive(packet, server_address, server_port) == sf::Socket::Done)
 	{
-		int type;
+		int type, time;
 		sf::String name;
-		packet >> type;
+		packet >> time >> type;
 
 		if ((cn::PacketType)type == cn::PlayerConnected)
 		{
@@ -88,6 +88,7 @@ bool MultiplayerGame::connect(){
 				std::cout << "Connected to server\n";
 				sf::Vector2f position;
 				packet >> position.x >> position.y;
+				packet >> m_map;
 				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
 				newPlayer->setPosition(position);
 				m_players[name] = std::move(newPlayer);
@@ -115,7 +116,7 @@ void MultiplayerGame::handleEvents()
 		if (event.type == sf::Event::Closed || (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)))
 		{
 			sf::Packet packet;
-			packet << cn::PlayerDisconnected << m_name;
+			packet << 0 << cn::PlayerDisconnected << m_name;
 			m_socket.send(packet, server_address, server_port);
 			m_running = false;
 			exit(0);
@@ -129,6 +130,7 @@ void MultiplayerGame::handleEvents()
 
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
+	std::cout << m_players[m_name]->getPosition().x << ":" << m_players[m_name]->getPosition().y << "\n";
 	sf::Packet packet;
 	sf::IpAddress address;
 	unsigned short port;
@@ -136,18 +138,12 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	{
 		if (address != server_address || port != server_port || packet.endOfPacket())
 			break;
-		int type;
-		packet >> type;
+		int type, time;
+		packet >> time >> type;
+
 		if ((cn::PacketType)type == cn::PlayerConnected) 
 		{
 			handlePlayerConnect(packet);
-		}else if ((cn::PacketType)type == cn::Map)
-		{
-			packet >> m_map;
-		}
-		else if ((cn::PacketType)type == cn::PlayerMove)
-		{
-			handlePlayerMove(packet);
 		}
 		else if ((cn::PacketType)type == cn::PlayerDisconnected) 
 		{
@@ -155,16 +151,16 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		}else if ((cn::PacketType)type == cn::Ping) 
 		{
 			handlePing();
-		}else if (type == cn::Projectile)
+		}else if ((cn::PacketType)type == cn::MegaPacket)
 		{
-			handleProjectile(packet);
+			handleMegaPacket(packet);
 		}
 	}
 
-	
+
 	if (m_active)
 	{
-		if (handleInput(packet))
+		if (handleInput(packet, p_deltaTime.asMilliseconds()))
 		{
 			m_socket.send(packet, server_address, server_port);
 		}
@@ -210,7 +206,7 @@ void MultiplayerGame::render()
 	m_window.display();
 }
 
-bool MultiplayerGame::handleInput(sf::Packet& packet)
+bool MultiplayerGame::handleInput(sf::Packet& packet, const int & p_deltaTime)
 {
 	std::vector<cn::InputType> inputs;
 
@@ -249,9 +245,9 @@ bool MultiplayerGame::handleInput(sf::Packet& packet)
 
 	if (!inputs.empty())
 	{
-		packet << cn::PlayerInput << m_name << inputs.size();
+		packet << 0 << cn::PlayerInput << m_name << inputs.size();
 		for(auto it = inputs.begin(); it != inputs.end(); ++it){
-			packet << (short)*it;
+			packet << (int)*it << p_deltaTime;
 		}
 		return true;
 	}
@@ -301,10 +297,24 @@ void MultiplayerGame::handlePing()
 	m_socket.send(pingPacket, server_address, server_port);
 }
 
-void MultiplayerGame::handleProjectile(sf::Packet & p_packet){
-	sf::String name;
-	std::unique_ptr<Projectile> projectile(new Projectile());
-	p_packet >> name;
-	p_packet >> *projectile;
-	m_projectileList[name.toAnsiString()].push_back(std::move(projectile));
+
+void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet){
+	int count = 0;
+	p_packet >> count;
+	for (int i = 0; i < count; i++)
+	{
+		if (!p_packet.endOfPacket())
+		{
+			int type;
+			sf::String name;
+			p_packet >> type >> name;
+
+			if ((cn::PacketType)type == cn::PlayerMove){
+				sf::Vector2<float> pos;
+				p_packet >> pos.x >> pos.y;
+				std::cout << name.toAnsiString() << "\n";
+				m_players[name]->setPosition(pos);
+			}
+		}
+	}
 }
