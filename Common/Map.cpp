@@ -42,27 +42,13 @@ Tile::~Tile(){
 }
 
 Map::Map(){
-	m_tiles.resize(32, std::vector<Tile>(16, Tile()));
-	for (int x = 0, y = 0; x < m_tiles.size(); x++){
-		for (int y = 0; y < m_tiles[x].size(); y++){
-			m_tiles[x][y].m_x = x;
-			m_tiles[x][y].m_y = y;
-		}
-	}
 }
 
 Map::Map(const std::string & p_path){
-	m_tiles.resize(32, std::vector<Tile>(16, Tile()));
-	for (int x = 0, y = 0; x < m_tiles.size(); x++){
-		for (int y = 0; y < m_tiles[x].size(); y++){
-			m_tiles[x][y].m_x = x;
-			m_tiles[x][y].m_y = y;
-		}
-	}
 
 	std::ifstream read;
 
-	int height = 0;
+	int height = 0, width = 0;
 
 	read.open(p_path);
 	if (read.is_open())
@@ -72,10 +58,22 @@ Map::Map(const std::string & p_path){
 		while (!read.eof())
 		{
 			std::getline(read, line);
+			if (line.length() > width)
+			{
+				width = line.length();
+			}
 			height++;
 		}
 	}
 	read.close();
+
+	m_tiles.resize(width, std::vector<Tile>(height, Tile()));
+	for (int x = 0, y = 0; x < m_tiles.size(); x++){
+		for (int y = 0; y < m_tiles[x].size(); y++){
+			m_tiles[x][y].m_x = x;
+			m_tiles[x][y].m_y = y;
+		}
+	}
 
 	read.open(p_path);
 	if (read.is_open())
@@ -177,9 +175,12 @@ sf::Packet& operator>>(sf::Packet& packet, std::vector<std::vector<Tile>>& tiles
 }
 
 sf::Packet& operator<<(sf::Packet& packet, const Map& map){
-	return packet << map.m_tiles;
+	return packet << map.m_tiles.size() << map.m_tiles.back().size() << map.m_tiles;
 }
 
 sf::Packet& operator>>(sf::Packet& packet, Map& map){
+	int height = 0, width = 0;
+	packet >> width >> height;
+	map.m_tiles.resize(width, std::vector<Tile>(height, Tile()));
 	return packet >> map.m_tiles;
 }

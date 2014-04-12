@@ -12,6 +12,9 @@
     <Filter Include="Source Files\Map">
       <UniqueIdentifier>{df0d3174-f910-49d0-ab3c-8b11299a4bda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Projectile">
+      <UniqueIdentifier>{dc68d935-6cc0-4137-ab5b-0ce212bf4803}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
