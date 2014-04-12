@@ -66,6 +66,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Common\GeneralMath.cpp" />
     <ClCompile Include="..\..\Common\Map.cpp" />
     <ClCompile Include="..\..\Common\Projectile.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -73,11 +74,15 @@
     <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Common\GeneralMath.h" />
     <ClInclude Include="..\..\Common\Map.h" />
     <ClInclude Include="..\..\Common\Projectile.h" />
     <ClInclude Include="..\..\Common\Protocol.h" />
     <ClInclude Include="MultiplayerGame.h" />
     <ClInclude Include="Player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Common\GeneralMath.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -91,6 +91,8 @@ bool MultiplayerGame::connect(){
 				packet >> m_map;
 				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
 				newPlayer->setPosition(position);
+				newPlayer->setTargetPosition(position);
+				newPlayer->setTargetTime(100);
 				m_players[name] = std::move(newPlayer);
 				m_socket.setBlocking(false);
 				m_window.create(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close);
@@ -130,6 +132,7 @@ void MultiplayerGame::handleEvents()
 
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
+	m_elapsedGameTime += p_deltaTime.asMilliseconds();
 	//std::cout << m_players[m_name]->getPosition().x << ":" << m_players[m_name]->getPosition().y << "\n";
 	sf::Packet packet;
 	sf::IpAddress address;
@@ -153,8 +156,12 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 			handlePing();
 		}else if ((cn::PacketType)type == cn::MegaPacket)
 		{
-			handleMegaPacket(packet);
+			handleMegaPacket(packet, time);
 		}
+	}
+
+	for (auto it = m_players.begin(); it != m_players.end(); ++it) {
+		it->second->update(p_deltaTime, m_elapsedGameTime);
 	}
 
 	m_view.setCenter(m_players[m_name]->getPosition());
@@ -299,9 +306,10 @@ void MultiplayerGame::handlePing()
 }
 
 
-void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet){
+void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time){
 	int count = 0;
 	p_packet >> count;
+	m_elapsedGameTime = 0;
 	for (int i = 0; i < count; i++)
 	{
 		if (!p_packet.endOfPacket())
@@ -314,7 +322,8 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet){
 				p_packet >> name;
 				sf::Vector2<float> pos;
 				p_packet >> pos.x >> pos.y;
-				m_players[name]->setPosition(pos);
+				m_players[name]->setTargetPosition(pos);
+				m_players[name]->setTargetTime(p_time);
 			}
 		}
 	}

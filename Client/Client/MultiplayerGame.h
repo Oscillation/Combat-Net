@@ -12,6 +12,8 @@
 
 #include <SFML\Graphics\Font.hpp>
 
+#include <SFML\System\Clock.hpp>
+
 #include "Player.h"
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
@@ -46,7 +48,7 @@ private:
 	void handlePlayerDisconnect(sf::Packet & p_packet);
 	void handlePlayerMove(sf::Packet & p_packet);
 	void handlePing();
-	void handleMegaPacket(sf::Packet & p_packet);
+	void handleMegaPacket(sf::Packet & p_packet, int const& p_time);
 
 	sf::RenderWindow m_window;
 	sf::View m_view;
@@ -65,4 +67,6 @@ private:
 	Map m_map;
 
 	sf::Font gameFont;
+
+	int m_elapsedGameTime;
 };

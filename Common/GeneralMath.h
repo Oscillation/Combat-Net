@@ -35,6 +35,9 @@ namespace math{
 
 	template <typename T>
 	bool circleIntersectsRect(const sf::Vector2<T> & p_pos, const float & p_radius, const sf::Rect<T> & p_rect);
+
+	float interpolate(float v0, float v1, float t);
+	sf::Vector2f interpolateVector(sf::Vector2f v0, sf::Vector2f v1, float t);
 }
 
 #include "GeneralMath.inl"
