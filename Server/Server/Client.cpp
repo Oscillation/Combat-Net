@@ -3,7 +3,7 @@
 Client::Client(){}
 
 Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) : m_address(p_address), m_port(p_port){
-	m_speed = 100;
+	m_speed = 300;
 }
 
 Client::~Client(){

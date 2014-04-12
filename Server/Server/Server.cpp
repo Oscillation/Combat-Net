@@ -12,7 +12,7 @@ Server::Server(const unsigned short & p_port) : m_port(p_port){
 	map = Map("Maps/map.txt");
 	m_clock.restart();
 	m_elapsed.restart();
-	m_updateTime = sf::milliseconds(100);
+	m_updateTime = sf::milliseconds(50);
 	run();
 }
 
@@ -78,20 +78,31 @@ sf::Packet Server::simulateGameState() {
 		switch (input.getInputType())
 		{
 		case cn::MoveUp:
-			client->move(0, -client->getSpeed()*deltaTime);
+			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)))
+			{
+				client->move(0, -client->getSpeed()*deltaTime);
+			}
 			break;
 
 		case cn::MoveDown:
-			client->move(0, client->getSpeed()*deltaTime);
+			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)))
+			{
+				client->move(0, client->getSpeed()*deltaTime);
+			}
 			break;
 
-		case cn::MoveLeft: 
-			client->move(-client->getSpeed()*deltaTime, 0);
+			case cn::MoveLeft:
+			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)))
+			{
+				client->move(-client->getSpeed()*deltaTime, 0);
+			}
 			break;
 
 		case cn::MoveRight:
-			client->move(client->getSpeed()*deltaTime, 0);
-			break;
+			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)))
+			{
+				client->move(client->getSpeed()*deltaTime, 0);
+			}
 
 		case cn::ShootUp:
 			break;
