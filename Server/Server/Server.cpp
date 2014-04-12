@@ -109,7 +109,7 @@ sf::Packet Server::simulateGameState() {
 			break;
 		}
 	}
-	retPacket << m_clientInputs.size();
+	retPacket << m_clientList.size();
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		retPacket << cn::PlayerMove << it->first << it->second.getPosition().x << it->second.getPosition().y;
 	}
