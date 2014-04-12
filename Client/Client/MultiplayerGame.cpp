@@ -130,7 +130,7 @@ void MultiplayerGame::handleEvents()
 
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
-	std::cout << m_players[m_name]->getPosition().x << ":" << m_players[m_name]->getPosition().y << "\n";
+	//std::cout << m_players[m_name]->getPosition().x << ":" << m_players[m_name]->getPosition().y << "\n";
 	sf::Packet packet;
 	sf::IpAddress address;
 	unsigned short port;
@@ -157,6 +157,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 	}
 
+	m_view.setCenter(m_players[m_name]->getPosition());
 
 	if (m_active)
 	{
@@ -306,13 +307,13 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet){
 		if (!p_packet.endOfPacket())
 		{
 			int type;
-			sf::String name;
-			p_packet >> type >> name;
+			p_packet >> type;
 
 			if ((cn::PacketType)type == cn::PlayerMove){
+				sf::String name;
+				p_packet >> name;
 				sf::Vector2<float> pos;
 				p_packet >> pos.x >> pos.y;
-				std::cout << name.toAnsiString() << "\n";
 				m_players[name]->setPosition(pos);
 			}
 		}

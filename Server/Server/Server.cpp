@@ -109,10 +109,9 @@ sf::Packet Server::simulateGameState() {
 			break;
 		}
 	}
-	
+	retPacket << m_clientInputs.size();
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-		std::cout << it->first.toAnsiString() << "\n";
-		retPacket << m_clientInputs.size() << cn::PlayerMove << it->first << it->second.getPosition().x << it->second.getPosition().y;
+		retPacket << cn::PlayerMove << it->first << it->second.getPosition().x << it->second.getPosition().y;
 	}
 	m_clientInputs.clear();
 	return retPacket;
