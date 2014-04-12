@@ -6,6 +6,7 @@
 #include <SFML\Graphics\Font.hpp>
 
 #include <SFML\System\String.hpp>
+#include <SFML\System\Time.hpp>
 
 class Player : public sf::Drawable, public sf::Transformable
 {
@@ -13,9 +14,15 @@ public:
 
 	Player(sf::String p_name, sf::Font& p_font, bool p_remote = true);
 	~Player();
+
+	void update(sf::Time p_deltaTime, int p_elapsedGameTime);
+
 	bool isRemote() const;
 
 	float getRadius() const;
+
+	void setTargetTime(int p_targetTime);
+	void setTargetPosition(sf::Vector2f p_targetPos);
 
 private:
 	bool m_remote;
@@ -24,4 +31,7 @@ private:
 	sf::Text nameText;
 
 	float m_radius;
+
+	int prevTime, targetTime;
+	sf::Vector2f prevPos, targetPos;
 };
