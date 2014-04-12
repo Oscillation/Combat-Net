@@ -29,6 +29,9 @@
     <ClCompile Include="..\..\Common\Map.cpp">
       <Filter>Source Files\Map</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common\Projectile.cpp">
+      <Filter>Source Files\Projectile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MultiplayerGame.h">
@@ -42,6 +45,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Map.h">
       <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Projectile.h">
+      <Filter>Source Files\Projectile</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

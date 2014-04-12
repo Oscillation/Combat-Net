@@ -81,24 +81,27 @@ void Server::run(){
 					m_socket.send(retPacket, address, port);
 					std::cout << from << " attempted to connect with an already existing name...\n";
 				}
-			}else if (pt == cn::PlayerDisconnected)
+			} if (pt == cn::PlayerDisconnected)
 			{
 				packet >> data;
 				m_clientList.erase(data);
 				retPacket << cn::PlayerDisconnected << data;
 				shouldSend = true;
 				std::cout << from << data.toAnsiString() << " has disconnected." << std::endl;
-			}else if (pt == cn::PlayerMessage)
+			} if (pt == cn::PlayerMessage)
 			{
 				packet >> data;
 				std::cout << from << data.toAnsiString() << "\n";
-			}else if (pt == cn::PlayerInput)
+			} if (pt == cn::PlayerInput)
 			{
 				short input;
 				int inputCount;
+				bool move = false;
 				sf::Vector2<float> vel;
+				
 				packet >> data >> inputCount;
 				m_clientList[data.toAnsiString()].setPosition(m_clientList[data.toAnsiString()].getPosition());
+
 				for (int i = 0; i < inputCount; i++)
 				{
 					packet >> input;
@@ -106,19 +109,52 @@ void Server::run(){
 					{
 					case 0:
 						vel.y -= 3;
+						move = true;
 						break;
 					case 1:
 						vel.y += 3;
+						move = true;
 						break;
 					case 2:
 						vel.x -= 3;
+						move = true;
 						break;
 					case 3:
 						vel.x += 3;
+						move = true;
 						break;
 					default:
 						break;
 					}
+					/*if (input == 4)
+					{
+						std::unique_ptr<Projectile> projectile(new Projectile());
+						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
+						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
+						retPacket << cn::Projectile << data << m_projectileList[data.toAnsiString()].back();
+					}
+					if (input == 5)
+					{
+						std::unique_ptr<Projectile> projectile(new Projectile());
+						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
+						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
+						retPacket << cn::Projectile << data << m_projectileList[data.toAnsiString()].back();
+					}
+					if (input == 6)
+					{
+						std::unique_ptr<Projectile> projectile(new Projectile());
+						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
+						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
+						retPacket << cn::Projectile << data << m_projectileList[data.toAnsiString()].back();
+					}
+					if (input == 7)
+					{
+						std::unique_ptr<Projectile> projectile(new Projectile());
+						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
+						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
+						retPacket << cn::Projectile << data << m_projectileList[data.toAnsiString()].back();
+					}*/
+					
 					if (!map.intersectsWall(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y + vel.y)))
 					{
 						m_clientList[data.toAnsiString()].setPosition(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y + vel.y));
@@ -134,21 +170,25 @@ void Server::run(){
 						//resolve
 					}
 				}
-
-
-				retPacket << cn::PlayerMove << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
+				if (move)
+				{
+					retPacket << cn::PlayerMove << data << m_clientList[data.toAnsiString()].getPosition().x << m_clientList[data.toAnsiString()].getPosition().y;
+				}
 				shouldSend = true;
-			}else if (pt == cn::Ping) 
+			} if (pt == cn::Ping) 
 			{
 				sf::String name;
 				packet >> name;
 				m_clientList[name].hasRespondedToPing = true;
-			}else
-			{
-				packet >> data;
-				std::cout << from << "Unrecognized packet type: " << pt << ". Consult the protocol.\n" << data.toAnsiString()<< "\n";
-			}
-
+			} 
+			//for (auto it = m_projectileList.begin(); it != m_projectileList.end(); ++it){
+			//	for (unsigned int i = 0; i < it->second.size(); i++)
+			//	{
+			//		//it->second[i].get()->move(it->second[i].get()->getVelocity());
+			//		retPacket << cn::Projectile << it->first << it->second[i];
+			//		m_socket.send(retPacket, address, port);
+			//	}
+			//}
 		}
 		if (shouldSend)
 		{

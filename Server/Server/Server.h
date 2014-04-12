@@ -6,6 +6,7 @@
 
 #include "..\..\Common\Protocol.h"
 #include "..\..\Common\Map.h"
+#include "..\..\Common\Projectile.h"
 #include "GeneralMath.h"
 #include "Client.h"
 
@@ -25,6 +26,7 @@ private:
 	sf::UdpSocket m_socket;
 	
 	std::map<sf::String, Client> m_clientList;
+	std::map<sf::String, std::vector<std::unique_ptr<Projectile>>> m_projectileList;
 
 	void run();
 

@@ -10,6 +10,7 @@ namespace cn
 		Ping,
 		Map,
 		NameTaken,
+		Projectile,
 	};
 
 	enum InputType
@@ -18,6 +19,9 @@ namespace cn
 		MoveDown,
 		MoveLeft,
 		MoveRight,
-		Shoot,
+		ShootUp,
+		ShootDown,
+		ShootLeft,
+		ShootRight,
 	};
 };

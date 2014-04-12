@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Client">
       <UniqueIdentifier>{6ca9e765-4b98-454e-a838-fa98574819c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Projectile">
+      <UniqueIdentifier>{ee570f06-c447-4fe5-948f-24ef3cdc4f16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -42,6 +45,9 @@
     <ClCompile Include="Client.cpp">
       <Filter>Source Files\Client</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common\Projectile.cpp">
+      <Filter>Source Files\Projectile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -58,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="Client.h">
       <Filter>Source Files\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Projectile.h">
+      <Filter>Source Files\Projectile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

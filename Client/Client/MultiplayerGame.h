@@ -14,6 +14,7 @@
 
 #include "Player.h"
 #include "..\..\Common\Map.h"
+#include "..\..\Common\Projectile.h"
 
 #include <map>
 #include <memory>
@@ -45,6 +46,7 @@ private:
 	void handlePlayerDisconnect(sf::Packet& packet);
 	void handlePlayerMove(sf::Packet& packet);
 	void handlePing();
+	void handleProjectile(sf::Packet & p_packet);
 
 	sf::RenderWindow m_window;
 	sf::View m_view;
@@ -58,6 +60,7 @@ private:
 	sf::String m_name;
 
 	std::map<sf::String, std::unique_ptr<Player>> m_players;
+	std::map<sf::String, std::vector<std::unique_ptr<Projectile>>> m_projectileList;
 
 	Map m_map;
 

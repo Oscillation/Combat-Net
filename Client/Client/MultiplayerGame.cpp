@@ -152,19 +152,22 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		else if ((cn::PacketType)type == cn::PlayerDisconnected) 
 		{
 			handlePlayerDisconnect(packet);
-		} else if ((cn::PacketType)type == cn::Ping) 
+		}else if ((cn::PacketType)type == cn::Ping) 
 		{
 			handlePing();
-		}	
+		}else if (type == cn::Projectile)
+		{
+			handleProjectile(packet);
+		}
 	}
 
-	sf::Packet send_packet;
+	
 	if (m_active)
 	{
-		bool shouldSend = handleInput(send_packet);
-
-		if (shouldSend)
-			m_socket.send(send_packet, server_address, server_port);
+		if (handleInput(packet))
+		{
+			m_socket.send(packet, server_address, server_port);
+		}
 	}
 }
 
@@ -198,6 +201,12 @@ void MultiplayerGame::render()
 		m_window.draw(*(i->second));
 	}
 
+	for (auto it = m_projectileList.begin(); it != m_projectileList.end(); ++it) {
+		for (auto iter = it->second.begin(); iter != it->second.end(); ++iter) {
+			m_window.draw(*iter->get());
+		}
+	}
+
 	m_window.display();
 }
 
@@ -220,6 +229,22 @@ bool MultiplayerGame::handleInput(sf::Packet& packet)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		inputs.push_back(cn::MoveRight);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		inputs.push_back(cn::ShootUp);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		inputs.push_back(cn::ShootDown);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	{
+		inputs.push_back(cn::ShootLeft);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	{
+		inputs.push_back(cn::ShootRight);
 	}
 
 	if (!inputs.empty())
@@ -274,4 +299,12 @@ void MultiplayerGame::handlePing()
 	sf::Packet pingPacket;
 	pingPacket << cn::Ping << m_name;
 	m_socket.send(pingPacket, server_address, server_port);
+}
+
+void MultiplayerGame::handleProjectile(sf::Packet & p_packet){
+	sf::String name;
+	std::unique_ptr<Projectile> projectile(new Projectile());
+	p_packet >> name;
+	p_packet >> *projectile;
+	m_projectileList[name.toAnsiString()].push_back(std::move(projectile));
 }
