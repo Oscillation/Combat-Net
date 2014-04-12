@@ -126,34 +126,34 @@ void Server::run(){
 					default:
 						break;
 					}
-					/*if (input == 4)
+					if (input == 4)
 					{
 						std::unique_ptr<Projectile> projectile(new Projectile());
 						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
 						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
-						retPacket << cn::Projectile << data << m_projectileList[data.toAnsiString()].back();
+						retPacket << cn::Projectile << data << *m_projectileList[data.toAnsiString()].back();
 					}
 					if (input == 5)
 					{
 						std::unique_ptr<Projectile> projectile(new Projectile());
 						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
 						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
-						retPacket << cn::Projectile << data << m_projectileList[data.toAnsiString()].back();
+						retPacket << cn::Projectile << data << *m_projectileList[data.toAnsiString()].back();
 					}
 					if (input == 6)
 					{
 						std::unique_ptr<Projectile> projectile(new Projectile());
 						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
 						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
-						retPacket << cn::Projectile << data << m_projectileList[data.toAnsiString()].back();
+						retPacket << cn::Projectile << data << *m_projectileList[data.toAnsiString()].back();
 					}
 					if (input == 7)
 					{
 						std::unique_ptr<Projectile> projectile(new Projectile());
 						projectile->setPosition(m_clientList[data.toAnsiString()].getPosition());
 						m_projectileList[data.toAnsiString()].push_back(std::move(projectile));
-						retPacket << cn::Projectile << data << m_projectileList[data.toAnsiString()].back();
-					}*/
+						retPacket << cn::Projectile << data << *m_projectileList[data.toAnsiString()].back();
+					}
 					
 					if (!map.intersectsWall(sf::Vector2<float>(m_clientList[data.toAnsiString()].getPosition().x, m_clientList[data.toAnsiString()].getPosition().y + vel.y)))
 					{
