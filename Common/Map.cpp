@@ -115,7 +115,6 @@ Map::~Map(){
 }
 
 bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
-	sf::Rect<int> rect = sf::Rect<int>(p_position.x - 20, p_position.y - 20, 40, 40);
 	int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
 	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
 	{
@@ -134,6 +133,26 @@ bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
 		}
 	}
 	return false;
+}
+
+sf::Vector2<float> Map::getIntersectingWall(const sf::Vector2<float> & p_position){
+	int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
+	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
+	{
+		for (y = p_position.y/64 - 1; y < p_position.y/64 + 1; y++)
+		{
+			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
+			{
+				if (m_tiles[x][y].m_type == Wall)
+				{
+					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33, p_position.y - 33), 17, sf::Rect<float>(x*64, y*64, 64, 64)))
+					{
+						return sf::Vector2<float>(x*64, y*64);
+					}
+				}
+			}
+		}
+	}
 }
 
 sf::Packet& operator<<(sf::Packet& packet, const Type& type){
