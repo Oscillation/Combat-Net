@@ -100,6 +100,7 @@ bool MultiplayerGame::connect(){
 				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
 				m_view.setCenter(m_players[m_name].get()->getPosition());
 				m_view.setCenter(m_players[name].get()->getPosition());
+				std::cout << m_name.toAnsiString() << std::endl;
 				return true;
 				break;
 			}
@@ -151,7 +152,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		else if ((cn::PacketType)type == cn::PlayerDisconnected) 
 		{
 			handlePlayerDisconnect(packet);
-		}else if ((cn::PacketType)type == cn::Ping) 
+		}else if ((cn::PacketType)type == cn::Ping)
 		{
 			handlePing();
 		}else if ((cn::PacketType)type == cn::MegaPacket)
@@ -310,7 +311,7 @@ void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
 void MultiplayerGame::handlePing()
 {
 	sf::Packet pingPacket;
-	pingPacket << cn::Ping << m_name;
+	pingPacket << 0 << cn::Ping << m_name;
 	m_socket.send(pingPacket, server_address, server_port);
 }
 
