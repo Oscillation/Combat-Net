@@ -9,7 +9,8 @@
 MultiplayerGame::MultiplayerGame() :
 	m_running(true),
 	m_socket(),
-	m_window()
+	m_window(),
+	serverTimeout(sf::milliseconds(500))
 {
 }
 
@@ -133,7 +134,6 @@ void MultiplayerGame::handleEvents()
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
 	m_elapsedGameTime += p_deltaTime.asMilliseconds();
-	//std::cout << m_players[m_name]->getPosition().x << ":" << m_players[m_name]->getPosition().y << "\n";
 	sf::Packet packet;
 	sf::IpAddress address;
 	unsigned short port;
@@ -158,6 +158,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		{
 			handleMegaPacket(packet, time);
 		}
+		timeSinceLastServerUpdate.restart();
 	}
 
 	for (auto it = m_players.begin(); it != m_players.end(); ++it) {
@@ -172,6 +173,14 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		{
 			m_socket.send(packet, server_address, server_port);
 		}
+	}
+
+	// Handle server crash/random disconnect
+	if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
+	{
+		std::cout << "Lost connection to server, exiting" << std::endl;
+		sf::sleep(sf::seconds(3));
+		m_running = false;
 	}
 }
 

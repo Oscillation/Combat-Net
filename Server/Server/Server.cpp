@@ -60,8 +60,7 @@ void Server::run(){
 		{
 			sf::Packet PACKET = simulateGameState();
 			for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-				m_socket.send(PACKET, it->second.getAddress(), it->second.getPort());
-				std::cout << "Sending mega packet to: " << it->first.toAnsiString() << std::endl;
+				m_socket.send(PACKET, it->second.getAddress(), it->second.getPort());	
 			}
 			m_clock.restart();
 		}
