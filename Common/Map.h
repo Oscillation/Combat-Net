@@ -4,23 +4,8 @@
 #include <SFML\Network\Packet.hpp>
 #include <SFML\Graphics\Rect.hpp>
 
+#include "Tile.h"
 #include "GeneralMath.h"
-
-enum Type{
-	Floor,
-	Wall,
-	Spawn,
-};
-
-struct Tile{
-	Tile(const unsigned short & p_x, const unsigned short & p_y, const Type & p_type);
-	Tile();
-	~Tile();
-
-	int m_x, m_y;
-
-	Type m_type;
-};
 
 class Map{
 public:

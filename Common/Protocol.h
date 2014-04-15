@@ -14,6 +14,7 @@ namespace cn
 		Map,
 		NameTaken,
 		Projectile,
+		EraseProjectile,
 	};
 
 	enum InputType

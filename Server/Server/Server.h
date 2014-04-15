@@ -33,6 +33,7 @@ private:
 	void playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port);
 	void playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port);
 	void playerInput(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port, const int & p_int);
+	sf::Packet projectile(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port, const int & p_int);
 
 	void pingClients();
 
@@ -53,7 +54,11 @@ private:
 	sf::UdpSocket m_socket;
 	
 	std::map<sf::String, Client> m_clientList;
-	std::map<sf::String, std::vector<std::unique_ptr<Projectile>>> m_projectileList;
+	std::vector<Projectile> m_projectiles;
+	std::vector<Projectile>::iterator findID(const int & p_id);
+	std::vector<int> m_eraseProjectileIDs;
+
+	int m_projectileID;
 
 	Map map;
 };

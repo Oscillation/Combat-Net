@@ -59,6 +59,7 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	sf::CircleShape shape(m_radius);
 	shape.setFillColor(sf::Color::Red);
 	shape.setOrigin(m_radius, m_radius);
+
 	target.draw(shape, states);
 	target.draw(nameText, states);
 }

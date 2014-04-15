@@ -43,10 +43,13 @@ private:
 
 	// Returns true if the packet has been filled with data
 	bool handleInput(sf::Packet & p_packet, const int & p_deltaTime);
+	bool handleProjectileInput(sf::Packet & p_packet, const int & p_deltaTime);
 		
 	void handlePlayerConnect(sf::Packet & p_packet);
 	void handlePlayerDisconnect(sf::Packet & p_packet);
 	void handlePlayerMove(sf::Packet & p_packet);
+	void handleProjectile(sf::Packet & p_packet);
+	void handleEraseProjectile(sf::Packet & p_packet);
 	void handlePing();
 	void handleMegaPacket(sf::Packet & p_packet, int const& p_time);
 
@@ -62,7 +65,10 @@ private:
 	sf::String m_name;
 
 	std::map<sf::String, std::unique_ptr<Player>> m_players;
-	std::map<sf::String, std::vector<std::unique_ptr<Projectile>>> m_projectileList;
+
+	std::vector<Projectile> m_projectiles;
+	std::vector<Projectile>::iterator findID(const int & p_id);
+	std::vector<int> m_eraseProjectileIDs;
 
 	Map m_map;
 

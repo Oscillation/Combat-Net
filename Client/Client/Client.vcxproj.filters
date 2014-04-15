@@ -58,6 +58,9 @@
     <ClInclude Include="..\..\Common\GeneralMath.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Common\Tile.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Common\GeneralMath.inl">

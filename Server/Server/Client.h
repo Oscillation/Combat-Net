@@ -2,6 +2,9 @@
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\System\Vector2.hpp>
 #include <SFML\Graphics\Transformable.hpp>
+#include <vector>
+#include <memory>
+#include "..\..\Common\Projectile.h"
 
 struct Client : public sf::Transformable {
 	Client();
