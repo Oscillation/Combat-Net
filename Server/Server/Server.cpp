@@ -59,10 +59,11 @@ void Server::run(){
 				packet >> name;
 				m_clientList[name].hasRespondedToPing = true;
 			} 
-			/*if (pingTimer.getElapsedTime() > sf::seconds(1)){
+		}
+
+		if (pingTimer.getElapsedTime() > sf::seconds(1)){
 			pingClients();
 			pingTimer.restart();
-			}*/
 		}
 
 		if (m_clock.getElapsedTime() > m_updateTime)
@@ -287,13 +288,14 @@ void Server::pingClients()
 		if (!it->second.hasRespondedToPing) {
 
 			sf::Packet retPacket;
-			retPacket << cn::PlayerDisconnected << it->first;
+			retPacket << m_clock.getElapsedTime().asMilliseconds() << cn::PlayerDisconnected << it->first;
 
 			for (auto it2 = m_clientList.begin(); it2 != m_clientList.end(); ++it2){
 				m_socket.send(retPacket, it2->second.getAddress(), it2->second.getPort());
 			}
+			std::cout << it->first.toAnsiString() << " has disconnected" << std::endl;
+			m_clientList.erase(it++);
 
-			//m_clientList.erase(it++);
 		} else {
 			++it;
 		}
@@ -301,7 +303,7 @@ void Server::pingClients()
 
 	// Ping clients
 	sf::Packet pingPacket;
-	pingPacket << cn::Ping;
+	pingPacket << m_clock.getElapsedTime().asMilliseconds() << cn::Ping;
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		m_socket.send(pingPacket, it->second.getAddress(), it->second.getPort());
 		it->second.hasRespondedToPing = false;

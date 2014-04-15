@@ -74,5 +74,7 @@ private:
 
 	sf::Font gameFont;
 
-	int m_elapsedGameTime;
+	int m_elapsedGameTime; // this is a delta time, doesn't total elapsedGameTime
+	sf::Clock timeSinceLastServerUpdate;
+	sf::Time serverTimeout;
 };

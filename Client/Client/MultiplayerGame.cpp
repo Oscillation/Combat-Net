@@ -9,7 +9,8 @@
 MultiplayerGame::MultiplayerGame() :
 	m_running(true),
 	m_socket(),
-	m_window()
+	m_window(),
+	serverTimeout(sf::milliseconds(500))
 {
 }
 
@@ -99,6 +100,7 @@ bool MultiplayerGame::connect(){
 				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
 				m_view.setCenter(m_players[m_name].get()->getPosition());
 				m_view.setCenter(m_players[name].get()->getPosition());
+				std::cout << m_name.toAnsiString() << std::endl;
 				return true;
 				break;
 			}
@@ -133,7 +135,6 @@ void MultiplayerGame::handleEvents()
 void MultiplayerGame::update(sf::Time & p_deltaTime)
 {
 	m_elapsedGameTime += p_deltaTime.asMilliseconds();
-	//std::cout << m_players[m_name]->getPosition().x << ":" << m_players[m_name]->getPosition().y << "\n";
 	sf::Packet packet;
 	sf::IpAddress address;
 	unsigned short port;
@@ -188,6 +189,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 				packet >> type;
 			}
 		}
+		timeSinceLastServerUpdate.restart();
 	}
 
 	for (auto it = m_players.begin(); it != m_players.end(); ++it) {
@@ -218,6 +220,14 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		{
 			m_socket.send(projectilePacket, server_address, server_port);
 		}
+	}
+
+	// Handle server crash/random disconnect
+	if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
+	{
+		std::cout << "Lost connection to server, exiting" << std::endl;
+		sf::sleep(sf::seconds(3));
+		m_running = false;
 	}
 }
 
@@ -412,7 +422,7 @@ std::vector<Projectile>::iterator MultiplayerGame::findID(const int & p_id){
 void MultiplayerGame::handlePing()
 {
 	sf::Packet pingPacket;
-	pingPacket << cn::Ping << m_name;
+	pingPacket << 0 << cn::Ping << m_name;
 	m_socket.send(pingPacket, server_address, server_port);
 }
 

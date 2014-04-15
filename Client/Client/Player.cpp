@@ -28,8 +28,6 @@ void Player::update(sf::Time p_deltaTime, int p_elapsedGameTime)
 	float t = (float)(p_elapsedGameTime) / (float)(targetTime - prevTime);
 	sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(prevPos, targetPos, t);
 	setPosition(sf::Vector2f(pos));
-
-	std::cout << "Previous: " << prevPos.x << ":" << prevPos.y << " target: " << targetPos.x << ":" << targetPos.y << std::endl;
 }
 
 void Player::setTargetTime(int p_targetTime)
