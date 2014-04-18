@@ -53,7 +53,8 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	server_port = p_port;
 
 	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
-		std::cout << "Failed to bind to port" << std::endl;	
+		std::cout << "Failed to bind to port" << std::endl;
+		system("pause");
 		exit(-1);
 	}
 
@@ -90,6 +91,7 @@ bool MultiplayerGame::connect(){
 				sf::Vector2f position;
 				packet >> position.x >> position.y;
 				packet >> m_map;
+				packet >> m_projectiles;
 				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
 				newPlayer->setPosition(position);
 				newPlayer->setTargetPosition(position);
