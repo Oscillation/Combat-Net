@@ -39,3 +39,11 @@ private:
 	int prevTime, targetTime;
 	sf::Vector2f prevPos, targetPos;
 };
+template <typename T>
+sf::Packet& operator>>(sf::Packet & p_packet, sf::Vector2<T> & p_vec);
+template <typename T>
+sf::Packet& operator<<(sf::Packet & p_packet, const sf::Vector2<T> & p_vec);
+sf::Packet& operator>>(sf::Packet & p_packet, Projectile & p_projectile);
+sf::Packet& operator<<(sf::Packet & p_packet, Projectile & p_projectile);
+sf::Packet& operator>>(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles);
+sf::Packet& operator<<(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles);

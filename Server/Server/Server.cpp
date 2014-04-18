@@ -150,9 +150,7 @@ sf::Packet Server::simulateGameState() {
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
-				retPacket << cn::Projectile;
 				it->move(it->getVelocity());
-				retPacket << it->m_id << it->getPosition().x << it->getPosition().y;
 			}
 		}
 	}
@@ -162,6 +160,11 @@ sf::Packet Server::simulateGameState() {
 	}
 
 	m_eraseProjectileIDs.clear();
+
+	if (!m_projectiles.empty())
+	{
+		retPacket << cn::Projectile << m_projectiles;
+	}
 
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		retPacket << cn::PlayerMove << it->first << it->second.getPosition().x << it->second.getPosition().y;
@@ -188,11 +191,6 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		m_clientList[data].hasRespondedToPing = true;
 
 		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << map;
-
-		for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
-			retPacket << cn::Projectile << it->getName() << 1;
-			retPacket << it->m_id << it->getPosition().x << it->getPosition().y << it->getVelocity().x << it->getVelocity().y;
-		}
 		m_socket.send(retPacket, p_address, p_port);
 
 		//Send connecting client to already connected clients
@@ -257,27 +255,36 @@ void Server::playerInput(sf::Packet & p_packet, const sf::IpAddress & p_address,
 
 sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & port, const int & p_time){
 	sf::Packet retPacket;
+	retPacket << 0 << cn::Projectile;
 	if (m_projectiles.empty())
 	{
 		m_projectileID = 0;
 	}
-	sf::String name;
+	
 	int length;
 
-	p_packet >> name >> length;
-	retPacket << 0 << cn::Projectile << name << length;
-	for (int i = 0; i < length; i++)
-	{
-		sf::Vector2<float> pos, vel;
-		p_packet >> pos.x >> pos.y >> vel.x >> vel.y;
-		retPacket << m_projectileID << pos.x << pos.y << vel.x << vel.y;
-		Projectile projectile = Projectile(m_projectileID);
-		projectile.setPosition(pos);
-		projectile.setVelocity(vel);
-		projectile.setName(name);
-		m_projectiles.push_back(projectile);
+	p_packet >> length;
+
+	std::vector<Projectile> projectiles;
+	projectiles.resize(length, Projectile());
+
+	for (auto it = projectiles.begin(); it != projectiles.end(); ++it){
+		it->m_id = m_projectileID;
 		m_projectileID++;
+
+		sf::String name;
+		sf::Vector2<float> pos, vel;
+
+		p_packet >> name >> pos >> vel;
+
+		it->setName(name);
+		it->setPosition(pos);
+		it->setVelocity(vel);
+
+		m_projectiles.push_back(*it);
 	}
+
+	retPacket << projectiles;
 	return retPacket;
 }
 
@@ -287,14 +294,14 @@ void Server::pingClients()
 	for (auto it = m_clientList.begin(); it != m_clientList.end();){
 		if (!it->second.hasRespondedToPing) {
 
-			sf::Packet retPacket;
+			/*sf::Packet retPacket;
 			retPacket << m_clock.getElapsedTime().asMilliseconds() << cn::PlayerDisconnected << it->first;
 
 			for (auto it2 = m_clientList.begin(); it2 != m_clientList.end(); ++it2){
 				m_socket.send(retPacket, it2->second.getAddress(), it2->second.getPort());
 			}
 			std::cout << it->first.toAnsiString() << " has disconnected" << std::endl;
-			m_clientList.erase(it++);
+			m_clientList.erase(it++);*/
 
 		} else {
 			++it;

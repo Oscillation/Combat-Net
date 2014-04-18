@@ -48,7 +48,7 @@ Map::Map(const std::string & p_path){
 
 	std::ifstream read;
 
-	int height = 0, width = 0;
+	unsigned int height = 0, width = 0;
 
 	read.open(p_path);
 	if (read.is_open())
@@ -68,8 +68,8 @@ Map::Map(const std::string & p_path){
 	read.close();
 
 	m_tiles.resize(width, std::vector<Tile>(height, Tile()));
-	for (int x = 0, y = 0; x < m_tiles.size(); x++){
-		for (int y = 0; y < m_tiles[x].size(); y++){
+	for (unsigned int x = 0, y = 0; x < m_tiles.size(); x++){
+		for (y = 0; y < m_tiles[x].size(); y++){
 			m_tiles[x][y].m_x = x;
 			m_tiles[x][y].m_y = y;
 		}
@@ -82,10 +82,10 @@ Map::Map(const std::string & p_path){
 
 		while (!read.eof())
 		{
-			for (int y = 0; y < height; y++)
+			for (unsigned int y = 0, x = 0; y < height; y++)
 			{
 				std::getline(read, line);
-				for (int x = 0; x < line.length(); x++)
+				for (x = 0; x < line.length(); x++)
 				{
 					switch (line[x])
 					{
@@ -115,7 +115,7 @@ Map::~Map(){
 }
 
 bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
-	int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
+	unsigned int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
 	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
 	{
 		for (y = p_position.y/64 - 1; y < p_position.y/64 + 1; y++)
@@ -136,7 +136,7 @@ bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
 }
 
 sf::Vector2<float> Map::getIntersectingWall(const sf::Vector2<float> & p_position){
-	int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
+	unsigned int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
 	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
 	{
 		for (y = p_position.y/64 - 1; y < p_position.y/64 + 1; y++)

@@ -54,3 +54,57 @@ void Projectile::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) co
 	rect.setOrigin(2.5f, 2.5f);
 	p_target.draw(rect, p_states);
 }
+
+template <typename T>
+sf::Packet& operator>>(sf::Packet & p_packet, sf::Vector2<T> & p_vec){
+	return p_packet >> p_vec.x >> p_vec.y;
+}
+
+template <typename T>
+sf::Packet& operator<<(sf::Packet & p_packet, const sf::Vector2<T> & p_vec){
+	return p_packet << p_vec.x << p_vec.y;
+}
+
+sf::Packet& operator>>(sf::Packet & p_packet, Projectile & p_projectile){
+	int id;
+	sf::String name;
+	sf::Vector2<float> pos, vel;
+
+	p_packet >> id >> name >> pos >> vel;
+
+	p_projectile.m_id = id;
+	p_projectile.setName(name);
+	p_projectile.setPosition(pos);
+	p_projectile.setVelocity(vel);
+
+	return p_packet;
+}
+
+sf::Packet& operator<<(sf::Packet & p_packet, Projectile & p_projectile){
+	if (p_projectile.erase)
+	{
+		return p_packet;
+	}else
+	{
+		return p_packet << p_projectile.m_id << p_projectile.getName() << p_projectile.getPosition() << p_projectile.getVelocity();
+	}
+}
+
+sf::Packet& operator>>(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles){
+	unsigned int length;
+	p_packet >> length;
+	p_projectiles.resize(length, Projectile());
+	for (int i = 0; i < length; i++)
+	{
+		p_packet >> p_projectiles[i];
+	}
+	return p_packet;
+}
+
+sf::Packet& operator<<(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles){
+	p_packet << p_projectiles.size();
+	for (auto it = p_projectiles.begin(); it != p_projectiles.end(); ++it){
+		p_packet << *it;
+	}
+	return p_packet;
+}

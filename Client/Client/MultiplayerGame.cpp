@@ -148,46 +148,22 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		if ((cn::PacketType)type == cn::PlayerConnected) 
 		{
 			handlePlayerConnect(packet);
-			if (!packet.endOfPacket())
-			{
-				packet >> type;
-			}
 		}
 		if ((cn::PacketType)type == cn::PlayerDisconnected) 
 		{
 			handlePlayerDisconnect(packet);
-			if (!packet.endOfPacket())
-			{
-				packet >> type;
-			}
-		} if ((cn::PacketType)type == cn::Ping) 
+		}
+		if ((cn::PacketType)type == cn::Ping) 
 		{
 			handlePing();
-			if (!packet.endOfPacket())
-			{
-				packet >> type;
-			}
-		} if ((cn::PacketType)type == cn::MegaPacket)
+		}
+		if ((cn::PacketType)type == cn::MegaPacket)
 		{
 			handleMegaPacket(packet, time);
-			if (!packet.endOfPacket())
-			{
-				packet >> type;
-			}
-		} if ((cn::PacketType)type == cn::Projectile)
+		}
+		if ((cn::PacketType)type == cn::Projectile)
 		{
 			handleProjectile(packet);
-			if (!packet.endOfPacket())
-			{
-				packet >> type;
-			}
-		} if ((cn::PacketType)type == cn::EraseProjectile)
-		{
-			handleEraseProjectile(packet);
-			if (!packet.endOfPacket())
-			{
-				packet >> type;
-			}
 		}
 		timeSinceLastServerUpdate.restart();
 	}
@@ -203,7 +179,10 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	m_eraseProjectileIDs.clear();
 
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
-		it->update(p_deltaTime, m_elapsedGameTime);
+		if (!it->erase)
+		{
+			it->update(p_deltaTime, m_elapsedGameTime);
+		}
 	}
 
 	m_view.setCenter(m_players[m_name]->getPosition());
@@ -225,9 +204,9 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	// Handle server crash/random disconnect
 	if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
 	{
-		std::cout << "Lost connection to server, exiting" << std::endl;
-		sf::sleep(sf::seconds(3));
-		m_running = false;
+		//std::cout << "Lost connection to server, exiting" << std::endl;
+		//sf::sleep(sf::seconds(3));
+		//m_running = false;
 	}
 }
 
@@ -329,9 +308,9 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 
 	if (!projectiles.empty())
 	{
-		packet << 0 << cn::Projectile << m_name << projectiles.size();
+		packet << 0 << cn::Projectile << projectiles.size();
 		for (auto it = projectiles.begin(); it != projectiles.end(); ++it){
-			packet << it->getPosition().x << it->getPosition().y << it->getVelocity().x << it->getVelocity().y;
+			packet << it->getName() << it->getPosition() << it->getVelocity();
 		}
 		return true;
 	}
@@ -377,23 +356,19 @@ void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
 
 void MultiplayerGame::handleProjectile(sf::Packet& packet)
 {
-	sf::String name;
 	int length;
-
-	packet >> name >> length;
-
+	packet >> length;
 	for (int i = 0; i < length; i++)
 	{
 		sf::Vector2<float> pos, vel;
 		int id;
-
-		packet >> id >> pos.x >> pos.y >> vel.x >> vel.y;
+		sf::String name;
+		packet >> id >> name >> pos >> vel;
 
 		Projectile projectile = Projectile(id);
 		projectile.setName(name);
 		projectile.setPosition(pos);
 		projectile.setVelocity(vel);
-
 		m_projectiles.push_back(projectile);
 	}
 }
@@ -449,15 +424,23 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 				m_players[name]->setTargetTime(p_time);
 			}else if ((cn::PacketType)type == cn::Projectile && !m_projectiles.empty())
 			{
-				int id;
-				sf::Vector2<float> pos;
-				p_packet >> id >> pos.x >> pos.y;
-				if (findID(id) != m_projectiles.end())
+				int length;
+				p_packet >> length;
+				for (int i = 0; i < length; i++)
 				{
-					std::vector<Projectile>::iterator iter = findID(id);
-					iter->setTargetPosition(pos);
-					iter->setTargetTime(p_time);
+					int id;
+					sf::Vector2<float> pos, vel;
+					sf::String name;
+					p_packet >> id >> name >> pos >> vel;
+					if (findID(id) != m_projectiles.end())
+					{
+						std::vector<Projectile>::iterator iter = findID(id);
+						iter->setTargetPosition(pos);
+						iter->setVelocity(vel);
+						iter->setTargetTime(p_time);
+					}
 				}
+
 			}else if ((cn::PacketType)type == cn::EraseProjectile)
 			{
 				int id;
