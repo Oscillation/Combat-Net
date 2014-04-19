@@ -49,4 +49,6 @@ private:
 	bool shareBranch(Client & p_client, Projectile & p_projectile) const;
 	bool shareBranch(Client & p_clientA, Client & p_clientB) const;
 	bool shareBranch(Projectile & p_projectileA, Projectile & p_projectileB) const;
+
+	sf::Vector2<int> m_mapSize;
 };

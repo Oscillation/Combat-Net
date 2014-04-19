@@ -95,6 +95,7 @@ sf::Packet Server::simulateGameState() {
 	for (InputData input : m_clientInputs) {
 		Client* client = &m_clientList[input.getPlayer()];
 		float deltaTime = (float)input.getDeltaTime()/1000.f;
+		m_gameManager.update(*client);
 		switch (input.getInputType())
 		{
 		case cn::MoveUp:
@@ -153,24 +154,31 @@ sf::Packet Server::simulateGameState() {
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
-				it->move(it->getVelocity());
-				m_gameManager.update(*it);
-				std::vector<Client> clients = m_gameManager.getClients(*it);
-				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
-					bool broken = false;
-					if (m_gameManager.intersect(*iter, *it))
+				//m_gameManager.update(*it);
+				for (auto iter = m_clientList.begin(); iter != m_clientList.end(); ++iter){
+					if (m_gameManager.intersect(iter->second, *it))
 					{
-						retPacket << cn::PlayerDamaged << iter->getName() << 1;
+						retPacket << cn::EraseProjectile << it->m_id;
 						m_eraseProjectileIDs.push_back(it->m_id);
-						it->erase = true;
-						broken = true;
-						break;
-					}
-					if (broken)
-					{
-						break;
 					}
 				}
+				it->move(it->getVelocity());
+				/*m_gameManager.update(*it);
+				std::vector<Client> clients = m_gameManager.getClients(*it);
+				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
+				bool broken = false;
+				if (m_gameManager.intersect(*iter, *it))
+				{
+				retPacket << cn::PlayerDamaged << iter->getName() << 1;
+				m_eraseProjectileIDs.push_back(it->m_id);
+				broken = true;
+				break;
+				}
+				if (broken)
+				{
+				break;
+				}
+				}*/
 			}
 		}
 	}
@@ -281,7 +289,7 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 	{
 		m_projectileID = 0;
 	}
-	
+
 	int length;
 
 	p_packet >> length;
