@@ -1,5 +1,4 @@
 #pragma once
-
 #include <SFML\Graphics\Drawable.hpp>
 #include <SFML\Graphics\Transformable.hpp>
 #include <SFML\Graphics\Text.hpp>
@@ -17,15 +16,18 @@ public:
 
 	void update(sf::Time p_deltaTime, int p_elapsedGameTime);
 
-	bool isRemote() const;
+	bool isRemote() const, isDead() const;
 
 	float getRadius() const;
 
 	void setTargetTime(int p_targetTime);
 	void setTargetPosition(sf::Vector2f p_targetPos);
 
+	int getHealth() const;
+	void setHealth(const int & p_health);
+
 private:
-	bool m_remote;
+	bool m_remote, m_dead;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	sf::Text nameText;
@@ -34,4 +36,6 @@ private:
 
 	int prevTime, targetTime;
 	sf::Vector2f prevPos, targetPos;
+
+	int m_health;
 };

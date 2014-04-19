@@ -206,9 +206,10 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	// Handle server crash/random disconnect
 	if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
 	{
-		//std::cout << "Lost connection to server, exiting" << std::endl;
-		//sf::sleep(sf::seconds(3));
-		//m_running = false;
+		std::cout << "Lost connection to server, exiting" << std::endl;
+		sf::sleep(sf::seconds(3));
+		
+		m_running = false;
 	}
 }
 
@@ -239,7 +240,10 @@ void MultiplayerGame::render()
 	}
 
 	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
-		m_window.draw(*(i->second));
+		if (!i->second.get()->isDead())
+		{
+			m_window.draw(*(i->second));
+		}
 	}
 
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
@@ -448,6 +452,12 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 				int id;
 				p_packet >> id;
 				m_eraseProjectileIDs.push_back(id);
+			}else if ((cn::PacketType)type == cn::PlayerDamaged)
+			{
+				sf::String name;
+				int health;
+				p_packet >> name >> health;
+				m_players[name].get()->setHealth(m_players[name].get()->getHealth() - health);
 			}
 		}
 	}

@@ -11,7 +11,9 @@ Player::Player(sf::String p_name, sf::Font& p_font, bool p_remote)
 	: 
 	m_remote(p_remote),
 	nameText(p_name, p_font, 14),
-	m_radius(20)
+	m_radius(20),
+	m_dead(false),
+	m_health(1)
 {
 	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
 	nameText.setStyle(sf::Text::Bold);
@@ -60,4 +62,20 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	target.draw(shape, states);
 	target.draw(nameText, states);
+}
+
+int Player::getHealth() const{
+	return m_health;
+}
+
+void Player::setHealth(const int & p_health){
+	m_health = p_health;
+	if (m_health <= 0)
+	{
+		m_dead = true;
+	}
+}
+
+bool Player::isDead() const{
+	return m_dead;
 }

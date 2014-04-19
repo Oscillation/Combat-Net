@@ -19,6 +19,8 @@
 #include <SFML\System\Clock.hpp>
 #include "InputData.h"
 
+#include "GameManager.h"
+
 
 class Server{
 public:
@@ -57,6 +59,8 @@ private:
 	std::vector<Projectile> m_projectiles;
 	std::vector<Projectile>::iterator findID(const int & p_id);
 	std::vector<int> m_eraseProjectileIDs;
+
+	GameManager m_gameManager;
 
 	int m_projectileID;
 

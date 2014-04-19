@@ -108,3 +108,4 @@ sf::Packet& operator<<(sf::Packet & p_packet, std::vector<Projectile> & p_projec
 	}
 	return p_packet;
 }
+
