@@ -2,9 +2,11 @@
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\System\Vector2.hpp>
 #include <SFML\Graphics\Transformable.hpp>
+#include <SFML\System\Clock.hpp>
 #include <vector>
 #include <memory>
 #include "..\..\Common\Projectile.h"
+
 
 struct Client : public sf::Transformable {
 	Client();
@@ -20,6 +22,8 @@ struct Client : public sf::Transformable {
 	void setSpeed(float p_speed);
 	float getSpeed() const;
 
+	bool shoot();
+
 	void setName(const sf::String & p_name);
 	sf::String getName() const;
 
@@ -30,4 +34,7 @@ private:
 	sf::String m_name;
 
 	float m_speed;
+
+	sf::Time m_shootDelay;
+	sf::Clock m_lastShot;
 };

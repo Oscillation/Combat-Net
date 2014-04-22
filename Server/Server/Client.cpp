@@ -2,7 +2,11 @@
 
 Client::Client(){}
 
-Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) : m_address(p_address), m_port(p_port){
+Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) : 
+	m_address(p_address), 
+	m_port(p_port),
+	m_shootDelay(sf::seconds(0.3f))
+{
 	m_speed = 300;
 }
 
@@ -24,6 +28,14 @@ void Client::setSpeed(float p_speed) {
 
 float Client::getSpeed() const {
 	return m_speed;
+}
+
+bool Client::shoot() {
+	if (m_lastShot.getElapsedTime() > m_shootDelay){
+		m_lastShot.restart();
+		return true;
+	}
+	return false;
 }
 
 void Client::setName(const sf::String & p_name){
