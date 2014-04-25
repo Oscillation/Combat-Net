@@ -62,13 +62,15 @@ private:
 	sf::IpAddress server_address;
 	unsigned short server_port;
 
-	sf::String m_name;
+	std::string m_name;
 
-	std::map<sf::String, std::unique_ptr<Player>> m_players;
+	std::map<std::string, std::unique_ptr<Player>> m_players;
 
 	std::vector<Projectile> m_projectiles;
 	std::vector<Projectile>::iterator findID(const int & p_id);
 	std::vector<int> m_eraseProjectileIDs;
+
+	static const unsigned short m_projectileSpeed = 20;
 
 	Map m_map;
 

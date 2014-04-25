@@ -26,10 +26,10 @@ float Client::getSpeed() const {
 	return m_speed;
 }
 
-void Client::setName(const sf::String & p_name){
+void Client::setName(const std::string & p_name){
 	m_name = p_name;
 }
 
-sf::String Client::getName() const{
+std::string Client::getName() const{
 	return m_name;
 }

@@ -10,7 +10,6 @@ Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
 	pingTimer.restart();
 	map = Map("Maps/map.txt");
-	m_gameManager = GameManager(&m_clientList, &m_projectiles, map.m_tiles.size(), map.m_tiles.back().size());
 	m_clock.restart();
 	m_elapsed.restart();
 	m_updateTime = sf::milliseconds(50);
@@ -56,7 +55,7 @@ void Server::run(){
 			}
 			if (pt == cn::Ping) 
 			{
-				sf::String name;
+				std::string name;
 				packet >> name;
 				m_clientList[name].hasRespondedToPing = true;
 			} 
@@ -72,7 +71,7 @@ void Server::run(){
 			retPacket = simulateGameState();
 			for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 				m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
-				std::cout << "Sending mega packet to: " << it->first.toAnsiString() << std::endl;
+				std::cout << "Sending mega packet to: " << it->first << std::endl;
 			}
 			m_clock.restart();
 		}
@@ -83,7 +82,13 @@ std::vector<Projectile>::iterator Server::findID(const int & p_id){
 	for (std::vector<Projectile>::iterator it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
 		if (it->m_id == p_id)
 		{
-			return it;
+			if (it != m_projectiles.end())
+			{
+				return it;
+			}else
+			{
+					std::cout << "Searched for invalid projectile id: " << p_id << "\n";
+			}
 		}
 	}
 	std::cout << "Searched for invalid projectile id: " << p_id << "\n";
@@ -95,7 +100,6 @@ sf::Packet Server::simulateGameState() {
 	for (InputData input : m_clientInputs) {
 		Client* client = &m_clientList[input.getPlayer()];
 		float deltaTime = (float)input.getDeltaTime()/1000.f;
-		m_gameManager.update(*client);
 		switch (input.getInputType())
 		{
 		case cn::MoveUp:
@@ -138,7 +142,6 @@ sf::Packet Server::simulateGameState() {
 			}
 			break;
 		}
-		m_gameManager.update(*client);
 	}
 
 	retPacket << m_clientList.size();
@@ -154,31 +157,7 @@ sf::Packet Server::simulateGameState() {
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
-				//m_gameManager.update(*it);
-				for (auto iter = m_clientList.begin(); iter != m_clientList.end(); ++iter){
-					if (m_gameManager.intersect(iter->second, *it))
-					{
-						retPacket << cn::EraseProjectile << it->m_id;
-						m_eraseProjectileIDs.push_back(it->m_id);
-					}
-				}
 				it->move(it->getVelocity());
-				/*m_gameManager.update(*it);
-				std::vector<Client> clients = m_gameManager.getClients(*it);
-				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
-				bool broken = false;
-				if (m_gameManager.intersect(*iter, *it))
-				{
-				retPacket << cn::PlayerDamaged << iter->getName() << 1;
-				m_eraseProjectileIDs.push_back(it->m_id);
-				broken = true;
-				break;
-				}
-				if (broken)
-				{
-				break;
-				}
-				}*/
 			}
 		}
 	}
@@ -203,13 +182,13 @@ sf::Packet Server::simulateGameState() {
 }
 
 bool Server::nameTaken(const std::string & p_name){
-	std::map<sf::String, Client>::const_iterator it = m_clientList.find(p_name);
+	std::map<std::string, Client>::const_iterator it = m_clientList.find(p_name);
 	return it != m_clientList.end();
 }
 
 void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port){
 	std::string from = "[" + p_address.toString() + ":" + std::to_string(p_port) + "]: ";
-	sf::String data;
+	std::string data;
 	sf::Packet retPacket;
 	p_packet >> data;
 	if (!nameTaken(data))
@@ -244,7 +223,7 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 
 		retPacket.clear();
 
-		std::cout << from << data.toAnsiString() << " has connected. Sending map...\n";
+		std::cout << from << data << " has connected. Sending map...\n";
 	}else
 	{
 		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::NameTaken;
@@ -255,12 +234,12 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 
 void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port){
 	std::string from = "[" + p_address.toString() + ":" + std::to_string(p_port) + "]: ";
-	sf::String name;
+	std::string name;
 	p_packet >> name;
 	m_clientList.erase(name);
 	sf::Packet packet;
 	packet << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerDisconnected << name;
-	std::cout << from << name.toAnsiString() << " has disconnected." << std::endl;
+	std::cout << from << name << " has disconnected." << std::endl;
 
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		m_socket.send(packet, it->second.getAddress(), it->second.getPort());
@@ -268,7 +247,7 @@ void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_a
 }
 
 void Server::playerInput(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & port, const int & p_time){
-	sf::String name;
+	std::string name;
 	int length;
 
 	p_packet >> name >> length;
@@ -284,6 +263,7 @@ void Server::playerInput(sf::Packet & p_packet, const sf::IpAddress & p_address,
 
 sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & port, const int & p_time){
 	sf::Packet retPacket;
+	std::string name;
 	retPacket << 0 << cn::Projectile;
 	if (m_projectiles.empty())
 	{
@@ -292,7 +272,9 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 
 	int length;
 
-	p_packet >> length;
+	p_packet >> length >> name;
+
+	retPacket << name;
 
 	std::vector<Projectile> projectiles;
 	projectiles.resize(length, Projectile());
@@ -301,10 +283,9 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 		it->m_id = m_projectileID;
 		m_projectileID++;
 
-		sf::String name;
 		sf::Vector2<float> pos, vel;
 
-		p_packet >> name >> pos >> vel;
+		p_packet >> pos >> vel;
 
 		it->setName(name);
 		it->setPosition(pos);
@@ -329,7 +310,7 @@ void Server::pingClients()
 			for (auto it2 = m_clientList.begin(); it2 != m_clientList.end(); ++it2){
 				m_socket.send(retPacket, it2->second.getAddress(), it2->second.getPort());
 			}
-			std::cout << it->first.toAnsiString() << " has disconnected" << std::endl;
+			std::cout << it->first << " has disconnected" << std::endl;
 			m_clientList.erase(it++);
 
 		} else {

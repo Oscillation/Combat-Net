@@ -23,8 +23,8 @@ struct Projectile : public sf::Transformable, public sf::Drawable{
 	sf::Vector2<float> getVelocity() const;
 	void setVelocity(const sf::Vector2<float> & p_velocity);
 
-	sf::String getName() const;
-	void setName(const sf::String & p_name);
+	std::string getName() const;
+	void setName(const std::string & p_name);
 
 	void setTargetTime(int p_targetTime);
 	void setTargetPosition(sf::Vector2f p_targetPos);
@@ -33,7 +33,7 @@ struct Projectile : public sf::Transformable, public sf::Drawable{
 
 private:
 	sf::Vector2<float> m_velocity;
-	sf::String m_name;
+	std::string m_name;
 	virtual void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;
 
 	int prevTime, targetTime;

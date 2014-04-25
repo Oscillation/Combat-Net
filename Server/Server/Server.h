@@ -19,9 +19,6 @@
 #include <SFML\System\Clock.hpp>
 #include "InputData.h"
 
-#include "GameManager.h"
-
-
 class Server{
 public:
 	Server(const unsigned short & p_port);
@@ -55,12 +52,10 @@ private:
 	sf::TcpListener m_listener;
 	sf::UdpSocket m_socket;
 	
-	std::map<sf::String, Client> m_clientList;
+	std::map<std::string, Client> m_clientList;
 	std::vector<Projectile> m_projectiles;
 	std::vector<Projectile>::iterator findID(const int & p_id);
 	std::vector<int> m_eraseProjectileIDs;
-
-	GameManager m_gameManager;
 
 	int m_projectileID;
 

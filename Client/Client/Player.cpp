@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-Player::Player(sf::String p_name, sf::Font& p_font, bool p_remote)
+Player::Player(std::string p_name, sf::Font& p_font, bool p_remote)
 	: 
 	m_remote(p_remote),
 	nameText(p_name, p_font, 14),

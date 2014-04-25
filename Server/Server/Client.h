@@ -20,14 +20,14 @@ struct Client : public sf::Transformable {
 	void setSpeed(float p_speed);
 	float getSpeed() const;
 
-	void setName(const sf::String & p_name);
-	sf::String getName() const;
+	void setName(const std::string & p_name);
+	std::string getName() const;
 
 private:
 	sf::IpAddress m_address;
 	unsigned short m_port;
 
-	sf::String m_name;
+	std::string m_name;
 
 	float m_speed;
 };

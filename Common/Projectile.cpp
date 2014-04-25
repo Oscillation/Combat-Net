@@ -18,11 +18,11 @@ void Projectile::setVelocity(const sf::Vector2<float> & p_velocity){
 	m_velocity = p_velocity;
 }
 
-sf::String Projectile::getName() const{
+std::string Projectile::getName() const{
 	return m_name;
 }
 
-void Projectile::setName(const sf::String & p_name){
+void Projectile::setName(const std::string & p_name){
 	m_name = p_name;
 }
 
@@ -67,7 +67,7 @@ sf::Packet& operator<<(sf::Packet & p_packet, const sf::Vector2<T> & p_vec){
 
 sf::Packet& operator>>(sf::Packet & p_packet, Projectile & p_projectile){
 	int id;
-	sf::String name;
+	std::string name;
 	sf::Vector2<float> pos, vel;
 
 	p_packet >> id >> name >> pos >> vel;

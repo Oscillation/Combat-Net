@@ -46,7 +46,7 @@ GameManager::GameManager(){
 
 }
 
-GameManager::GameManager(std::map<sf::String, Client>* ptr_clientList, std::vector<Projectile>* ptr_projectiles, const int & p_width, const int & p_height) : m_mapSize(p_width/2, p_height/2){
+GameManager::GameManager(std::map<std::string, Client>* ptr_clientList, std::vector<Projectile>* ptr_projectiles, const int & p_width, const int & p_height) : m_mapSize(p_width/2, p_height/2){
 	for (unsigned int x = 0, y = 0; x < p_width*64; x+=128)
 	{
 		for (y = 0; y < p_height*64; y+=128)

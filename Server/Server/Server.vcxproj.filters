@@ -28,9 +28,6 @@
     <Filter Include="Source Files\Projectile">
       <UniqueIdentifier>{ee570f06-c447-4fe5-948f-24ef3cdc4f16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Server\GameManager">
-      <UniqueIdentifier>{2d08394f-c0f4-4ed5-9039-0dbfdefae0bc}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -54,9 +51,6 @@
     <ClCompile Include="..\..\Common\GeneralMath.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Source Files\Server\GameManager</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -79,9 +73,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\GeneralMath.h">
       <Filter>Source Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>Source Files\Server\GameManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,7 @@ class Player : public sf::Drawable, public sf::Transformable
 {
 public:
 
-	Player(sf::String p_name, sf::Font& p_font, bool p_remote = true);
+	Player(std::string p_name, sf::Font& p_font, bool p_remote = true);
 	~Player();
 
 	void update(sf::Time p_deltaTime, int p_elapsedGameTime);

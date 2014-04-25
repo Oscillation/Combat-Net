@@ -20,7 +20,7 @@ class GameManager{
 
 public:
 	GameManager();
-	GameManager(std::map<sf::String, Client>* ptr_clientList, std::vector<Projectile>* ptr_projectiles, const int & p_width, const int & p_height);
+	GameManager(std::map<std::string, Client>* ptr_clientList, std::vector<Projectile>* ptr_projectiles, const int & p_width, const int & p_height);
 	~GameManager();
 
 	bool intersect(Client & p_client, Projectile & p_projectile) const;

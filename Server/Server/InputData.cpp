@@ -2,7 +2,7 @@
 
 InputData::InputData(){}
 
-InputData::InputData(const cn::InputType & p_type, const int & p_time, const int & p_deltaTime, const sf::String & p_name) 
+InputData::InputData(const cn::InputType & p_type, const int & p_time, const int & p_deltaTime, const std::string & p_name) 
 	: m_type(p_type),
 	m_time(p_time),
 	m_name(p_name),
@@ -23,6 +23,6 @@ int InputData::getDeltaTime() const{
 	return m_deltaTime;
 }
 
-sf::String InputData::getPlayer() const{
+std::string InputData::getPlayer() const{
 	return m_name;
 }
