@@ -42,7 +42,6 @@ bool Client::shoot() {
 	return false;
 }
 
-
 std::string Client::getName() const{
 	return m_name;
 }

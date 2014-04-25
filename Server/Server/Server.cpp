@@ -279,16 +279,12 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 	std::vector<Projectile> projectiles;
 	projectiles.resize(length, Projectile());
 
-	for (auto it = projectiles.begin(); it != projectiles.end(); ++it){
-		it->m_id = m_projectileID;
-		m_projectileID++;
-
+	for (auto it = projectiles.begin(); it != projectiles.end();){
 		sf::Vector2<float> pos, vel;
 
 		p_packet >> pos >> vel;
 
 		if (m_clientList[name].shoot()) {
-
 			it->m_id = m_projectileID;
 			m_projectileID++;
 
