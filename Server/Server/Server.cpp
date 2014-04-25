@@ -287,11 +287,20 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 
 		p_packet >> pos >> vel;
 
-		it->setName(name);
-		it->setPosition(pos);
-		it->setVelocity(vel);
+		if (m_clientList[name].shoot()) {
 
-		m_projectiles.push_back(*it);
+			it->m_id = m_projectileID;
+			m_projectileID++;
+
+			it->setName(name);
+			it->setPosition(pos);
+			it->setVelocity(vel);
+
+			m_projectiles.push_back(*it);
+			it++;
+		} else {
+			it = projectiles.erase(it);
+		}
 	}
 
 	retPacket << projectiles;
