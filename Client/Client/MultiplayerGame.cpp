@@ -187,8 +187,6 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 	}
 
-	std::cout << m_projectiles.size() << "\n";
-
 	m_view.setCenter(m_players[m_name]->getPosition());
 	if (m_active)
 	{
@@ -212,7 +210,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		m_running = false;
 	}
-	std::cout << m_projectiles.size() << std::endl;
+	//std::cout << m_projectiles.size() << std::endl;
 }
 
 void MultiplayerGame::render()
@@ -376,7 +374,6 @@ void MultiplayerGame::handleProjectile(sf::Packet& packet)
 		projectile.setPosition(pos);
 		projectile.setVelocity(vel);
 		m_projectiles.push_back(projectile);
-		std::cout << "proj\n";
 	}
 }
 
