@@ -71,7 +71,6 @@ void Server::run(){
 			retPacket = simulateGameState();
 			for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 				m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
-				std::cout << "Sending mega packet to: " << it->first << std::endl;
 			}
 			m_clock.restart();
 		}
@@ -298,6 +297,8 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 			it = projectiles.erase(it);
 		}
 	}
+
+	std::cout << projectiles.size() << std::endl;
 
 	retPacket << projectiles;
 	return retPacket;
