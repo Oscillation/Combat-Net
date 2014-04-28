@@ -187,6 +187,8 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 	}
 
+	std::cout << m_projectiles.size() << "\n";
+
 	m_view.setCenter(m_players[m_name]->getPosition());
 	if (m_active)
 	{
@@ -314,11 +316,7 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 
 	if (!projectiles.empty())
 	{
-		packet << 0 << cn::Projectile << projectiles.size();
-		packet << m_name;
-		for (auto it = projectiles.begin(); it != projectiles.end(); ++it){
-			packet << it->getPosition() << it->getVelocity();
-		}
+		packet << 0 << cn::Projectile << projectiles;
 		return true;
 	}
 
@@ -442,14 +440,13 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			}else if ((cn::PacketType)type == cn::Projectile)
 			{
 				int length;
-				p_packet >> length;
-				//std::cout << length << std::endl;
+				std::string name;
+				p_packet >> length, name;
 				for (int i = 0; i < length; i++)
 				{
 					int id;
 					sf::Vector2<float> pos, vel;
-					std::string name;
-					p_packet >> id >> name >> pos >> vel;
+					p_packet >> id >> pos >> vel;
 					std::vector<Projectile>::iterator iter = findID(id);
 					if (iter != m_projectiles.end())
 					{
@@ -465,7 +462,6 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 						m_projectiles.push_back(projectile);
 					}
 				}
-
 			}else if ((cn::PacketType)type == cn::EraseProjectile)
 			{
 				int id;

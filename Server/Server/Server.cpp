@@ -86,7 +86,7 @@ std::vector<Projectile>::iterator Server::findID(const int & p_id){
 				return it;
 			}else
 			{
-					std::cout << "Searched for invalid projectile id: " << p_id << "\n";
+				std::cout << "Searched for invalid projectile id: " << p_id << "\n";
 			}
 		}
 	}
@@ -167,10 +167,7 @@ sf::Packet Server::simulateGameState() {
 
 	m_eraseProjectileIDs.clear();
 
-	if (!m_projectiles.empty())
-	{
-		retPacket << cn::Projectile << m_projectiles;
-	}
+	retPacket << cn::Projectile << m_projectiles;
 
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		retPacket << cn::PlayerMove << it->first << it->second.getPosition().x << it->second.getPosition().y;
@@ -273,19 +270,21 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 
 	p_packet >> length >> name;
 
-	retPacket << name;
-
 	std::vector<Projectile> projectiles;
 	projectiles.resize(length, Projectile());
 
 	for (auto it = projectiles.begin(); it != projectiles.end();){
 		sf::Vector2<float> pos, vel;
+		int id;
 
-		p_packet >> pos >> vel;
+		p_packet >> id >> pos >> vel;
 
 		if (m_clientList[name].shoot()) {
-			it->m_id = m_projectileID;
-			m_projectileID++;
+			if (id == -1)
+			{
+				it->m_id = m_projectileID;
+				m_projectileID++;
+			}
 
 			it->setName(name);
 			it->setPosition(pos);

@@ -1,6 +1,6 @@
 #include "Projectile.h"
 
-Projectile::Projectile() : erase(false){
+Projectile::Projectile() : erase(false), m_id(-1){
 }
 
 Projectile::Projectile(const int & p_id) : m_id(p_id), erase(false){
@@ -29,10 +29,6 @@ void Projectile::setName(const std::string & p_name){
 void Projectile::update(sf::Time p_deltaTime, int p_elapsedGameTime)
 {
 	move(getVelocity());
-
-	float t = (float)(p_elapsedGameTime) / (float)(targetTime - prevTime);
-	sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(prevPos, targetPos, t);
-	setPosition(sf::Vector2f(pos));
 }
 
 void Projectile::setTargetTime(int p_targetTime)
@@ -67,13 +63,11 @@ sf::Packet& operator<<(sf::Packet & p_packet, const sf::Vector2<T> & p_vec){
 
 sf::Packet& operator>>(sf::Packet & p_packet, Projectile & p_projectile){
 	int id;
-	std::string name;
 	sf::Vector2<float> pos, vel;
 
-	p_packet >> id >> name >> pos >> vel;
+	p_packet >> id >> pos >> vel;
 
 	p_projectile.m_id = id;
-	p_projectile.setName(name);
 	p_projectile.setPosition(pos);
 	p_projectile.setVelocity(vel);
 
@@ -81,28 +75,28 @@ sf::Packet& operator>>(sf::Packet & p_packet, Projectile & p_projectile){
 }
 
 sf::Packet& operator<<(sf::Packet & p_packet, Projectile & p_projectile){
-	if (p_projectile.erase)
-	{
-		return p_packet;
-	}else
-	{
-		return p_packet << p_projectile.m_id << p_projectile.getName() << p_projectile.getPosition() << p_projectile.getVelocity();
-	}
+	return p_packet << p_projectile.m_id << p_projectile.getPosition() << p_projectile.getVelocity();
 }
 
 sf::Packet& operator>>(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles){
 	unsigned int length;
-	p_packet >> length;
+	std::string name;
+	p_packet >> length >> name;
 	p_projectiles.resize(length, Projectile());
 	for (int i = 0; i < length; i++)
 	{
 		p_packet >> p_projectiles[i];
+		p_projectiles[i].setName(name);
 	}
 	return p_packet;
 }
 
 sf::Packet& operator<<(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles){
 	p_packet << p_projectiles.size();
+	if (!p_projectiles.empty())
+	{
+		p_packet << p_projectiles.begin()->getName();
+	}
 	for (auto it = p_projectiles.begin(); it != p_projectiles.end(); ++it){
 		p_packet << *it;
 	}

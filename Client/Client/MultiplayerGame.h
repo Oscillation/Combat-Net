@@ -1,5 +1,4 @@
 #pragma once
-
 #include <SFML\System\Time.hpp>
 #include <SFML\System\Clock.hpp>
 #include <SFML\Graphics\RenderWindow.hpp>
@@ -70,7 +69,7 @@ private:
 	std::vector<Projectile>::iterator findID(const int & p_id);
 	std::vector<int> m_eraseProjectileIDs;
 
-	static const unsigned short m_projectileSpeed = 20;
+	static const unsigned short m_projectileSpeed = 1;
 
 	Map m_map;
 
