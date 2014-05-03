@@ -159,23 +159,24 @@ sf::Packet Server::simulateGameState() {
 			if (it->erase)
 			{
 				m_eraseProjectileIDs.push_back(it->m_id);
-				break;
 			}else
 			{
-				it->move(it->getVelocity());
+				it->move(it->getVelocity().x * m_elapsed.getElapsedTime().asMilliseconds(), it->getVelocity().y * m_elapsed.getElapsedTime().asMilliseconds());
 			}
-		}else
-		{
-			m_eraseProjectileIDs.push_back(it->m_id);
 		}
 	}
 
 	if (!m_eraseProjectileIDs.empty())
 	{
-		retPacket << cn::Projectile << m_eraseProjectileIDs.size();
+		retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
 		for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
 			retPacket << *it;
-			m_projectiles.erase(findID(*it));
+			std::cout << "Erase: " << *it << "\n";
+			std::vector<Projectile>::iterator iter = findID(*it);
+			if (iter != m_projectiles.end())
+			{
+				m_projectiles.erase(iter);
+			}
 		}
 		m_eraseProjectileIDs.clear();
 	}
@@ -184,7 +185,7 @@ sf::Packet Server::simulateGameState() {
 	{
 		retPacket << cn::Projectile << m_projectiles;
 	}
-	
+
 	return retPacket;
 }
 

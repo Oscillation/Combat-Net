@@ -179,17 +179,9 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		it->second->update(p_deltaTime, m_elapsedGameTime);
 	}
 
-	/*for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
-	m_projectiles.erase(findID(*it));
-	}
-
-	m_eraseProjectileIDs.clear();*/
-
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
 		it->update(p_deltaTime, m_elapsedGameTime);
 	}
-
-	std::cout << "Count: " << m_projectiles.size() << "\n";
 
 	m_view.setCenter(m_players[m_name]->getPosition());
 	if (m_active)
@@ -214,7 +206,6 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		m_running = false;
 	}
-	//std::cout << m_projectiles.size() << std::endl;
 }
 
 void MultiplayerGame::render()
@@ -393,7 +384,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 	{
 		int id;
 		p_packet >> id;
-
+		std::cout << "Erase: " << id << "\n";
 		std::vector<Projectile>::iterator it = findID(id);
 		if (it != m_projectiles.end())
 		{
