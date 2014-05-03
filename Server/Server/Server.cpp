@@ -143,7 +143,13 @@ sf::Packet Server::simulateGameState() {
 		}
 	}
 
-	retPacket << m_clientList.size();
+	m_clientInputs.clear();
+
+	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
+	}
+
+	m_eraseProjectileIDs.clear();
 
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
 		if (!it->erase)
@@ -152,28 +158,33 @@ sf::Packet Server::simulateGameState() {
 
 			if (it->erase)
 			{
-				retPacket << cn::EraseProjectile << it->m_id;
 				m_eraseProjectileIDs.push_back(it->m_id);
+				break;
 			}else
 			{
 				it->move(it->getVelocity());
 			}
+		}else
+		{
+			m_eraseProjectileIDs.push_back(it->m_id);
 		}
 	}
 
-	for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
-		m_projectiles.erase(findID(*it));
+	if (!m_eraseProjectileIDs.empty())
+	{
+		retPacket << cn::Projectile << m_eraseProjectileIDs.size();
+		for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
+			retPacket << *it;
+			m_projectiles.erase(findID(*it));
+		}
+		m_eraseProjectileIDs.clear();
 	}
 
-	m_eraseProjectileIDs.clear();
-
-	retPacket << cn::Projectile << m_projectiles;
-
-	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-		retPacket << cn::PlayerMove << it->first << it->second.getPosition().x << it->second.getPosition().y;
+	if (!m_projectiles.empty())
+	{
+		retPacket << cn::Projectile << m_projectiles;
 	}
-
-	m_clientInputs.clear();
+	
 	return retPacket;
 }
 
@@ -259,7 +270,6 @@ void Server::playerInput(sf::Packet & p_packet, const sf::IpAddress & p_address,
 
 sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & port, const int & p_time){
 	sf::Packet retPacket;
-	std::string name;
 	retPacket << 0 << cn::Projectile;
 	if (m_projectiles.empty())
 	{
@@ -267,28 +277,17 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 	}
 
 	int length;
-
-	p_packet >> length >> name;
-
 	std::vector<Projectile> projectiles;
-	projectiles.resize(length, Projectile());
+	p_packet >> projectiles;
 
 	for (auto it = projectiles.begin(); it != projectiles.end();){
-		sf::Vector2<float> pos, vel;
-		int id;
 
-		p_packet >> id >> pos >> vel;
-
-		if (m_clientList[name].shoot()) {
-			if (id == -1)
+		if (m_clientList[projectiles.begin()->getName()].shoot()) {
+			if (it->m_id == -1)
 			{
 				it->m_id = m_projectileID;
 				m_projectileID++;
 			}
-
-			it->setName(name);
-			it->setPosition(pos);
-			it->setVelocity(vel);
 
 			m_projectiles.push_back(*it);
 			it++;
@@ -296,8 +295,6 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 			it = projectiles.erase(it);
 		}
 	}
-
-	std::cout << projectiles.size() << std::endl;
 
 	retPacket << projectiles;
 	return retPacket;

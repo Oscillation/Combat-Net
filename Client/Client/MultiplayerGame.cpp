@@ -58,7 +58,9 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 		exit(-1);
 	}
 
-	while(!connect()){}
+	while(!connect()){
+		std::cout << "That name is already taken. Please try again with a different name.\n";
+	}
 }
 
 bool MultiplayerGame::connect(){
@@ -108,7 +110,6 @@ bool MultiplayerGame::connect(){
 			}
 		}else if ((cn::PacketType)type == cn::NameTaken)
 		{
-			std::cout << "That name is already taken. Please try again with a different name.\n";
 			return false;
 		}
 	}
@@ -167,6 +168,10 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		{
 			handleProjectile(packet);
 		}
+		if ((cn::PacketType)type == cn::EraseProjectile)
+		{
+			handleEraseProjectile(packet);
+		}
 		timeSinceLastServerUpdate.restart();
 	}
 
@@ -174,18 +179,17 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		it->second->update(p_deltaTime, m_elapsedGameTime);
 	}
 
-	for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
-		m_projectiles.erase(findID(*it));
+	/*for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
+	m_projectiles.erase(findID(*it));
 	}
 
-	m_eraseProjectileIDs.clear();
+	m_eraseProjectileIDs.clear();*/
 
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
-		if (!it->erase)
-		{
-			it->update(p_deltaTime, m_elapsedGameTime);
-		}
+		it->update(p_deltaTime, m_elapsedGameTime);
 	}
+
+	std::cout << "Count: " << m_projectiles.size() << "\n";
 
 	m_view.setCenter(m_players[m_name]->getPosition());
 	if (m_active)
@@ -361,27 +365,31 @@ void MultiplayerGame::handleProjectile(sf::Packet& packet)
 {
 	int length;
 	std::string name;
-	packet >> length >> name;
-	std::cout << length << std::endl;
-	for (int i = 0; i < length; i++)
+	packet >> length;
+	if (length > 0)
 	{
-		sf::Vector2<float> pos, vel;
-		int id;
-		packet >> id >> pos >> vel;
+		packet >> name;
+		for (int i = 0; i < length; i++)
+		{
 
-		Projectile projectile = Projectile(id);
-		projectile.setName(name);
-		projectile.setPosition(pos);
-		projectile.setVelocity(vel);
-		m_projectiles.push_back(projectile);
+			sf::Vector2<float> pos, vel;
+			int id;
+			packet >> id >> pos >> vel;
+
+			Projectile projectile = Projectile(id);
+			projectile.setName(name);
+			projectile.setPosition(pos);
+			projectile.setVelocity(vel);
+			m_projectiles.push_back(projectile);
+		}
 	}
 }
 
 void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
-	/*int length;
-	p_packet >> length;*/
+	int length;
+	p_packet >> length;
 
-	//for (int i = 0; i < length; i++)
+	for (int i = 0; i < length; i++)
 	{
 		int id;
 		p_packet >> id;
@@ -390,9 +398,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 		if (it != m_projectiles.end())
 		{
 			m_projectiles.erase(it);
-			std::cout << "Erase" << std::endl;
 		}
-		//m_eraseProjectileIDs.push_back(id);
 	}
 }
 
@@ -415,30 +421,31 @@ void MultiplayerGame::handlePing()
 
 
 void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time){
-	int count = 0;
-	p_packet >> count;
 	m_elapsedGameTime = 0;
 	std::vector<int> projectile_ids;
-
-	for (int i = 0; i < count; i++)
+	while (!p_packet.endOfPacket())
 	{
-		while (!p_packet.endOfPacket())
-		{
-			int type;
-			p_packet >> type;
+		int type;
+		p_packet >> type;
 
-			if ((cn::PacketType)type == cn::PlayerMove){
-				std::string name;
-				p_packet >> name;
-				sf::Vector2<float> pos;
-				p_packet >> pos.x >> pos.y;
-				m_players[name]->setTargetPosition(pos);
-				m_players[name]->setTargetTime(p_time);
-			}else if ((cn::PacketType)type == cn::Projectile)
+		if ((cn::PacketType)type == cn::PlayerMove){
+			std::string name;
+			p_packet >> name;
+			sf::Vector2<float> pos;
+			p_packet >> pos.x >> pos.y;
+			m_players[name]->setTargetPosition(pos);
+			m_players[name]->setTargetTime(p_time);
+		}else if ((cn::PacketType)type == cn::EraseProjectile)
+		{
+			handleEraseProjectile(p_packet);
+		}else if ((cn::PacketType)type == cn::Projectile)
+		{
+			int length;
+			std::string name;
+			p_packet >> length;
+			if (length > 0)
 			{
-				int length;
-				std::string name;
-				p_packet >> length, name;
+				p_packet >> name;
 				for (int i = 0; i < length; i++)
 				{
 					int id;
@@ -459,18 +466,13 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 						m_projectiles.push_back(projectile);
 					}
 				}
-			}else if ((cn::PacketType)type == cn::EraseProjectile)
-			{
-				int id;
-				p_packet >> id;
-				m_eraseProjectileIDs.push_back(id);
-			}else if ((cn::PacketType)type == cn::PlayerDamaged)
-			{
-				std::string name;
-				int health;
-				p_packet >> name >> health;
-				m_players[name].get()->setHealth(m_players[name].get()->getHealth() - health);
 			}
+		}else if ((cn::PacketType)type == cn::PlayerDamaged)
+		{
+			std::string name;
+			int health;
+			p_packet >> name >> health;
+			m_players[name].get()->setHealth(m_players[name].get()->getHealth() - health);
 		}
 	}
 }

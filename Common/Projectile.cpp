@@ -80,25 +80,32 @@ sf::Packet& operator<<(sf::Packet & p_packet, Projectile & p_projectile){
 
 sf::Packet& operator>>(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles){
 	unsigned int length;
-	std::string name;
-	p_packet >> length >> name;
-	p_projectiles.resize(length, Projectile());
-	for (int i = 0; i < length; i++)
+	p_packet >> length;
+	if (length > 0)//See: operator<<(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles)
 	{
-		p_packet >> p_projectiles[i];
-		p_projectiles[i].setName(name);
+		std::string name;
+		p_packet >> name;
+		for (unsigned int i = 0; i < length; i++)
+		{
+			Projectile projectile = Projectile();
+			p_packet >> projectile;
+			projectile.setName(name);
+			p_projectiles.push_back(projectile);
+		}
 	}
 	return p_packet;
 }
 
 sf::Packet& operator<<(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles){
-	p_packet << p_projectiles.size();
 	if (!p_projectiles.empty())
 	{
-		p_packet << p_projectiles.begin()->getName();
-	}
-	for (auto it = p_projectiles.begin(); it != p_projectiles.end(); ++it){
-		p_packet << *it;
+		p_packet << p_projectiles.size() << p_projectiles.begin()->getName();
+		for (auto it = p_projectiles.begin(); it != p_projectiles.end(); ++it){
+			p_packet << *it;
+		}
+	}else
+	{
+		p_packet << 0;//See: operator>>(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles)
 	}
 	return p_packet;
 }
