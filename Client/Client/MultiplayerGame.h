@@ -72,7 +72,7 @@ private:
 	static const unsigned short m_projectileSpeed = 15;
 
 	//%
-	static const unsigned short m_multiplier = 115;
+	static const unsigned short m_multiplier = 15;
 
 	int m_streak;
 

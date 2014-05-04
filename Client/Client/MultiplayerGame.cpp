@@ -11,7 +11,7 @@ MultiplayerGame::MultiplayerGame() :
 	m_socket(),
 	m_window(),
 	serverTimeout(sf::milliseconds(500)),
-	m_streak(0)
+	m_streak()
 {
 }
 
@@ -371,6 +371,7 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 				projectile.setVelocity(vel);
 				projectile.setName(name);
 				m_projectiles.push_back(projectile);
+				m_streak++;
 			}
 		}
 	}
