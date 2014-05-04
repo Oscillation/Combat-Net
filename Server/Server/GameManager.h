@@ -4,12 +4,17 @@
 #include <map>
 
 class GameManager{
+public:
+	
+	///<summary>(tiles/side)/branch.</summary>
+	const static unsigned short m_size = 2;
+
 	struct Branch{
 		Branch();
-		Branch(const int & p_x, const int & p_y);
+		Branch(const unsigned int & p_x, const unsigned int & p_y);
 		~Branch();
 
-		int m_x, m_y;
+		unsigned int m_x, m_y;
 
 		void update(Client & p_client);
 		void update(Projectile & p_projectile);
@@ -18,9 +23,8 @@ class GameManager{
 		std::vector<Projectile*> m_projectiles;
 	};
 
-public:
 	GameManager();
-	GameManager(std::map<std::string, Client>* ptr_clientList, std::vector<Projectile>* ptr_projectiles, const int & p_width, const int & p_height);
+	GameManager(std::map<std::string, Client>* ptr_clientList, std::vector<Projectile>* ptr_projectiles, const unsigned int & p_width, const unsigned int & p_height);
 	~GameManager();
 
 	bool intersect(Client & p_client, Projectile & p_projectile) const;

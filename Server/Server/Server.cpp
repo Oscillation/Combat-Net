@@ -8,11 +8,15 @@ Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0
 	}
 	system("cls");
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
-	pingTimer.restart();
+
 	map = Map("Maps/map.txt");
+	m_gameManager = GameManager(&m_clientList, &m_projectiles, map.m_tiles.size(), map.m_tiles.begin()->size());
+
+	pingTimer.restart();
 	m_clock.restart();
 	m_elapsed.restart();
 	m_updateTime = sf::milliseconds(50);
+
 	run();
 }
 
@@ -146,6 +150,7 @@ sf::Packet Server::simulateGameState() {
 	m_clientInputs.clear();
 
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+		m_gameManager.update(it->second);
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
 
@@ -154,18 +159,20 @@ sf::Packet Server::simulateGameState() {
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
 		if (!it->erase)
 		{
+			it->move(it->getVelocity());
 			it->erase = map.intersectsWall(it->getPosition());
-
 			if (it->erase)
 			{
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
-				it->move(it->getVelocity());
-				it->erase = map.intersectsWall(it->getPosition());
-				if (it->erase)
-				{
-					m_eraseProjectileIDs.push_back(it->m_id);
+				m_gameManager.update(*it);
+				std::vector<Client> clients = m_gameManager.getClients(*it);
+				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
+					if (m_gameManager.intersect(*iter, *it))
+					{
+						std::cout << it->m_id << " has hit player: " << iter->getName() << "\n";
+					}
 				}
 			}
 		}
@@ -309,7 +316,7 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 void Server::pingClients()
 {
 	// Check which clients are still connected
-	for (auto it = m_clientList.begin(); it != m_clientList.end();){
+	/*for (auto it = m_clientList.begin(); it != m_clientList.end();){
 		if (!it->second.hasRespondedToPing) {
 
 			sf::Packet retPacket;
@@ -324,7 +331,7 @@ void Server::pingClients()
 		} else {
 			++it;
 		}
-	}
+	}*/
 
 	// Ping clients
 	sf::Packet pingPacket;

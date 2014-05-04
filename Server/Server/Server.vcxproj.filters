@@ -51,6 +51,9 @@
     <ClCompile Include="..\..\Common\GeneralMath.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Source Files\Server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\GeneralMath.h">
       <Filter>Source Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Source Files\Server</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

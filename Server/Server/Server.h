@@ -3,6 +3,9 @@
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\Network\Packet.hpp>
 #include <SFML\Network\TcpListener.hpp>
+#include <SFML\System\Vector2.hpp>
+#include <SFML\System\String.hpp>
+#include <SFML\System\Clock.hpp>
 
 #include <map>
 #include <iostream>
@@ -13,11 +16,8 @@
 #include "..\..\Common\Projectile.h"
 #include "..\..\Common\GeneralMath.h"
 #include "Client.h"
-
-#include <SFML\System\Vector2.hpp>
-#include <SFML\System\String.hpp>
-#include <SFML\System\Clock.hpp>
 #include "InputData.h"
+#include "GameManager.h"
 
 class Server{
 public:
@@ -60,4 +60,6 @@ private:
 	int m_projectileID;
 
 	Map map;
+
+	GameManager m_gameManager;
 };

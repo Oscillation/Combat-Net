@@ -194,10 +194,10 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	// Handle server crash/random disconnect
 	if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
 	{
-		std::cout << "Lost connection to server, exiting" << std::endl;
+		/*std::cout << "Lost connection to server, exiting" << std::endl;
 		sf::sleep(sf::seconds(3));
 
-		m_running = false;
+		m_running = false;*/
 	}
 }
 
