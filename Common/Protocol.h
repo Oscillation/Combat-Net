@@ -16,6 +16,7 @@ namespace cn
 		Projectile,
 		EraseProjectile,
 		PlayerDamaged,
+		PlayerKilled,
 	};
 
 	enum InputType

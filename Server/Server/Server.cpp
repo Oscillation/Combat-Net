@@ -161,7 +161,12 @@ sf::Packet Server::simulateGameState() {
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
-				it->move(it->getVelocity().x * m_elapsed.getElapsedTime().asMilliseconds(), it->getVelocity().y * m_elapsed.getElapsedTime().asMilliseconds());
+				it->move(it->getVelocity());
+				it->erase = map.intersectsWall(it->getPosition());
+				if (it->erase)
+				{
+					m_eraseProjectileIDs.push_back(it->m_id);
+				}
 			}
 		}
 	}

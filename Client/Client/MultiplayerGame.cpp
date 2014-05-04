@@ -10,7 +10,8 @@ MultiplayerGame::MultiplayerGame() :
 	m_running(true),
 	m_socket(),
 	m_window(),
-	serverTimeout(sf::milliseconds(500))
+	serverTimeout(sf::milliseconds(500)),
+	m_streak(0)
 {
 }
 
@@ -164,14 +165,6 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		{
 			handleMegaPacket(packet, time);
 		}
-		if ((cn::PacketType)type == cn::Projectile)
-		{
-			handleProjectile(packet);
-		}
-		if ((cn::PacketType)type == cn::EraseProjectile)
-		{
-			handleEraseProjectile(packet);
-		}
 		timeSinceLastServerUpdate.restart();
 	}
 
@@ -292,17 +285,17 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 		projectile.setName(m_name);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - m_projectileSpeed));
+			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak)))));
 		}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 		{
-			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y + m_projectileSpeed));
+			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y + (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak)))));
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
-			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x - m_projectileSpeed, projectile.getVelocity().y));
+			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x - (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak))), projectile.getVelocity().y));
 		}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x + m_projectileSpeed, projectile.getVelocity().y));
+			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x + (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak))), projectile.getVelocity().y));
 		}
 		projectiles.push_back(projectile);
 	}
@@ -352,26 +345,33 @@ void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
 	}
 }
 
-void MultiplayerGame::handleProjectile(sf::Packet& packet)
+void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 {
 	int length;
 	std::string name;
-	packet >> length;
+	p_packet >> length;
 	if (length > 0)
 	{
-		packet >> name;
+		p_packet >> name;
 		for (int i = 0; i < length; i++)
 		{
-
-			sf::Vector2<float> pos, vel;
 			int id;
-			packet >> id >> pos >> vel;
-
-			Projectile projectile = Projectile(id);
-			projectile.setName(name);
-			projectile.setPosition(pos);
-			projectile.setVelocity(vel);
-			m_projectiles.push_back(projectile);
+			sf::Vector2<float> pos, vel;
+			p_packet >> id >> pos >> vel;
+			std::vector<Projectile>::iterator iter = findID(id);
+			if (iter != m_projectiles.end())
+			{
+				iter->setTargetPosition(pos);
+				iter->setVelocity(vel);
+				iter->setTargetTime(p_time);
+			}else
+			{
+				Projectile projectile = Projectile(id);
+				projectile.setPosition(pos);
+				projectile.setVelocity(vel);
+				projectile.setName(name);
+				m_projectiles.push_back(projectile);
+			}
 		}
 	}
 }
@@ -431,33 +431,7 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			handleEraseProjectile(p_packet);
 		}else if ((cn::PacketType)type == cn::Projectile)
 		{
-			int length;
-			std::string name;
-			p_packet >> length;
-			if (length > 0)
-			{
-				p_packet >> name;
-				for (int i = 0; i < length; i++)
-				{
-					int id;
-					sf::Vector2<float> pos, vel;
-					p_packet >> id >> pos >> vel;
-					std::vector<Projectile>::iterator iter = findID(id);
-					if (iter != m_projectiles.end())
-					{
-						iter->setTargetPosition(pos);
-						iter->setVelocity(vel);
-						iter->setTargetTime(p_time);
-					}else
-					{
-						Projectile projectile = Projectile(id);
-						projectile.setPosition(pos);
-						projectile.setVelocity(vel);
-						projectile.setName(name);
-						m_projectiles.push_back(projectile);
-					}
-				}
-			}
+			handleProjectile(p_packet, p_time);
 		}else if ((cn::PacketType)type == cn::PlayerDamaged)
 		{
 			std::string name;

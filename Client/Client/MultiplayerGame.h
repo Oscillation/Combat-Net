@@ -47,7 +47,7 @@ private:
 	void handlePlayerConnect(sf::Packet & p_packet);
 	void handlePlayerDisconnect(sf::Packet & p_packet);
 	void handlePlayerMove(sf::Packet & p_packet);
-	void handleProjectile(sf::Packet & p_packet);
+	void handleProjectile(sf::Packet & p_packet, const int & p_time);
 	void handleEraseProjectile(sf::Packet & p_packet);
 	void handlePing();
 	void handleMegaPacket(sf::Packet & p_packet, int const& p_time);
@@ -69,7 +69,12 @@ private:
 	std::vector<Projectile>::iterator findID(const int & p_id);
 	std::vector<int> m_eraseProjectileIDs;
 
-	static const unsigned short m_projectileSpeed = 1;
+	static const unsigned short m_projectileSpeed = 15;
+
+	//%
+	static const unsigned short m_multiplier = 115;
+
+	int m_streak;
 
 	Map m_map;
 

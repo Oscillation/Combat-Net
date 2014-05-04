@@ -29,6 +29,10 @@ void Projectile::setName(const std::string & p_name){
 void Projectile::update(sf::Time p_deltaTime, int p_elapsedGameTime)
 {
 	move(getVelocity());
+
+	float t = (float)(p_elapsedGameTime) / (float)(targetTime - prevTime);
+	sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(prevPos, targetPos, t);
+	setPosition(sf::Vector2f(pos));
 }
 
 void Projectile::setTargetTime(int p_targetTime)
