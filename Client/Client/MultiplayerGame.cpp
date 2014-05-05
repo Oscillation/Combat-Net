@@ -114,6 +114,7 @@ bool MultiplayerGame::connect(){
 			return false;
 		}
 	}
+	return false;
 }
 
 void MultiplayerGame::handleEvents()
@@ -206,12 +207,12 @@ void MultiplayerGame::render()
 	m_window.clear(sf::Color::Black);
 	m_window.setView(m_view);
 
-	for (int x = 0, y = 0; x < m_map.m_tiles.size(); x++)
+	for (unsigned int x = 0, y = 0; x < m_map.m_tiles.size(); x++)
 	{
 		for (y = 0; y < m_map.m_tiles[x].size(); y++)
 		{
 			sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
-			tile.setPosition(sf::Vector2f(x*64, y*64));
+			tile.setPosition(sf::Vector2f(x*64.f, y*64.f));
 			switch (m_map.m_tiles[x][y].m_type)
 			{
 			case Floor:

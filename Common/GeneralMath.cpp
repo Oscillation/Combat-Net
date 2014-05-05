@@ -31,7 +31,7 @@ int math::random(int low, int high, std::vector<int> exclude){
 		high = temp;
 	}
 	int i = low + (std::rand() % (high - low + 1));
-	for (int j = 0; j < exclude.size(); j++)
+	for (unsigned int j = 0; j < exclude.size(); j++)
 	{
 		if (i == exclude[j])
 		{
@@ -43,12 +43,12 @@ int math::random(int low, int high, std::vector<int> exclude){
 
 float math::toDegrees(float x)
 {
-	return x * 180 / std::_Pi;
+	return x * 180 / (float)std::_Pi;
 }
 
 float math::toRadians(float x)
 {
-	return x / 180 * std::_Pi;
+	return x / 180 * (float)std::_Pi;
 }
 
 float math::interpolate(float v0, float v1, float t)

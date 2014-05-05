@@ -97,7 +97,7 @@ Map::Map(const std::string & p_path){
 						break;
 					case 'S':
 						m_tiles[x][y].m_type = Spawn;
-						m_spawnPositions.push_back(sf::Vector2<float>(x*64, y*64));
+						m_spawnPositions.push_back(sf::Vector2<float>(x*64.f, y*64.f));
 						break;
 					case '\n':
 						y++;
@@ -115,16 +115,16 @@ Map::~Map(){
 }
 
 bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
-	unsigned int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
-	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
+	unsigned int x = (unsigned int)p_position.x/64 - 1, y = (unsigned int)p_position.y/64 - 1;
+	for (x = (unsigned int)p_position.x/64 - 1, y = (unsigned int)p_position.y/64 - 1; x < (unsigned int)p_position.x/64 + 1; x++)
 	{
-		for (y = p_position.y/64 - 1; y < p_position.y/64 + 1; y++)
+		for (y = (unsigned int)p_position.y/64 - 1; y < (unsigned int)p_position.y/64 + 1; y++)
 		{
 			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
 			{
 				if (m_tiles[x][y].m_type == Wall)
 				{
-					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33, p_position.y - 33), 17, sf::Rect<float>(x*64, y*64, 64, 64)))
+					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33.f, p_position.y - 33.f), 17, sf::Rect<float>(x*64.f, y*64.f, 64.f, 64.f)))
 					{
 						return true;
 					}
@@ -136,18 +136,18 @@ bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
 }
 
 sf::Vector2<float> Map::getIntersectingWall(const sf::Vector2<float> & p_position){
-	unsigned int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
-	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
+	unsigned int x = (unsigned int)p_position.x/64 - 1, y = (unsigned int)p_position.y/64 - 1;
+	for (x = (unsigned int)p_position.x/64 - 1, y = (unsigned int)p_position.y/64 - 1; x < (unsigned int)p_position.x/64 + 1; x++)
 	{
-		for (y = p_position.y/64 - 1; y < p_position.y/64 + 1; y++)
+		for (y = (unsigned int)p_position.y/64 - 1; y < (unsigned int)p_position.y/64 + 1; y++)
 		{
 			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
 			{
 				if (m_tiles[x][y].m_type == Wall)
 				{
-					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33, p_position.y - 33), 17, sf::Rect<float>(x*64, y*64, 64, 64)))
+					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33.f, p_position.y - 33.f), 17, sf::Rect<float>(x*64.f, y*64.f, 64.f, 64.f)))
 					{
-						return sf::Vector2<float>(x*64, y*64);
+						return sf::Vector2<float>(x*64.f, y*64.f);
 					}
 				}
 			}
