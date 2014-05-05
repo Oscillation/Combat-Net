@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
+#include "Scoreboard.h"
 
 #include <map>
 #include <memory>
@@ -83,4 +84,6 @@ private:
 	int m_elapsedGameTime; // this is a delta time, doesn't total elapsedGameTime
 	sf::Clock timeSinceLastServerUpdate;
 	sf::Time serverTimeout;
+
+	Scoreboard m_scoreboard;
 };

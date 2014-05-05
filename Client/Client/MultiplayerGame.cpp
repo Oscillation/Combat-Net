@@ -11,8 +11,10 @@ MultiplayerGame::MultiplayerGame() :
 	m_socket(),
 	m_window(),
 	serverTimeout(sf::milliseconds(500)),
-	m_streak()
+	m_streak(),
+	m_scoreboard(m_players)
 {
+	m_scoreboard.setPosition(1280/2, 300);
 }
 
 MultiplayerGame::~MultiplayerGame()
@@ -49,6 +51,7 @@ void MultiplayerGame::run(sf::IpAddress p_address, unsigned short p_port)
 void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 {
 	gameFont.loadFromFile("Segan-Light.ttf");
+	m_scoreboard.setFont(gameFont);
 
 	server_address = p_address;
 	server_port = p_port;
@@ -200,6 +203,13 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		m_running = false;*/
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+		m_scoreboard.activate();
+	else 
+		m_scoreboard.deactivate();
+
+	m_scoreboard.updateStats();
+	
 }
 
 void MultiplayerGame::render()
@@ -238,6 +248,8 @@ void MultiplayerGame::render()
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
 		m_window.draw(*it);
 	}
+	m_window.setView(m_window.getDefaultView());
+	m_window.draw(m_scoreboard);
 
 	m_window.display();
 }

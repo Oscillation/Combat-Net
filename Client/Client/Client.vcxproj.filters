@@ -41,6 +41,9 @@
     <ClCompile Include="..\..\Common\Protocol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scoreboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MultiplayerGame.h">
@@ -63,6 +66,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Tile.h">
       <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Scoreboard.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
