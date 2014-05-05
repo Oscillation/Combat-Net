@@ -65,7 +65,6 @@ void GameManager::update(Client & p_client){
 
 	for (int i = 0; i < 4; i++)
 	{
-		//
 		m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].update(p_client);
 	}
 }
