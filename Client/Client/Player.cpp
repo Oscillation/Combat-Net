@@ -18,6 +18,10 @@ Player::Player(std::string p_name, sf::Font& p_font, bool p_remote)
 	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
 	nameText.setStyle(sf::Text::Bold);
 	nameText.setColor(sf::Color::Black);
+
+	score.points = 0;
+	score.kills = 0;
+	score.deaths = 0;
 }
 
 Player::~Player()

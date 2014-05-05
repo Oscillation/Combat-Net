@@ -71,6 +71,7 @@
     <ClCompile Include="..\..\Common\GeneralMath.cpp" />
     <ClCompile Include="..\..\Common\Map.cpp" />
     <ClCompile Include="..\..\Common\Projectile.cpp" />
+    <ClCompile Include="..\..\Common\Protocol.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InputData.cpp" />
