@@ -198,6 +198,11 @@ sf::Packet Server::simulateGameState() {
 		retPacket << cn::Projectile << m_projectiles;
 	}
 
+	for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
+	{
+		retPacket << cn::ScoreUpdate << i->second.getName() << i->second.score;
+	}
+
 	return retPacket;
 }
 

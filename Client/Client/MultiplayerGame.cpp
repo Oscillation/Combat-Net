@@ -440,6 +440,13 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			int health;
 			p_packet >> name >> health;
 			m_players[name].get()->setHealth(m_players[name].get()->getHealth() - health);
+		}else if ((cn::PacketType)type == cn::ScoreUpdate)
+		{
+			std::string name;
+			p_packet >> name;
+			p_packet >> m_players[name]->score;
+			std::cout << "Score update: " << name;
+			std::cout << " Points: " << m_players[name]->score.points;
 		}
 	}
 }

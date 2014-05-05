@@ -54,6 +54,9 @@
     <ClCompile Include="GameManager.cpp">
       <Filter>Source Files\Server</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common\Protocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">

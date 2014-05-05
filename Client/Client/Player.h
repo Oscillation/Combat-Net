@@ -7,6 +7,8 @@
 #include <SFML\System\String.hpp>
 #include <SFML\System\Time.hpp>
 
+#include "..\..\Common\Protocol.h"
+
 class Player : public sf::Drawable, public sf::Transformable
 {
 public:
@@ -25,6 +27,8 @@ public:
 
 	int getHealth() const;
 	void setHealth(const int & p_health);
+
+	cn::Score score;
 
 private:
 	bool m_remote, m_dead;

@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 #include "..\..\Common\Projectile.h"
-
+#include "..\..\Common\Protocol.h"
 
 struct Client : public sf::Transformable {
 	Client();
@@ -26,6 +26,8 @@ struct Client : public sf::Transformable {
 	std::string getName() const;
 
 	bool shoot();
+
+	cn::Score score;
 
 private:
 	sf::IpAddress m_address;
