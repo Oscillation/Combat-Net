@@ -445,8 +445,6 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			std::string name;
 			p_packet >> name;
 			p_packet >> m_players[name]->score;
-			std::cout << "Score update: " << name;
-			std::cout << " Points: " << m_players[name]->score.points;
 		}
 	}
 }

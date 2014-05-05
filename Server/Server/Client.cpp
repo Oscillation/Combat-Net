@@ -8,7 +8,7 @@ Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) :
 	m_shootDelay(sf::seconds(0.3f))
 {
 	m_speed = 300;
-	score.points = 0;
+	score.points = 12;
 	score.kills = 0;
 	score.deaths = 0;
 }
