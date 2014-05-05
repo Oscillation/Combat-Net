@@ -316,7 +316,7 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 void Server::pingClients()
 {
 	// Check which clients are still connected
-	/*for (auto it = m_clientList.begin(); it != m_clientList.end();){
+	for (auto it = m_clientList.begin(); it != m_clientList.end();){
 		if (!it->second.hasRespondedToPing) {
 
 			sf::Packet retPacket;
@@ -331,7 +331,7 @@ void Server::pingClients()
 		} else {
 			++it;
 		}
-	}*/
+	}
 
 	// Ping clients
 	sf::Packet pingPacket;
