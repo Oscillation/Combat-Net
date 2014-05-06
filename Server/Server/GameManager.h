@@ -48,11 +48,14 @@ public:
 	void update(Client & p_client);
 	void update(Projectile & p_projectile);
 
+	sf::Vector2<int> m_mapSize;
+
 private:
 
 	bool shareBranch(Client & p_client, Projectile & p_projectile) const;
 	bool shareBranch(Client & p_clientA, Client & p_clientB) const;
 	bool shareBranch(Projectile & p_projectileA, Projectile & p_projectileB) const;
 
-	sf::Vector2<int> m_mapSize;
+	bool exists(Client & p_client, std::vector<Client> & p_clients) const;
+	bool exists(Projectile & p_projectile, std::vector<Projectile> & p_projectiles) const;
 };

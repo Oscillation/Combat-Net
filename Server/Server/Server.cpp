@@ -103,6 +103,7 @@ sf::Packet Server::simulateGameState() {
 	for (InputData input : m_clientInputs) {
 		Client* client = &m_clientList[input.getPlayer()];
 		float deltaTime = (float)input.getDeltaTime()/1000.f;
+		sf::Vector2<float> pos = client->getPosition();
 		switch (input.getInputType())
 		{
 		case cn::MoveUp:
@@ -144,6 +145,13 @@ sf::Packet Server::simulateGameState() {
 				client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);
 			}
 			break;
+		}
+
+		sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(pos.x/(64*m_gameManager.m_size), pos.y/(64*m_gameManager.m_size)), sf::Vector2<int>((pos.x + 40)/(64*m_gameManager.m_size), pos.y/(64*m_gameManager.m_size)), sf::Vector2<int>(pos.x/(64*m_gameManager.m_size), (pos.y + 40)/(64*m_gameManager.m_size)), sf::Vector2<int>((pos.x + 40)/(64*m_gameManager.m_size), (pos.y + 40)/(64*m_gameManager.m_size))};
+
+		for (int i = 0; i < 4; i++)
+		{
+			m_gameManager.m_branches[clientPoints[i].x+((clientPoints[i].y)*m_gameManager.m_mapSize.x)].update(*client);
 		}
 	}
 

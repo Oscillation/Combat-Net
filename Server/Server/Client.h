@@ -29,6 +29,8 @@ struct Client : public sf::Transformable {
 
 	cn::Score score;
 
+	bool operator==(Client & p_client) const;
+
 private:
 	sf::IpAddress m_address;
 	unsigned short m_port;

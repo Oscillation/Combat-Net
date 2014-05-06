@@ -48,3 +48,7 @@ bool Client::shoot() {
 std::string Client::getName() const{
 	return m_name;
 }
+
+bool Client::operator==(Client & p_client) const{
+	return m_name == p_client.getName();
+}

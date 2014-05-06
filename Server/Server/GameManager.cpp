@@ -181,7 +181,7 @@ std::vector<Client> GameManager::getClients(Projectile & p_projectile) const{
 	for (int i = 0; i < 4; i++)
 	{
 		for (auto it = m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_clientList.begin(); it != m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_clientList.end(); ++it){
-			if (shareBranch(*(*it), p_projectile))
+			if (!exists(*(*it), clients) || clients.empty())
 			{
 				clients.push_back(*(*it));
 			}
@@ -198,7 +198,7 @@ std::vector<Client> GameManager::getClients(Client & p_client) const{
 	for (int i = 0; i < 4; i++)
 	{
 		for (auto it = m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.begin(); it != m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.end(); ++it){
-			if (shareBranch(*(*it), p_client))
+			if (!exists(*(*it), clients) || clients.empty())
 			{
 				clients.push_back(*(*it));
 			}
@@ -215,7 +215,7 @@ std::vector<Projectile> GameManager::getProjectiles(Projectile & p_projectile) c
 	for (int i = 0; i < 4; i++)
 	{
 		for (auto it = m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.begin(); it != m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.end(); ++it){
-			if (shareBranch(*(*it), p_projectile))
+			if (!exists(*(*it), projectiles) || projectiles.empty())
 			{
 				projectiles.push_back(*(*it));
 			}
@@ -232,7 +232,7 @@ std::vector<Projectile> GameManager::getProjectiles(Client & p_client) const{
 	for (int i = 0; i < 4; i++)
 	{
 		for (auto it = m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_projectiles.begin(); it != m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_projectiles.end(); ++it){
-			if (shareBranch(p_client, *(*it)))
+			if (!exists(*(*it), projectiles) || projectiles.empty())
 			{
 				projectiles.push_back(*(*it));
 			}
@@ -240,4 +240,24 @@ std::vector<Projectile> GameManager::getProjectiles(Client & p_client) const{
 	}
 
 	return projectiles;
+}
+
+bool GameManager::exists(Client & p_client, std::vector<Client> & p_clients) const{
+	for (auto it = p_clients.begin(); it != p_clients.end(); ++it){
+		if (*it == p_client)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GameManager::exists(Projectile & p_projectile, std::vector<Projectile> & p_projectiles) const{
+	for (auto it = p_projectiles.begin(); it != p_projectiles.end(); ++it){
+		if (*it == p_projectile)
+		{
+			return true;
+		}
+	}
+	return false;
 }

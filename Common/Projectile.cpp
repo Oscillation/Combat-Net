@@ -55,6 +55,10 @@ void Projectile::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) co
 	p_target.draw(rect, p_states);
 }
 
+bool Projectile::operator==(Projectile & p_projectile) const{
+	return m_id == p_projectile.m_id;
+}
+
 template <typename T>
 sf::Packet& operator>>(sf::Packet & p_packet, sf::Vector2<T> & p_vec){
 	return p_packet >> p_vec.x >> p_vec.y;

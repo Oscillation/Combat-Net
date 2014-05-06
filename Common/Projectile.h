@@ -31,6 +31,8 @@ struct Projectile : public sf::Transformable, public sf::Drawable{
 
 	bool erase;
 
+	bool operator==(Projectile & p_projectile) const;
+
 private:
 	sf::Vector2<float> m_velocity;
 	std::string m_name;
