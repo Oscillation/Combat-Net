@@ -86,5 +86,7 @@ private:
 	sf::Clock timeSinceLastServerUpdate;
 	sf::Time serverTimeout;
 
+	sf::Text statusText;
+
 	Scoreboard m_scoreboard;
 };

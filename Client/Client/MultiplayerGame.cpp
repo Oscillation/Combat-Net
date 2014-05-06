@@ -54,6 +54,11 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	gameFont.loadFromFile("Segan-Light.ttf");
 	m_scoreboard.setFont(gameFont);
 
+	statusText.setFont(gameFont);
+	statusText.setColor(sf::Color::Red);
+	statusText.setPosition(30, 30);
+	statusText.setStyle(sf::Text::Bold);
+
 	server_address = p_address;
 	server_port = p_port;
 
@@ -203,10 +208,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	// Handle server crash/random disconnect
 	if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
 	{
-		/*std::cout << "Lost connection to server, exiting" << std::endl;
-		sf::sleep(sf::seconds(3));
-
-		m_running = false;*/
+		statusText.setString("Lost connection to server...");
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
 		m_scoreboard.activate();
@@ -257,6 +259,7 @@ void MultiplayerGame::render()
 	}
 	m_window.setView(m_window.getDefaultView());
 	m_window.draw(m_scoreboard);
+	m_window.draw(statusText);
 
 	m_window.display();
 }
