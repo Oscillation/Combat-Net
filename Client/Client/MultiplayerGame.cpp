@@ -12,7 +12,8 @@ MultiplayerGame::MultiplayerGame() :
 	m_window(),
 	serverTimeout(sf::milliseconds(500)),
 	m_streak(),
-	m_scoreboard(m_players)
+	m_scoreboard(m_players),
+	m_lastServerUpdateTime(0)
 {
 	m_scoreboard.setPosition(1280/2, 300);
 }
@@ -167,7 +168,11 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 		if ((cn::PacketType)type == cn::MegaPacket)
 		{
-			handleMegaPacket(packet, time);
+			if (time > m_lastServerUpdateTime)
+			{
+				handleMegaPacket(packet, time);
+				m_lastServerUpdateTime = time;
+			}
 		}
 		timeSinceLastServerUpdate.restart();
 	}
