@@ -79,15 +79,9 @@ void GameManager::update(Projectile & p_projectile){
 }
 
 bool GameManager::intersect(Client & p_client, Projectile & p_projectile) const{
-	if (shareBranch(p_client, p_projectile))
+	if (math::circleIntersectsRect(sf::Vector2<float>(p_client.getPosition().x, p_client.getPosition().y), 40, sf::Rect<float>(p_projectile.getPosition().x, p_projectile.getPosition().y, 5, 5)))
 	{
-		if (math::circleIntersectsRect(sf::Vector2<float>(p_client.getPosition().x - 33, p_client.getPosition().y - 33), 17, sf::Rect<float>(p_projectile.getPosition().x, p_projectile.getPosition().y, 5, 5)))
-		{
-			return true;
-		}else
-		{
-			return false;
-		}
+		return true;
 	}else
 	{
 		return false;
@@ -260,4 +254,78 @@ bool GameManager::exists(Projectile & p_projectile, std::vector<Projectile> & p_
 		}
 	}
 	return false;
+}
+
+bool GameManager::exists(Client & p_client, std::vector<Client*> & p_clients) const{
+	for (auto it = p_clients.begin(); it != p_clients.end(); ++it){
+		if (*(*it) == p_client)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GameManager::exists(Projectile & p_projectile, std::vector<Projectile*> & p_projectiles) const{
+	for (auto it = p_projectiles.begin(); it != p_projectiles.end(); ++it){
+		if (*(*it) == p_projectile)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void GameManager::erase(Client & p_client){
+	sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)), sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)), sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)), sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))};
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (!m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.empty())
+		{
+			for (auto it = m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.begin(); it != m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.end();){
+				if (m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.empty())
+				{
+					break;
+				}else
+				{
+					if (*(*it) == p_client)
+					{
+						m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.erase(it);
+						break;
+					}else
+					{
+						++it;
+					}
+				}
+			}
+		}
+	}
+}
+
+void GameManager::erase(Projectile & p_projectile){
+	sf::Vector2<int> projectilePoints[4] = {sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)), sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), p_projectile.getPosition().y/(64*m_size)), sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size)), sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))};
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (!m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.empty())
+		{
+			for (auto it = m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.begin(); it != m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.end();){
+				if (m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.empty())
+				{
+					break;
+				}else
+				{
+					if (*(*it) == p_projectile)
+					{
+						m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.erase(it);
+						break;
+					}else
+					{
+						++it;
+					}
+				}
+			}
+		}
+	}
 }

@@ -50,6 +50,9 @@ public:
 
 	sf::Vector2<int> m_mapSize;
 
+	void erase(Client & p_client);
+	void erase(Projectile & p_projectile);
+
 private:
 
 	bool shareBranch(Client & p_client, Projectile & p_projectile) const;
@@ -58,4 +61,6 @@ private:
 
 	bool exists(Client & p_client, std::vector<Client> & p_clients) const;
 	bool exists(Projectile & p_projectile, std::vector<Projectile> & p_projectiles) const;
+	bool exists(Client & p_client, std::vector<Client*> & p_clients) const;
+	bool exists(Projectile & p_projectile, std::vector<Projectile*> & p_projectiles) const;
 };

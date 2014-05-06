@@ -195,6 +195,7 @@ sf::Packet Server::simulateGameState() {
 			std::vector<Projectile>::iterator iter = findID(*it);
 			if (iter != m_projectiles.end())
 			{
+				m_gameManager.erase(*iter);
 				m_projectiles.erase(iter);
 			}
 		}
@@ -269,6 +270,7 @@ void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_a
 	std::string from = "[" + p_address.toString() + ":" + std::to_string(p_port) + "]: ";
 	std::string name;
 	p_packet >> name;
+	m_gameManager.erase(m_clientList[name]);
 	m_clientList.erase(name);
 	sf::Packet packet;
 	packet << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerDisconnected << name;
