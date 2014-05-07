@@ -389,7 +389,7 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 				iter->setTargetTime(p_time);
 			}else
 			{
-				Projectile projectile = Projectile(id);
+				Projectile projectile = Projectile(id, 0);
 				projectile.setPosition(pos);
 				projectile.setVelocity(vel);
 				projectile.setName(name);

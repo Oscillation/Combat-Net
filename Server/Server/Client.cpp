@@ -55,9 +55,19 @@ void Client::setHealth(const int& p_health)
 	m_health = p_health;
 }
 
-void Client::damage(const int& p_health)
+void Client::damage(const int& p_damage)
 {
 	m_health -= p_damage;
+}
+
+int Client::getBulletDamage() const
+{
+	return m_bulletDamage;
+}
+
+void Client::setBulletDamage(const int& p_damage)
+{
+	m_bulletDamage = p_damage;
 }
 
 std::string Client::getName() const{

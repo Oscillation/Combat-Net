@@ -13,10 +13,11 @@
 
 struct Projectile : public sf::Transformable, public sf::Drawable{
 	Projectile();
-	Projectile(const int & p_id);
+	Projectile(const int & p_id, const int& p_damage);
 	~Projectile();
 
 	int m_id;
+	int m_damage;
 
 	void update(sf::Time p_deltaTime, int p_elapsedGameTime);
 

@@ -3,7 +3,8 @@
 Projectile::Projectile() : erase(false), m_id(-1){
 }
 
-Projectile::Projectile(const int & p_id) : m_id(p_id), erase(false){
+Projectile::Projectile(const int & p_id, const int& p_damage) : 
+	m_id(p_id), m_damage(p_damage), erase(false){
 }
 
 Projectile::~Projectile(){

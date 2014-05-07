@@ -35,8 +35,13 @@ struct Client : public sf::Transformable {
 	void setHealth(const int& p_health);
 	void damage(const int& p_damage);
 
+	int getBulletDamage() const;
+	void setBulletDamage(const int& p_damage);
+
 private:
 	int m_health;
+
+	int m_bulletDamage;
 
 	sf::IpAddress m_address;
 	unsigned short m_port;
