@@ -182,9 +182,10 @@ sf::Packet Server::simulateGameState() {
 					if (m_gameManager.intersect(*iter, *it))
 					{
 						//if (iter->getName() != it->getName())
-						{
+						{	
 							std::cout << iter->getHealth() << "\n";
 							iter->damage(it->m_damage);
+							std::cout << iter->getHealth() << "\n";
 							retPacket << cn::PlayerHealth << iter->getName() << iter->getHealth();
 							it->erase = true;
 							m_eraseProjectileIDs.push_back(it->m_id);

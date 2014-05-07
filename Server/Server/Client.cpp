@@ -1,4 +1,5 @@
 #include "Client.h"
+#include <iostream>
 
 Client::Client(){}
 
@@ -11,6 +12,7 @@ Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) :
 	m_score(),
 	m_damage(10)
 {
+	std::cout << "Called constructor for: " << p_address.toString() << ":" << p_port << "\n";
 }
 
 Client::~Client(){
@@ -57,7 +59,9 @@ void Client::setHealth(const int& p_health)
 
 void Client::damage(const int& p_damage)
 {
+	m_damage--;
 	m_health -= p_damage;
+	
 }
 
 int Client::getDamage() const

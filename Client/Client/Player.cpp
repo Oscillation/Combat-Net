@@ -63,7 +63,7 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	player.setOrigin(m_radius, m_radius);
 
 	sf::RectangleShape healthBackground(sf::Vector2<float>(40.f, 5));
-	sf::RectangleShape health(sf::Vector2<float>(40.f*(getHealth()/100), 5));
+	sf::RectangleShape health(sf::Vector2<float>(40.f*((float)getHealth()/100), 5));
 
 	healthBackground.setFillColor(sf::Color(20, 20, 20));
 	health.setFillColor(sf::Color(200, 200, 200));
