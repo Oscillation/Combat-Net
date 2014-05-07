@@ -89,7 +89,7 @@ Map::Map(const std::string & p_path){
 				{
 					switch (line[x])
 					{
-					case '#':
+					case ' ':
 						m_tiles[x][y].m_type = Floor;
 						break;
 					case 'x':
