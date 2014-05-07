@@ -164,7 +164,6 @@ sf::Packet Server::simulateGameState() {
 
 	m_eraseProjectileIDs.clear();
 
-
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
 		if (!it->erase)
 		{
@@ -183,10 +182,8 @@ sf::Packet Server::simulateGameState() {
 					{
 						//if (iter->getName() != it->getName())
 						{	
-							std::cout << iter->getHealth() << "\n";
-							iter->damage(it->m_damage);
-							std::cout << iter->getHealth() << "\n";
-							retPacket << cn::PlayerHealth << iter->getName() << iter->getHealth();
+							m_clientList[iter->getName()].damage(it->m_damage);
+							retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
 							it->erase = true;
 							m_eraseProjectileIDs.push_back(it->m_id);
 						}

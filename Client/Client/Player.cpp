@@ -16,6 +16,7 @@ Player::Player(std::string p_name, sf::Font& p_font, bool p_remote)
 	m_health(100),
 	m_score()
 {
+	std::cout << "Called constructor for: " << p_name << "\n";
 	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
 	nameText.setStyle(sf::Text::Bold);
 	nameText.setColor(sf::Color::Black);
@@ -31,6 +32,7 @@ void Player::update(sf::Time p_deltaTime, int p_elapsedGameTime)
 	float t = (float)(p_elapsedGameTime) / (float)(targetTime - prevTime);
 	sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(prevPos, targetPos, t);
 	setPosition(sf::Vector2f(pos));
+	std::cout << m_health << "\n";
 }
 
 void Player::setTargetTime(int p_targetTime)

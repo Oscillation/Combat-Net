@@ -59,9 +59,7 @@ void Client::setHealth(const int& p_health)
 
 void Client::damage(const int& p_damage)
 {
-	m_damage--;
 	m_health -= p_damage;
-	
 }
 
 int Client::getDamage() const
