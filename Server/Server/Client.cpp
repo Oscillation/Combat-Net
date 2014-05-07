@@ -45,6 +45,21 @@ bool Client::shoot() {
 	return false;
 }
 
+int Client::getHealth() const
+{
+	return m_health;
+}
+
+void Client::setHealth(const int& p_health)
+{
+	m_health = p_health;
+}
+
+void Client::damage(const int& p_health)
+{
+	m_health -= p_damage;
+}
+
 std::string Client::getName() const{
 	return m_name;
 }

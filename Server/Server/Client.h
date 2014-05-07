@@ -31,7 +31,13 @@ struct Client : public sf::Transformable {
 
 	bool operator==(Client & p_client) const;
 
+	int getHealth() const;
+	void setHealth(const int& p_health);
+	void damage(const int& p_damage);
+
 private:
+	int m_health;
+
 	sf::IpAddress m_address;
 	unsigned short m_port;
 
