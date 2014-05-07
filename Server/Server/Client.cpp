@@ -5,12 +5,12 @@ Client::Client(){}
 Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) : 
 	m_address(p_address), 
 	m_port(p_port),
-	m_shootDelay(sf::seconds(0.3f))
+	m_shootDelay(sf::seconds(0.3f)),
+	m_speed(300),
+	m_health(100),
+	m_score(),
+	m_damage(10)
 {
-	m_speed = 300;
-	score.points = 0;
-	score.kills = 0;
-	score.deaths = 0;
 }
 
 Client::~Client(){
@@ -60,14 +60,14 @@ void Client::damage(const int& p_damage)
 	m_health -= p_damage;
 }
 
-int Client::getBulletDamage() const
+int Client::getDamage() const
 {
-	return m_bulletDamage;
+	return m_damage;
 }
 
-void Client::setBulletDamage(const int& p_damage)
+void Client::setDamage(const int& p_damage)
 {
-	m_bulletDamage = p_damage;
+	m_damage = p_damage;
 }
 
 std::string Client::getName() const{

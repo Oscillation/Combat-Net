@@ -11,7 +11,7 @@ MultiplayerGame::MultiplayerGame() :
 	m_socket(),
 	m_window(),
 	serverTimeout(sf::milliseconds(500)),
-	m_streak(),
+	m_streak(0),
 	m_scoreboard(m_players),
 	m_lastServerUpdateTime(0)
 {
@@ -69,7 +69,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	}
 
 	while(!connect()){
-		std::cout << "That name is already taken. Please try again with a different name.\n";
+		
 	}
 }
 
@@ -99,7 +99,7 @@ bool MultiplayerGame::connect(){
 			packet >> name;
 			if (name == m_name)
 			{
-				std::cout << "Connected to server\n";
+				std::cout << "Connected to server.\n";
 				sf::Vector2f position;
 				packet >> position.x >> position.y;
 				packet >> m_map;
@@ -116,13 +116,14 @@ bool MultiplayerGame::connect(){
 				m_view.setCenter(m_players[name].get()->getPosition());
 				std::cout << m_name << std::endl;
 				return true;
-				break;
 			}
 		}else if ((cn::PacketType)type == cn::NameTaken)
 		{
+			std::cout << "That name is already taken. Please try again with a different name.\n";
 			return false;
 		}
 	}
+	std::cout << "Couldn't connect to server.\n";
 	return false;
 }
 
@@ -229,18 +230,17 @@ void MultiplayerGame::render()
 		for (y = 0; y < m_map.m_tiles[x].size(); y++)
 		{
 			sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
-			tile.setOutlineThickness(5.f);
-			tile.setOutlineColor(sf::Color::Blue);
 			tile.setPosition(sf::Vector2f(x*64.f, y*64.f));
 			switch (m_map.m_tiles[x][y].m_type)
 			{
 			case Floor:
-				tile.setFillColor(sf::Color::Green);
+				tile.setFillColor(sf::Color::Black);
 				break;
 			case Wall:
-				tile.setFillColor(sf::Color::Magenta);
+				tile.setFillColor(sf::Color::Red);
 				break;
 			default:
+				tile.setFillColor(sf::Color::Black);
 				break;
 			}
 			m_window.draw(tile);
@@ -304,7 +304,6 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
 		Projectile projectile = Projectile();
-		projectile.setPosition(m_players[m_name].get()->getPosition());
 		projectile.setName(m_name);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
@@ -320,6 +319,9 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 		{
 			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x + (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak))), projectile.getVelocity().y));
 		}
+
+		projectile.setPosition(m_players[m_name].get()->getPosition());
+
 		projectiles.push_back(projectile);
 	}
 
@@ -408,7 +410,6 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 	{
 		int id;
 		p_packet >> id;
-		std::cout << "Erase: " << id << "\n";
 		std::vector<Projectile>::iterator it = findID(id);
 		if (it != m_projectiles.end())
 		{
@@ -434,7 +435,6 @@ void MultiplayerGame::handlePing()
 	m_socket.send(pingPacket, server_address, server_port);
 }
 
-
 void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time){
 	m_elapsedGameTime = 0;
 	std::vector<int> projectile_ids;
@@ -456,17 +456,18 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 		}else if ((cn::PacketType)type == cn::Projectile)
 		{
 			handleProjectile(p_packet, p_time);
-		}else if ((cn::PacketType)type == cn::PlayerDamaged)
+		}else if ((cn::PacketType)type == cn::PlayerHealth)
 		{
 			std::string name;
 			int health;
 			p_packet >> name >> health;
-			m_players[name].get()->setHealth(m_players[name].get()->getHealth() - health);
+			m_players[name].get()->setHealth(health);
+			std::cout << name << ": " << m_players[name].get()->getHealth() << "\n";
 		}else if ((cn::PacketType)type == cn::ScoreUpdate)
 		{
 			std::string name;
 			p_packet >> name;
-			p_packet >> m_players[name]->score;
+			p_packet >> m_players[name]->m_score;
 		}
 	}
 }

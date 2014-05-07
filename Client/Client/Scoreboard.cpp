@@ -32,9 +32,9 @@ Scoreboard::~Scoreboard()
 std::string createScoreString(std::pair<std::string, Player*> i)
 {
 	return i.first 
-			+ " " + std::to_string(i.second->score.points)
-			+ " " + std::to_string(i.second->score.kills)
-			+ " " + std::to_string(i.second->score.deaths);
+			+ " " + std::to_string(i.second->m_score.m_points)
+			+ " " + std::to_string(i.second->m_score.m_kills)
+			+ " " + std::to_string(i.second->m_score.m_deaths);
 }
 
 
@@ -48,7 +48,7 @@ void Scoreboard::updateStats()
 	}
 	// Sort that vector depending on the score of the players
 	std::sort(sortedPlayers.begin(), sortedPlayers.end(), [=](std::pair<std::string, Player*> & a, std::pair<std::string, Player*> & b) {
-		return a.second->score.points > b.second->score.points;
+		return a.second->m_score.m_points > b.second->m_score.m_points;
 	});
 
 	int count = 0;

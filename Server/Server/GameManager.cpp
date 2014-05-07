@@ -47,9 +47,9 @@ GameManager::GameManager(){
 }
 
 GameManager::GameManager(std::map<std::string, Client>* ptr_clientList, std::vector<Projectile>* ptr_projectiles, const unsigned int & p_width, const unsigned int & p_height) : m_mapSize(p_width/m_size, p_height/m_size){
-	for (unsigned int y = 0, x = 0; y < p_height; y += m_size)
+	for (unsigned int y = 0, x = 0; y < p_height; y+=m_size)
 	{
-		for (x = 0; x < p_width; x += m_size)
+		for (x = 0; x < p_width; x+=m_size)
 		{
 			m_branches.push_back(Branch(x, y));
 		}
@@ -79,7 +79,7 @@ void GameManager::update(Projectile & p_projectile){
 }
 
 bool GameManager::intersect(Client & p_client, Projectile & p_projectile) const{
-	if (math::circleIntersectsRect(sf::Vector2<float>(p_client.getPosition().x, p_client.getPosition().y), 40, sf::Rect<float>(p_projectile.getPosition().x, p_projectile.getPosition().y, 5, 5)))
+	if (math::circleIntersectsRect(sf::Vector2<float>(p_client.getPosition().x, p_client.getPosition().y), 17, sf::Rect<float>(p_projectile.getPosition().x, p_projectile.getPosition().y, 5, 5)))
 	{
 		return true;
 	}else

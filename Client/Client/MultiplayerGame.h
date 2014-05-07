@@ -70,7 +70,7 @@ private:
 	std::vector<Projectile>::iterator findID(const int & p_id);
 	std::vector<int> m_eraseProjectileIDs;
 
-	static const unsigned short m_projectileSpeed = 1;
+	static const unsigned short m_projectileSpeed = 15;
 
 	//%
 	static const unsigned short m_multiplier = 15;

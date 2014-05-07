@@ -13,15 +13,12 @@ Player::Player(std::string p_name, sf::Font& p_font, bool p_remote)
 	nameText(p_name, p_font, 14),
 	m_radius(20),
 	m_dead(false),
-	m_health(1)
+	m_health(100),
+	m_score()
 {
 	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
 	nameText.setStyle(sf::Text::Bold);
 	nameText.setColor(sf::Color::Black);
-
-	score.points = 0;
-	score.kills = 0;
-	score.deaths = 0;
 }
 
 Player::~Player()
@@ -60,11 +57,23 @@ float Player::getRadius() const{
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
-	sf::CircleShape shape(m_radius);
-	shape.setFillColor(sf::Color::Red);
-	shape.setOrigin(m_radius, m_radius);
+	
+	sf::CircleShape player(m_radius);
+	player.setFillColor(sf::Color::Red);
+	player.setOrigin(m_radius, m_radius);
 
-	target.draw(shape, states);
+	sf::RectangleShape healthBackground(sf::Vector2<float>(40.f, 5));
+	sf::RectangleShape health(sf::Vector2<float>(40.f*(getHealth()/100), 5));
+
+	healthBackground.setFillColor(sf::Color(20, 20, 20));
+	health.setFillColor(sf::Color(200, 200, 200));
+
+	healthBackground.setOrigin(m_radius, m_radius + 10);
+	health.setOrigin(m_radius, m_radius + 10);
+
+	target.draw(player, states);
+	target.draw(healthBackground, states);
+	target.draw(health, states);
 	target.draw(nameText, states);
 }
 

@@ -18,6 +18,9 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{6842b237-143b-4620-8db2-58e1c39832a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Score">
+      <UniqueIdentifier>{7bf3e5d7-909e-4a10-886c-a59ad559916e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -38,11 +41,11 @@
     <ClCompile Include="..\..\Common\GeneralMath.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\Protocol.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scoreboard.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Score.cpp">
+      <Filter>Source Files\Score</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,7 +71,10 @@
       <Filter>Source Files\Map</Filter>
     </ClInclude>
     <ClInclude Include="Scoreboard.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Score.h">
+      <Filter>Source Files\Score</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

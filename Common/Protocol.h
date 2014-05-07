@@ -1,16 +1,7 @@
 #pragma once
 
-#include <SFML\Network\Packet.hpp>
-
 namespace cn
 {
-	struct Score
-	{
-		int points;
-		int deaths;
-		int kills;
-	};
-
 	enum PacketType
 	{
 		MegaPacket,
@@ -24,7 +15,7 @@ namespace cn
 		NameTaken,
 		Projectile,
 		EraseProjectile,
-		PlayerDamaged,
+		PlayerHealth,
 		PlayerKilled,
 		ScoreUpdate,
 	};
@@ -41,8 +32,3 @@ namespace cn
 		ShootRight,
 	};
 };
-
-
-sf::Packet& operator>>(sf::Packet & p_packet, cn::Score & p_score);
-
-sf::Packet& operator<<(sf::Packet & p_packet, cn::Score & p_score);

@@ -74,7 +74,7 @@
     <ClCompile Include="..\..\Common\GeneralMath.cpp" />
     <ClCompile Include="..\..\Common\Map.cpp" />
     <ClCompile Include="..\..\Common\Projectile.cpp" />
-    <ClCompile Include="..\..\Common\Protocol.cpp" />
+    <ClCompile Include="..\..\Common\Score.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MultiplayerGame.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -85,6 +85,7 @@
     <ClInclude Include="..\..\Common\Map.h" />
     <ClInclude Include="..\..\Common\Projectile.h" />
     <ClInclude Include="..\..\Common\Protocol.h" />
+    <ClInclude Include="..\..\Common\Score.h" />
     <ClInclude Include="..\..\Common\Tile.h" />
     <ClInclude Include="MultiplayerGame.h" />
     <ClInclude Include="Player.h" />

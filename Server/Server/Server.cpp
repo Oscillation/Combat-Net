@@ -181,11 +181,11 @@ sf::Packet Server::simulateGameState() {
 				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
 					if (m_gameManager.intersect(*iter, *it))
 					{
-						std::cout << it->m_id << " has hit player: " << iter->getName() << "\n";
-						if (iter->getName() != it->getName())
+						//if (iter->getName() != it->getName())
 						{
+							std::cout << iter->getHealth() << "\n";
 							iter->damage(it->m_damage);
-							//retPacket << cn::PlayerDamaged << iter->getName() << iter->getHealth();
+							retPacket << cn::PlayerHealth << iter->getName() << iter->getHealth();
 							it->erase = true;
 							m_eraseProjectileIDs.push_back(it->m_id);
 						}
@@ -200,7 +200,6 @@ sf::Packet Server::simulateGameState() {
 		retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
 		for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
 			retPacket << *it;
-			std::cout << "Erase: " << *it << "\n";
 			std::vector<Projectile>::iterator iter = findID(*it);
 			if (iter != m_projectiles.end())
 			{
@@ -218,7 +217,7 @@ sf::Packet Server::simulateGameState() {
 
 	for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
 	{
-		retPacket << cn::ScoreUpdate << i->second.getName() << i->second.score;
+		retPacket << cn::ScoreUpdate << i->second.getName() << i->second.m_score;
 	}
 
 	return retPacket;
@@ -321,7 +320,7 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 		if (m_clientList[projectiles.begin()->getName()].shoot()) {
 			if (it->m_id == -1) {
 				it->m_id = m_projectileID;
-				it->m_damage = m_clientList[projectiles.begin()->getName()].getBulletDamage();
+				it->m_damage = m_clientList[projectiles.begin()->getName()].getDamage();
 				m_projectileID++;
 			}
 

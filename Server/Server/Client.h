@@ -5,8 +5,10 @@
 #include <SFML\System\Clock.hpp>
 #include <vector>
 #include <memory>
+
 #include "..\..\Common\Projectile.h"
 #include "..\..\Common\Protocol.h"
+#include "..\..\Common\Score.h"
 
 struct Client : public sf::Transformable {
 	Client();
@@ -27,7 +29,7 @@ struct Client : public sf::Transformable {
 
 	bool shoot();
 
-	cn::Score score;
+	Score m_score;
 
 	bool operator==(Client & p_client) const;
 
@@ -35,13 +37,13 @@ struct Client : public sf::Transformable {
 	void setHealth(const int& p_health);
 	void damage(const int& p_damage);
 
-	int getBulletDamage() const;
-	void setBulletDamage(const int& p_damage);
+	int getDamage() const;
+	void setDamage(const int& p_damage);
 
 private:
 	int m_health;
 
-	int m_bulletDamage;
+	int m_damage;
 
 	sf::IpAddress m_address;
 	unsigned short m_port;

@@ -3,11 +3,13 @@
 #include <SFML\Graphics\Transformable.hpp>
 #include <SFML\Graphics\Text.hpp>
 #include <SFML\Graphics\Font.hpp>
+#include <SFML\Graphics\RectangleShape.hpp>
 
 #include <SFML\System\String.hpp>
 #include <SFML\System\Time.hpp>
 
 #include "..\..\Common\Protocol.h"
+#include "..\..\Common\Score.h"
 
 class Player : public sf::Drawable, public sf::Transformable
 {
@@ -28,7 +30,7 @@ public:
 	int getHealth() const;
 	void setHealth(const int & p_health);
 
-	cn::Score score;
+	Score m_score;
 
 private:
 	bool m_remote, m_dead;
