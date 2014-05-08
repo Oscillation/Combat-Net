@@ -16,7 +16,7 @@ namespace cn
 		Projectile,
 		EraseProjectile,
 		PlayerHealth,
-		PlayerSpawn,
+		PlayerRespawn,
 		ScoreUpdate,
 	};
 

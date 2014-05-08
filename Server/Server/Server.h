@@ -40,6 +40,9 @@ private:
 
 	bool nameTaken(const std::string & p_name);
 
+	///<summary>Inserts a respawn packet to p_packet and respawns a player on the server side</summary>
+	void respawnPlayerPacket(Client& player, sf::Packet& p_packet);
+
 private:
 	sf::Clock m_clock, m_elapsed;
 	sf::Time m_updateTime;

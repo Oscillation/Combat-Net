@@ -188,6 +188,9 @@ sf::Packet Server::simulateGameState() {
 							retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
 							it->erase = true;
 							m_eraseProjectileIDs.push_back(it->m_id);
+							if (m_clientList[iter->getName()].getHealth() <= 0) {
+								respawnPlayerPacket(m_clientList[iter->getName()], retPacket);
+							}
 						}
 					}
 				}
@@ -365,4 +368,11 @@ void Server::pingClients()
 		m_socket.send(pingPacket, it->second.getAddress(), it->second.getPort());
 		it->second.hasRespondedToPing = false;
 	}
+}
+
+void Server::respawnPlayerPacket(Client& client, sf::Packet& p_packet)
+{
+	client.setHealth(100);
+	client.setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
+	p_packet << cn::PlayerRespawn << client.getName() << client.getPosition();
 }

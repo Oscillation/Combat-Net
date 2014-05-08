@@ -20,7 +20,6 @@ Player::Player(std::string p_name, sf::Font& p_font, bool p_remote)
 	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
 	nameText.setStyle(sf::Text::Bold);
 	nameText.setColor(sf::Color::Black);
-	std::cout << &m_dead << std::endl;
 }
 
 Player::~Player()
@@ -85,10 +84,7 @@ int Player::getHealth() const{
 
 void Player::setHealth(const int & p_health){
 	m_health = p_health;
-	if (m_health <= 0)
-	{
-		m_dead = true;
-	}
+	m_dead = (m_health <= 0);
 }
 
 bool Player::isDead() const{
