@@ -170,7 +170,7 @@ sf::Packet Server::simulateGameState() {
 		if (!it->erase)
 		{
 			it->move(it->getVelocity());
-			it->erase = map.intersectsWall(it->getPosition());
+			it->erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x - 2.5f, it->getPosition().y - 2.5f, 5, 5));
 			if (it->erase)
 			{
 				m_eraseProjectileIDs.push_back(it->m_id);
@@ -182,7 +182,7 @@ sf::Packet Server::simulateGameState() {
 				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
 					if (m_gameManager.intersect(*iter, *it))
 					{
-						//if (iter->getName() != it->getName())
+						if (iter->getName() != it->getName())
 						{	
 							m_clientList[iter->getName()].damage(it->m_damage);
 							retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
