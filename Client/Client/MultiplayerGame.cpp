@@ -225,12 +225,14 @@ void MultiplayerGame::render()
 	m_window.clear(sf::Color::Black);
 	m_window.setView(m_view);
 
-	for (unsigned int x = 0, y = 0; x < m_map.m_tiles.size(); x++)
-	{
-		for (y = 0; y < m_map.m_tiles[x].size(); y++)
-		{
+	for (unsigned int x = ((m_view.getCenter().x - m_view.getSize().x/2)/64 + 1 >= 0  ? ((m_view.getCenter().x - m_view.getSize().x/2)/64 + 1):0),
+		y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 + 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 + 1):0);
+		x < ((((m_view.getCenter().x + m_view.getSize().x/2)/64 - 1) < m_map.m_tiles.size() ? ((m_view.getCenter().x + m_view.getSize().x/2)/64 - 1):m_map.m_tiles.size())); x++) {
+		for (y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 + 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 + 1):0);
+			y < ((((m_view.getCenter().y + m_view.getSize().y/2)/64 - 1) < m_map.m_tiles.begin()->size() ? ((m_view.getCenter().y + m_view.getSize().y/2)/64 - 1):m_map.m_tiles.begin()->size())); y++) {
 			sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
 			tile.setPosition(sf::Vector2f(x*64.f, y*64.f));
+			
 			switch (m_map.m_tiles[x][y].m_type)
 			{
 			case Floor:
