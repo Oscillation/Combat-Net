@@ -51,7 +51,7 @@ void Projectile::setTargetPosition(sf::Vector2f p_targetPosition)
 void Projectile::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const{
 	p_states.transform *= getTransform();
 	sf::RectangleShape rect(sf::Vector2<float>(5, 5));
-	rect.setFillColor(sf::Color::Blue);
+	rect.setFillColor(sf::Color(200, 200, 200));
 	rect.setOrigin(2.5f, 2.5f);
 	p_target.draw(rect, p_states);
 }

@@ -69,7 +69,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	}
 
 	while(!connect()){
-		
+
 	}
 }
 
@@ -217,7 +217,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		m_scoreboard.deactivate();
 
 	m_scoreboard.updateStats();
-	
+
 }
 
 void MultiplayerGame::render()
@@ -266,32 +266,34 @@ void MultiplayerGame::render()
 
 bool MultiplayerGame::handleInput(sf::Packet& packet, const int & p_deltaTime)
 {
-	std::vector<cn::InputType> inputs;
+	if (!m_players[m_name]->isDead()) {
+		std::vector<cn::InputType> inputs;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
-		inputs.push_back(cn::MoveUp);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		inputs.push_back(cn::MoveDown);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		inputs.push_back(cn::MoveLeft);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-	{
-		inputs.push_back(cn::MoveRight);
-	}
-
-	if (!inputs.empty())
-	{
-		packet << 0 << cn::PlayerInput << m_name << inputs.size();
-		for(auto it = inputs.begin(); it != inputs.end(); ++it){
-			packet << (int)*it << p_deltaTime;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		{
+			inputs.push_back(cn::MoveUp);
 		}
-		return true;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		{
+			inputs.push_back(cn::MoveDown);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		{
+			inputs.push_back(cn::MoveLeft);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		{
+			inputs.push_back(cn::MoveRight);
+		}
+
+		if (!inputs.empty())
+		{
+			packet << 0 << cn::PlayerInput << m_name << inputs.size();
+			for(auto it = inputs.begin(); it != inputs.end(); ++it){
+				packet << (int)*it << p_deltaTime;
+			}
+			return true;
+		}
 	}
 
 	return false;
@@ -299,36 +301,39 @@ bool MultiplayerGame::handleInput(sf::Packet& packet, const int & p_deltaTime)
 
 bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_deltaTime)
 {
-	std::vector<Projectile> projectiles;
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	if (!m_players[m_name]->isDead())
 	{
-		Projectile projectile = Projectile();
-		projectile.setName(m_name);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		std::vector<Projectile> projectiles;
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
-			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak)))));
-		}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y + (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak)))));
+			Projectile projectile = Projectile();
+			projectile.setName(m_name);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak)))));
+			}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			{
+				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y + (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak)))));
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x - (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak))), projectile.getVelocity().y));
+			}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x + (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak))), projectile.getVelocity().y));
+			}
+
+			projectile.setPosition(m_players[m_name].get()->getPosition());
+
+			projectiles.push_back(projectile);
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+
+		if (!projectiles.empty())
 		{
-			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x - (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak))), projectile.getVelocity().y));
-		}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x + (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak))), projectile.getVelocity().y));
+			packet << 0 << cn::Projectile << projectiles;
+			return true;
 		}
-
-		projectile.setPosition(m_players[m_name].get()->getPosition());
-
-		projectiles.push_back(projectile);
-	}
-
-	if (!projectiles.empty())
-	{
-		packet << 0 << cn::Projectile << projectiles;
-		return true;
 	}
 
 	return false;
@@ -461,8 +466,9 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			std::string name;
 			int health;
 			p_packet >> name >> health;
-			m_players[name].get()->setHealth(health);
+			m_players[name]->setHealth(health);
 			std::cout << name << ": " << m_players[name].get()->getHealth() << "\n";
+
 		}else if ((cn::PacketType)type == cn::ScoreUpdate)
 		{
 			std::string name;

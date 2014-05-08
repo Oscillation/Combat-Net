@@ -102,56 +102,58 @@ sf::Packet Server::simulateGameState() {
 	retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::MegaPacket;
 	for (InputData input : m_clientInputs) {
 		Client* client = &m_clientList[input.getPlayer()];
-		float deltaTime = (float)input.getDeltaTime()/1000.f;
-		sf::Vector2<float> pos = client->getPosition();
-		switch (input.getInputType())
-		{
-		case cn::MoveUp:
-			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)))
+		if (client->getHealth() > 0) {
+			float deltaTime = (float)input.getDeltaTime()/1000.f;
+			sf::Vector2<float> pos = client->getPosition();
+			switch (input.getInputType())
 			{
-				client->move(0, -client->getSpeed()*deltaTime);
-			}else
-			{
-				client->setPosition(client->getPosition().x, map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)).y + 64 + 20);
+			case cn::MoveUp:
+				if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)))
+				{
+					client->move(0, -client->getSpeed()*deltaTime);
+				}else
+				{
+					client->setPosition(client->getPosition().x, map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)).y + 64 + 20);
+				}
+				break;
+
+			case cn::MoveDown:
+				if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)))
+				{
+					client->move(0, client->getSpeed()*deltaTime);
+				}else
+				{
+					client->setPosition(client->getPosition().x, map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)).y - 20);
+				}
+				break;
+
+			case cn::MoveLeft:
+				if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)))
+				{
+					client->move(-client->getSpeed()*deltaTime, 0);
+				}else
+				{
+					client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)).x + 64 + 20, client->getPosition().y);
+				}
+				break;
+
+			case cn::MoveRight:
+				if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)))
+				{
+					client->move(client->getSpeed()*deltaTime, 0);
+				}else
+				{
+					client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);
+				}
+				break;
 			}
-			break;
 
-		case cn::MoveDown:
-			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)))
+			sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(pos.x/(64*m_gameManager.m_size), pos.y/(64*m_gameManager.m_size)), sf::Vector2<int>((pos.x + 40)/(64*m_gameManager.m_size), pos.y/(64*m_gameManager.m_size)), sf::Vector2<int>(pos.x/(64*m_gameManager.m_size), (pos.y + 40)/(64*m_gameManager.m_size)), sf::Vector2<int>((pos.x + 40)/(64*m_gameManager.m_size), (pos.y + 40)/(64*m_gameManager.m_size))};
+
+			for (int i = 0; i < 4; i++)
 			{
-				client->move(0, client->getSpeed()*deltaTime);
-			}else
-			{
-				client->setPosition(client->getPosition().x, map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)).y - 20);
+				m_gameManager.m_branches[clientPoints[i].x+((clientPoints[i].y)*m_gameManager.m_mapSize.x)].update(*client);
 			}
-			break;
-
-		case cn::MoveLeft:
-			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)))
-			{
-				client->move(-client->getSpeed()*deltaTime, 0);
-			}else
-			{
-				client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)).x + 64 + 20, client->getPosition().y);
-			}
-			break;
-
-		case cn::MoveRight:
-			if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)))
-			{
-				client->move(client->getSpeed()*deltaTime, 0);
-			}else
-			{
-				client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);
-			}
-			break;
-		}
-
-		sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(pos.x/(64*m_gameManager.m_size), pos.y/(64*m_gameManager.m_size)), sf::Vector2<int>((pos.x + 40)/(64*m_gameManager.m_size), pos.y/(64*m_gameManager.m_size)), sf::Vector2<int>(pos.x/(64*m_gameManager.m_size), (pos.y + 40)/(64*m_gameManager.m_size)), sf::Vector2<int>((pos.x + 40)/(64*m_gameManager.m_size), (pos.y + 40)/(64*m_gameManager.m_size))};
-
-		for (int i = 0; i < 4; i++)
-		{
-			m_gameManager.m_branches[clientPoints[i].x+((clientPoints[i].y)*m_gameManager.m_mapSize.x)].update(*client);
 		}
 	}
 
@@ -303,8 +305,7 @@ void Server::playerInput(sf::Packet & p_packet, const sf::IpAddress & p_address,
 }
 
 sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & port, const int & p_time){
-	sf::Packet retPacket;
-	retPacket << 0 << cn::Projectile;
+
 	if (m_projectiles.empty())
 	{
 		m_projectileID = 0;
@@ -313,24 +314,28 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 	int length;
 	std::vector<Projectile> projectiles;
 	p_packet >> projectiles;
+	if (m_clientList[projectiles.begin()->getName()].getHealth() > 0) {
+		sf::Packet retPacket;
+		retPacket << 0 << cn::Projectile;
+		for (auto it = projectiles.begin(); it != projectiles.end();) {
+			if (m_clientList[projectiles.begin()->getName()].shoot()) {
+				if (it->m_id == -1) {
+					it->m_id = m_projectileID;
+					it->m_damage = m_clientList[projectiles.begin()->getName()].getDamage();
+					m_projectileID++;
+				}
 
-	for (auto it = projectiles.begin(); it != projectiles.end();) {
-		if (m_clientList[projectiles.begin()->getName()].shoot()) {
-			if (it->m_id == -1) {
-				it->m_id = m_projectileID;
-				it->m_damage = m_clientList[projectiles.begin()->getName()].getDamage();
-				m_projectileID++;
+				m_projectiles.push_back(*it);
+				it++;
+			} else {
+				it = projectiles.erase(it);
 			}
-
-			m_projectiles.push_back(*it);
-			it++;
-		} else {
-			it = projectiles.erase(it);
 		}
+
+		retPacket << projectiles;
+		return retPacket;
 	}
-		
-	retPacket << projectiles;
-	return retPacket;
+	return sf::Packet();
 }
 
 void Server::pingClients()
