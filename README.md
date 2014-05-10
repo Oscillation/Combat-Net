@@ -12,3 +12,15 @@ TODO
 * MAYBE create a ctf mode
 * Create a "game thing"
 * particles
+
+Particle File Structure
+-----------------------
+
+* Time-Range(seconds) : *0.5 1*
+* Size-Range(pixels) : *1 5*
+* R-Range : *0 255*
+* G-Range : *0 255*
+* B-Range : *0 255*
+* Speed(pixels/second) : *25*
+* Speed-Range() : *0 5*
+* Frequency(Emissions/second) : *10*
