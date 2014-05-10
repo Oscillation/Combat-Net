@@ -63,7 +63,7 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	server_port = p_port;
 
 	m_particleLoader = ParticleLoader("Particles/");
-	m_particleEmitter = ParticleEmitter();
+	m_particleEmitter = ParticleEmitter(&m_particleLoader);
 
 	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
 		std::cout << "Failed to bind to port" << std::endl;
@@ -193,6 +193,11 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		it->update(p_deltaTime, m_elapsedGameTime);
 	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	{
+		m_particleEmitter.Emit("test", m_players[m_name]->getPosition());
+	}
+
 	m_particleEmitter.update(p_deltaTime);
 
 	m_view.setCenter(m_players[m_name]->getPosition());
@@ -262,11 +267,6 @@ void MultiplayerGame::render()
 
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
 		m_window.draw(*it);
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-	{
-		m_particleEmitter.Emit("test", m_particleLoader.m_particleTypes["test"], m_players[m_name]->getPosition(), sf::Vector2<float>(1, 1));
 	}
 
 	m_window.draw(m_particleEmitter);

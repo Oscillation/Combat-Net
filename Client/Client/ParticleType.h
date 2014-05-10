@@ -13,9 +13,6 @@ struct ParticleType{
 	///<summary>Seconds. x = min, y = max</summary>
 	sf::Vector2<float> getTimeRange() const;
 
-	///<summary>Pixels. x = min, y = max</summary>
-	sf::Vector2<short> getSizeRange() const;
-
 	///<summary>R-Value. x = min, y = max</summary>
 	sf::Vector2<short> getRRange() const;
 
@@ -31,13 +28,8 @@ struct ParticleType{
 	///<summary>Pixels/second. x = min, y = max</summary>
 	sf::Vector2<short> getSpeedOffset() const;
 
-	///<summary>Emissions/second.</summary>
-	float getFrequency() const;
-
 private:
 	sf::Vector2<float> m_timeRange;
-
-	sf::Vector2<short> m_sizeRange;
 
 	sf::Vector2<short> m_rRange;
 	sf::Vector2<short> m_gRange;
@@ -45,6 +37,4 @@ private:
 
 	float m_speed;
 	sf::Vector2<short> m_speedOffset;
-
-	float m_frequency;
 };

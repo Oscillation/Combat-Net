@@ -2,6 +2,7 @@
 #include <SFML\Graphics\Color.hpp>
 #include <SFML\Graphics\Vertex.hpp>
 #include <SFML\Graphics\CircleShape.hpp>
+#include <SFML\System\Time.hpp>
 
 #include "..\..\Common\GeneralMath.h"
 #include "ParticleType.h"
@@ -12,14 +13,19 @@ struct Particle{
 
 	~Particle();
 
-	sf::Color m_color;
+	void update(const sf::Time & p_deltaTime);
 
-	short m_size;
+	sf::Color m_color;
 
 	sf::Vector2<float> m_velocity;
 	sf::Vector2<float> m_position;
 
 	std::string m_type;
 
-	operator sf::Vertex();
+	sf::Vertex getVertex() const;
+
+	///<summary>Seconds.</summary>
+	float m_time;
+
+	Particle* trail;
 };

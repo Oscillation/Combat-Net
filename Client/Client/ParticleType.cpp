@@ -5,8 +5,7 @@ ParticleType::ParticleType(){
 }
 
 ParticleType::ParticleType(const std::string & p_path) :
-	m_timeRange(sf::Vector2<float>(-1, -1)),
-	m_sizeRange(sf::Vector2<float>(-1, -1))
+	m_timeRange(sf::Vector2<float>(-1, -1))
 {
 	std::ifstream file;
 	file.open(p_path);
@@ -37,33 +36,6 @@ ParticleType::ParticleType(const std::string & p_path) :
 				}
 			}
 			m_timeRange.y = std::atof(maxTime.c_str());
-			line.clear();
-		}
-#pragma endregion
-
-#pragma region Size
-		{
-			std::string minSize, maxSize;
-			bool next = false;
-			std::getline(file, line);
-			for (int i = 0; i < line.length(); i++)
-			{
-				if (line[i] != ' ')
-				{
-					if (!next)
-					{
-						minSize.push_back(line[i]);
-					}else
-					{
-						maxSize.push_back(line[i]);
-					}
-				}else
-				{
-					m_sizeRange.x = std::atof(minSize.c_str());
-					next = true;
-				}
-			}
-			m_sizeRange.y = std::atof(maxSize.c_str());
 			line.clear();
 		}
 #pragma endregion
@@ -184,14 +156,6 @@ ParticleType::ParticleType(const std::string & p_path) :
 		}
 #pragma endregion
 
-#pragma region Frequency
-		{
-			std::string frequency;
-			std::getline(file, frequency);
-			m_frequency = std::atof(frequency.c_str());
-		}
-#pragma endregion
-
 		file.close();
 	}else
 	{
@@ -205,10 +169,6 @@ ParticleType::~ParticleType(){
 
 sf::Vector2<float> ParticleType::getTimeRange() const{
 	return m_timeRange;
-}
-
-sf::Vector2<short> ParticleType::getSizeRange() const{
-	return m_sizeRange;
 }
 
 sf::Vector2<short> ParticleType::getRRange() const{
@@ -229,8 +189,4 @@ float ParticleType::getSpeed() const{
 
 sf::Vector2<short> ParticleType::getSpeedOffset() const{
 	return m_speedOffset;
-}
-
-float ParticleType::getFrequency() const{
-	return m_frequency;
 }

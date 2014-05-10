@@ -7,9 +7,10 @@ Particle::Particle(const std::string & p_type, const ParticleType & p_particleTy
 	m_color(sf::Color(math::random(p_particleType.getRRange().x, p_particleType.getRRange().y),
 	math::random(p_particleType.getGRange().x, p_particleType.getGRange().y),
 	math::random(p_particleType.getBRange().x, p_particleType.getBRange().y))),
-	m_size(math::random(p_particleType.getSizeRange().x, p_particleType.getSizeRange().y))
+	m_time(((float)(math::random((int)p_particleType.getTimeRange().x*100, (int)p_particleType.getTimeRange().y*100)))/100)
 {
-	
+	trail = new Particle(*this);
+	trail->m_velocity = (sf::Vector2<float>(m_velocity.x*0.9f, m_velocity.y*0.9f));
 }
 
 Particle::Particle(){
@@ -20,6 +21,13 @@ Particle::~Particle(){
 	
 }
 
-Particle::operator sf::Vertex(){ 
+void Particle::update(const sf::Time & p_deltaTime){
+	if (m_time > 0)
+	{
+		m_time -= p_deltaTime.asSeconds();
+	}
+}
+
+sf::Vertex Particle::getVertex() const{ 
 	return sf::Vertex(m_position, m_color);
 }

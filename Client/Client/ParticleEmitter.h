@@ -8,14 +8,18 @@
 
 #include "Particle.h"
 #include "ParticleType.h"
+#include "ParticleLoader.h"
 
 class ParticleEmitter : public sf::Drawable{
 public:
 	ParticleEmitter();
+	ParticleEmitter(ParticleLoader* ptr_particleLoader);
 	~ParticleEmitter();
 
 	///<summary>p_velocity = % of the speed of the particle type in the given direction.</summary>
-	void Emit(const std::string & p_type, const ParticleType & p_particleType, const sf::Vector2<float> & p_position, const sf::Vector2<float> & p_velocity);
+	void Emit(const std::string & p_type, const sf::Vector2<float> & p_position, const sf::Vector2<float> & p_velocity);
+
+	void Emit(const std::string & p_type, const sf::Vector2<float> & p_position);
 
 	void update(sf::Time & p_deltaTime);
 
@@ -23,4 +27,5 @@ public:
 
 private:
 	std::vector<Particle> m_particles;
+	ParticleLoader* ptr_particleLoader;
 };
