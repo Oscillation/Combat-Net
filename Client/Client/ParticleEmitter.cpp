@@ -62,6 +62,23 @@ void ParticleEmitter::Emit(const std::string & p_type, const sf::Vector2<float> 
 	m_particles.push_back(*particle);
 }
 
+void ParticleEmitter::Emit(const std::string & p_type, const sf::Vector2<float> & p_position, const sf::Vector2<float> & p_velocity, const int & p_amount){
+	for (int i = 0; i < p_amount; i++)
+	{
+		Particle* particle = new Particle(p_type, ptr_particleLoader->getParticleType(p_type), p_position, p_velocity);
+		m_particles.push_back(*particle);
+	}
+}
+
+void ParticleEmitter::Emit(const std::string & p_type, const sf::Vector2<float> & p_position, const int & p_amount){
+	for (int i = 0; i < p_amount; i++)
+	{
+		sf::Vector2<float> velocity = sf::Vector2<float>((((float)math::random(1, 100))/100)*(math::random(-1, 1, 0)), (((float)math::random(1, 100))/100)*(math::random(-1, 1, 0)));
+		Particle* particle = new Particle(p_type, ptr_particleLoader->getParticleType(p_type), p_position, velocity);
+		m_particles.push_back(*particle);
+	}
+}
+
 void ParticleEmitter::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const{
 	sf::VertexArray vertexArray;
 	vertexArray.setPrimitiveType(sf::PrimitiveType::Lines);

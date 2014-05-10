@@ -201,6 +201,7 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	m_particleEmitter.update(p_deltaTime);
 
 	m_view.setCenter(m_players[m_name]->getPosition());
+
 	if (m_active)
 	{
 		sf::Packet inputPacket;
@@ -432,6 +433,10 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 		std::vector<Projectile>::iterator it = findID(id);
 		if (it != m_projectiles.end())
 		{
+			m_particleEmitter.Emit("test", it->getPosition(), 
+				sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
+				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1),
+				10);
 			m_projectiles.erase(it);
 		}
 	}

@@ -21,6 +21,11 @@ public:
 
 	void Emit(const std::string & p_type, const sf::Vector2<float> & p_position);
 
+	///<summary>p_velocity = % of the speed of the particle type in the given direction.</summary>
+	void Emit(const std::string & p_type, const sf::Vector2<float> & p_position, const sf::Vector2<float> & p_velocity, const int & p_amount);
+
+	void Emit(const std::string & p_type, const sf::Vector2<float> & p_position, const int & p_amount);
+
 	void update(sf::Time & p_deltaTime);
 
 	void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;
