@@ -1,7 +1,9 @@
 #pragma once
 #include <SFML\Graphics\Color.hpp>
-#include "..\..\Common\GeneralMath.h"
+#include <SFML\Graphics\Vertex.hpp>
+#include <SFML\Graphics\CircleShape.hpp>
 
+#include "..\..\Common\GeneralMath.h"
 #include "ParticleType.h"
 
 struct Particle{
@@ -18,4 +20,6 @@ struct Particle{
 	sf::Vector2<float> m_position;
 
 	std::string m_type;
+
+	operator sf::Vertex();
 };

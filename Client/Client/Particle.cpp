@@ -19,3 +19,9 @@ Particle::Particle(){
 Particle::~Particle(){
 	
 }
+
+Particle::operator sf::Vertex(){
+	sf::CircleShape circle(m_size);
+
+	return ;
+}

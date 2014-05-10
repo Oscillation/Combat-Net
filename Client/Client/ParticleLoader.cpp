@@ -35,3 +35,7 @@ ParticleType ParticleLoader::loadParticle(const std::string & p_path){
 	ParticleType particle = ParticleType(p_path);
 	return particle;
 }
+
+ParticleType ParticleLoader::getParticleType(const std::string & p_name) const{
+	return m_particleTypes[p_name];
+}
