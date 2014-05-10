@@ -56,6 +56,12 @@
     <ClCompile Include="ParticleLoader.cpp">
       <Filter>Source Files\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MultiplayerGame.h">
@@ -89,6 +95,12 @@
       <Filter>Source Files\Particle</Filter>
     </ClInclude>
     <ClInclude Include="ParticleLoader.h">
+      <Filter>Source Files\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Source Files\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
       <Filter>Source Files\Particle</Filter>
     </ClInclude>
   </ItemGroup>
