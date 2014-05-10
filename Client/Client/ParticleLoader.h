@@ -15,7 +15,7 @@ public:
 	void loadParticles(const std::string & p_path);
 
 private:
-	ParticleType & loadParticle(const std::string & p_path);
+	ParticleType loadParticle(const std::string & p_path);
 
 	std::map<std::string, ParticleType> m_particleTypes;
 };

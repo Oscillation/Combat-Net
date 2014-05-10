@@ -27,10 +27,11 @@ void ParticleLoader::loadParticles(const std::string & p_path){
 
 	for (int i = 2; i < files.size(); i++)
 	{
-		m_particleTypes[files[i]] = loadParticle(p_path + files[i]);
+		m_particleTypes[files[i].substr(0, files[i].length() - 4)] = loadParticle(p_path + files[i]);
 	}
 }
 
-ParticleType & ParticleLoader::loadParticle(const std::string & p_path){
-	return ParticleType(p_path);
+ParticleType ParticleLoader::loadParticle(const std::string & p_path){
+	ParticleType particle = ParticleType(p_path);
+	return particle;
 }
