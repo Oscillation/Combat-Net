@@ -18,6 +18,7 @@
 #include "..\..\Common\Projectile.h"
 #include "Scoreboard.h"
 #include "ParticleLoader.h"
+#include "ParticleEmitter.h"
 
 #include <map>
 #include <memory>
@@ -92,4 +93,5 @@ private:
 	Scoreboard m_scoreboard;
 
 	ParticleLoader m_particleLoader;
+	ParticleEmitter m_particleEmitter;
 };

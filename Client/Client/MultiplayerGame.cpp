@@ -264,6 +264,11 @@ void MultiplayerGame::render()
 		m_window.draw(*it);
 	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	{
+		m_particleEmitter.Emit("test", m_particleLoader.m_particleTypes["test"], m_players[m_name]->getPosition(), sf::Vector2<float>(1, 1));
+	}
+
 	m_window.draw(m_particleEmitter);
 
 	m_window.setView(m_window.getDefaultView());

@@ -9,7 +9,7 @@
 #include "Particle.h"
 #include "ParticleType.h"
 
-class ParticleEmitter : sf::Drawable{
+class ParticleEmitter : public sf::Drawable{
 public:
 	ParticleEmitter();
 	~ParticleEmitter();
@@ -23,5 +23,4 @@ public:
 
 private:
 	std::vector<Particle> m_particles;
-	sf::VertexArray m_vertexArray;
 };

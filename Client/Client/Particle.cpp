@@ -20,8 +20,6 @@ Particle::~Particle(){
 	
 }
 
-Particle::operator sf::Vertex(){
-	sf::CircleShape circle(m_size);
-
-	return ;
+Particle::operator sf::Vertex(){ 
+	return sf::Vertex(m_position, m_color);
 }

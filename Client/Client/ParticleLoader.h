@@ -14,6 +14,8 @@ public:
 
 	void loadParticles(const std::string & p_path);
 
+	ParticleType getParticleType(const std::string & p_name) const;
+
 private:
 	ParticleType loadParticle(const std::string & p_path);
 
