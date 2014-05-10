@@ -43,7 +43,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\libs\SFML-2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\libs\dirent-1.13.2\include;C:\libs\SFML-2.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>SFML_STATIC;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -77,6 +77,8 @@
     <ClCompile Include="..\..\Common\Score.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MultiplayerGame.cpp" />
+    <ClCompile Include="ParticleLoader.cpp" />
+    <ClCompile Include="ParticleType.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scoreboard.cpp" />
   </ItemGroup>
@@ -88,6 +90,8 @@
     <ClInclude Include="..\..\Common\Score.h" />
     <ClInclude Include="..\..\Common\Tile.h" />
     <ClInclude Include="MultiplayerGame.h" />
+    <ClInclude Include="ParticleLoader.h" />
+    <ClInclude Include="ParticleType.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scoreboard.h" />
   </ItemGroup>

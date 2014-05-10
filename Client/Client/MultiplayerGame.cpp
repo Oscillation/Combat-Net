@@ -62,6 +62,8 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	server_address = p_address;
 	server_port = p_port;
 
+	m_particleLoader = ParticleLoader("Particles/");
+
 	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
 		std::cout << "Failed to bind to port" << std::endl;
 		system("pause");
@@ -113,7 +115,6 @@ bool MultiplayerGame::connect(){
 				m_window.create(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close);
 				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
 				m_view.setCenter(m_players[m_name].get()->getPosition());
-				m_view.setCenter(m_players[name].get()->getPosition());
 				std::cout << m_name << std::endl;
 				return true;
 			}
@@ -225,11 +226,11 @@ void MultiplayerGame::render()
 	m_window.clear(sf::Color::Black);
 	m_window.setView(m_view);
 
-	for (unsigned int x = ((m_view.getCenter().x - m_view.getSize().x/2)/64 + 1 >= 0  ? ((m_view.getCenter().x - m_view.getSize().x/2)/64 + 1):0),
-		y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 + 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 + 1):0);
-		x < ((((m_view.getCenter().x + m_view.getSize().x/2)/64 - 1) < m_map.m_tiles.size() ? ((m_view.getCenter().x + m_view.getSize().x/2)/64 - 1):m_map.m_tiles.size())); x++) {
-		for (y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 + 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 + 1):0);
-			y < ((((m_view.getCenter().y + m_view.getSize().y/2)/64 - 1) < m_map.m_tiles.begin()->size() ? ((m_view.getCenter().y + m_view.getSize().y/2)/64 - 1):m_map.m_tiles.begin()->size())); y++) {
+	for (unsigned int x = ((m_view.getCenter().x - m_view.getSize().x/2)/64 - 1 >= 0  ? ((m_view.getCenter().x - m_view.getSize().x/2)/64 - 1):0),
+		y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1):0);
+		x < ((((m_view.getCenter().x + m_view.getSize().x/2)/64 + 1) < m_map.m_tiles.size() ? ((m_view.getCenter().x + m_view.getSize().x/2)/64 + 1):m_map.m_tiles.size())); x++) {
+		for (y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1):0);
+			y < ((((m_view.getCenter().y + m_view.getSize().y/2)/64 + 1) < m_map.m_tiles.begin()->size() ? ((m_view.getCenter().y + m_view.getSize().y/2)/64 + 1):m_map.m_tiles.begin()->size())); y++) {
 			sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
 			tile.setPosition(sf::Vector2f(x*64.f, y*64.f));
 			
@@ -259,6 +260,7 @@ void MultiplayerGame::render()
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
 		m_window.draw(*it);
 	}
+
 	m_window.setView(m_window.getDefaultView());
 	m_window.draw(m_scoreboard);
 	m_window.draw(statusText);

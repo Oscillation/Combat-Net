@@ -17,6 +17,7 @@
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
 #include "Scoreboard.h"
+#include "ParticleLoader.h"
 
 #include <map>
 #include <memory>
@@ -89,4 +90,6 @@ private:
 	sf::Text statusText;
 
 	Scoreboard m_scoreboard;
+
+	ParticleLoader m_particleLoader;
 };
