@@ -33,4 +33,6 @@ public:
 private:
 	std::vector<Particle> m_particles;
 	ParticleLoader* ptr_particleLoader;
+
+	sf::VertexArray m_vertexArray;
 };

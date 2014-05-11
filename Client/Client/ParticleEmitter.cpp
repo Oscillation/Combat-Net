@@ -1,11 +1,11 @@
 #include "ParticleEmitter.h"
 
 ParticleEmitter::ParticleEmitter(){
-
+	m_vertexArray.setPrimitiveType(sf::PrimitiveType::Lines);
 }
 
 ParticleEmitter::ParticleEmitter(ParticleLoader* ptr_particleLoader) : ptr_particleLoader(ptr_particleLoader){
-
+	m_vertexArray.setPrimitiveType(sf::PrimitiveType::Lines);
 }
 
 ParticleEmitter::~ParticleEmitter(){
@@ -13,10 +13,11 @@ ParticleEmitter::~ParticleEmitter(){
 }
 
 void ParticleEmitter::update(sf::Time & p_deltaTime){
+	m_vertexArray.clear();
 	for	(int i = 0; i < m_particles.size(); i++){
 		if (m_particles[i].m_time <= 0)
 		{
-			if (m_particles[i].m_velocity.x > 0.1f || m_particles[i].m_velocity.y > 0.1f)
+			if (m_particles[i].m_velocity.x > 0.2f || m_particles[i].m_velocity.y > 0.2f)
 			{
 				m_particles[i].m_velocity*=0.8f;
 
@@ -25,6 +26,9 @@ void ParticleEmitter::update(sf::Time & p_deltaTime){
 				m_particles[i].m_position += m_particles[i].m_velocity;
 
 				m_particles[i].trail->m_position += m_particles[i].trail->m_velocity;
+
+				m_vertexArray.append(m_particles[i].getVertex());
+				m_vertexArray.append(m_particles[i].trail->getVertex());
 			}else
 			{
 				if (m_particles[i].m_color.a > 10)
@@ -34,6 +38,9 @@ void ParticleEmitter::update(sf::Time & p_deltaTime){
 
 					m_particles[i].trail->m_velocity = sf::Vector2<float>();
 					m_particles[i].trail->m_color.a *= 0.7f;
+
+					m_vertexArray.append(m_particles[i].getVertex());
+					m_vertexArray.append(m_particles[i].trail->getVertex());
 				}else
 				{
 					m_particles.erase(m_particles.begin() + i);
@@ -43,8 +50,10 @@ void ParticleEmitter::update(sf::Time & p_deltaTime){
 		{
 			m_particles[i].update(p_deltaTime);
 			m_particles[i].m_position += m_particles[i].m_velocity;
-
 			m_particles[i].trail->m_position += m_particles[i].trail->m_velocity;
+
+			m_vertexArray.append(m_particles[i].getVertex());
+			m_vertexArray.append(m_particles[i].trail->getVertex());
 		}
 	}
 }
@@ -78,13 +87,5 @@ void ParticleEmitter::Emit(const std::string & p_type, const sf::Vector2<float> 
 }
 
 void ParticleEmitter::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const{
-	sf::VertexArray vertexArray;
-	vertexArray.setPrimitiveType(sf::PrimitiveType::Lines);
-
-	for	(auto it = m_particles.begin(); it != m_particles.end(); ++it){
-		vertexArray.append(it->getVertex());
-		vertexArray.append(it->trail->getVertex());
-	}
-
-	p_target.draw(vertexArray);
+	p_target.draw(m_vertexArray);
 }
