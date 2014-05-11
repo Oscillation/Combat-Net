@@ -11,6 +11,7 @@
 #include <memory>
 
 #include "Player.h"
+#include "ScoreText.h"
 
 class Scoreboard : public sf::Drawable, public sf::Transformable
 {
@@ -30,11 +31,13 @@ private:
 
 private:
 	std::map<std::string, std::unique_ptr<Player>>& m_players;
-	std::vector<sf::Text> m_scoreTexts;
+	std::vector<ScoreText> m_scoreTexts;
 
 	sf::RectangleShape m_background;
 	sf::RectangleShape m_namePanel;
-	sf::Text m_namePanelText;
+	ScoreText m_namePanelText;
+
+	sf::Font* m_font;
 
 	bool m_active;
 };

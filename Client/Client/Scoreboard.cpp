@@ -7,7 +7,8 @@ Scoreboard::Scoreboard(std::map<std::string, std::unique_ptr<Player>>& p_players
 	:
 	m_players(p_players),
 	m_background(sf::Vector2f(600, 200)),
-	m_namePanel(sf::Vector2f(560, 20))
+	m_namePanel(sf::Vector2f(560, 20)),
+	m_namePanelText("NAME", true)
 {
 	m_background.setFillColor(sf::Color(128, 128, 128, 200));
 	m_background.setOutlineColor(sf::Color::Black);
@@ -19,8 +20,6 @@ Scoreboard::Scoreboard(std::map<std::string, std::unique_ptr<Player>>& p_players
 	m_namePanel.setOutlineThickness(1.f);
 
 	m_namePanelText.setPosition(22.f, 11.f);
-	m_namePanelText.setString("Name	K / D / Score");
-	m_namePanelText.setCharacterSize(14);
 
 	this->setOrigin(m_background.getGlobalBounds().width/2, m_background.getGlobalBounds().height/2);
 }
@@ -28,15 +27,6 @@ Scoreboard::Scoreboard(std::map<std::string, std::unique_ptr<Player>>& p_players
 Scoreboard::~Scoreboard()
 {
 }
-
-std::string createScoreString(std::pair<std::string, Player*> i)
-{
-	return i.first 
-			+ " " + std::to_string(i.second->m_score.m_points)
-			+ " " + std::to_string(i.second->m_score.m_kills)
-			+ " " + std::to_string(i.second->m_score.m_deaths);
-}
-
 
 void Scoreboard::updateStats()
 {
@@ -56,12 +46,11 @@ void Scoreboard::updateStats()
 	{
 		if (count >= m_scoreTexts.size())
 		{
-			m_scoreTexts.push_back(sf::Text());
-			m_scoreTexts[count].setFont(*m_namePanelText.getFont());
-			m_scoreTexts[count].setCharacterSize(12);
+			m_scoreTexts.push_back(ScoreText(i->first, false));
+			m_scoreTexts[count].setFont(*m_font);
 		}
-		m_scoreTexts[count].setString(createScoreString(*i));
-		m_scoreTexts[count].setPosition(20.f, 30.f + count * 16.f);
+		m_scoreTexts[count].update(i->second->m_score);
+		m_scoreTexts[count].setPosition(22.f, 30.f + count * 16.f);
 	}
 }
 
@@ -78,6 +67,7 @@ void Scoreboard::deactivate()
 void Scoreboard::setFont(sf::Font& p_font)
 {
 	m_namePanelText.setFont(p_font);
+	m_font = &p_font;
 }
 
 void Scoreboard::draw(sf::RenderTarget& target, sf::RenderStates states) const

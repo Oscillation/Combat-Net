@@ -190,6 +190,9 @@ sf::Packet Server::simulateGameState() {
 							m_eraseProjectileIDs.push_back(it->m_id);
 							if (m_clientList[iter->getName()].getHealth() <= 0) {
 								respawnPlayerPacket(m_clientList[iter->getName()], retPacket);
+								m_clientList[iter->getName()].m_score.m_deaths++;
+								m_clientList[it->getName()].m_score.m_kills++;
+								m_clientList[it->getName()].m_score.m_points++;
 							}
 						}
 					}
