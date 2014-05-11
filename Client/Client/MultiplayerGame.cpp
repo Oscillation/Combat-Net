@@ -214,20 +214,20 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 		{
 			m_socket.send(projectilePacket, server_address, server_port);
 		}
-	}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+			m_scoreboard.activate();
+		else 
+			m_scoreboard.deactivate();
+	}else 
+		m_scoreboard.deactivate();
 
 	// Handle server crash/random disconnect
 	if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
 	{
 		statusText.setString("Lost connection to server...");
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
-		m_scoreboard.activate();
-	else 
-		m_scoreboard.deactivate();
 
 	m_scoreboard.updateStats();
-
 }
 
 void MultiplayerGame::render()
@@ -238,25 +238,25 @@ void MultiplayerGame::render()
 	for (unsigned int x = ((m_view.getCenter().x - m_view.getSize().x/2)/64 - 1 >= 0  ? ((m_view.getCenter().x - m_view.getSize().x/2)/64 - 1):0),
 		y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1):0);
 		x < ((((m_view.getCenter().x + m_view.getSize().x/2)/64 + 1) < m_map.m_tiles.size() ? ((m_view.getCenter().x + m_view.getSize().x/2)/64 + 1):m_map.m_tiles.size())); x++) {
-		for (y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1):0);
-			y < ((((m_view.getCenter().y + m_view.getSize().y/2)/64 + 1) < m_map.m_tiles.begin()->size() ? ((m_view.getCenter().y + m_view.getSize().y/2)/64 + 1):m_map.m_tiles.begin()->size())); y++) {
-			sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
-			tile.setPosition(sf::Vector2f(x*64.f, y*64.f));
-			
-			switch (m_map.m_tiles[x][y].m_type)
-			{
-			case Floor:
-				tile.setFillColor(sf::Color::Black);
-				break;
-			case Wall:
-				tile.setFillColor(sf::Color::Red);
-				break;
-			default:
-				tile.setFillColor(sf::Color::Black);
-				break;
+			for (y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1):0);
+				y < ((((m_view.getCenter().y + m_view.getSize().y/2)/64 + 1) < m_map.m_tiles.begin()->size() ? ((m_view.getCenter().y + m_view.getSize().y/2)/64 + 1):m_map.m_tiles.begin()->size())); y++) {
+					sf::RectangleShape tile = sf::RectangleShape(sf::Vector2f(64, 64));
+					tile.setPosition(sf::Vector2f(x*64.f, y*64.f));
+
+					switch (m_map.m_tiles[x][y].m_type)
+					{
+					case Floor:
+						tile.setFillColor(sf::Color::Black);
+						break;
+					case Wall:
+						tile.setFillColor(sf::Color::Red);
+						break;
+					default:
+						tile.setFillColor(sf::Color::Black);
+						break;
+					}
+					m_window.draw(tile);
 			}
-			m_window.draw(tile);
-		}
 	}
 
 	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
