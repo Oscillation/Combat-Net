@@ -17,6 +17,8 @@
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
 #include "Scoreboard.h"
+#include "ParticleLoader.h"
+#include "ParticleEmitter.h"
 
 #include <map>
 #include <memory>
@@ -70,7 +72,7 @@ private:
 	std::vector<Projectile>::iterator findID(const int & p_id);
 	std::vector<int> m_eraseProjectileIDs;
 
-	static const unsigned short m_projectileSpeed = 15;
+	static const unsigned short m_projectileSpeed = 20;
 
 	//%
 	static const unsigned short m_multiplier = 15;
@@ -89,4 +91,7 @@ private:
 	sf::Text statusText;
 
 	Scoreboard m_scoreboard;
+
+	ParticleLoader m_particleLoader;
+	ParticleEmitter m_particleEmitter;
 };

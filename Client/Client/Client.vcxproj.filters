@@ -21,6 +21,9 @@
     <Filter Include="Source Files\Score">
       <UniqueIdentifier>{7bf3e5d7-909e-4a10-886c-a59ad559916e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Particle">
+      <UniqueIdentifier>{94e376b6-a183-4ccc-92fa-f70570585159}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -49,6 +52,18 @@
     </ClCompile>
     <ClCompile Include="ScoreText.cpp">
       <Filter>Source Files\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleType.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleLoader.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +96,18 @@
     </ClInclude>
     <ClInclude Include="ScoreText.h">
       <Filter>Source Files\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleType.h">
+      <Filter>Source Files\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleLoader.h">
+      <Filter>Source Files\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>Source Files\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Source Files\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

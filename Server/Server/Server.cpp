@@ -9,7 +9,7 @@ Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0
 	system("cls");
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
 
-	map = Map("Maps/amazing map.txt");
+	map = Map("Maps/map.txt");
 	m_gameManager = GameManager(&m_clientList, &m_projectiles, map.m_tiles.size(), map.m_tiles.begin()->size());
 
 	pingTimer.restart();
