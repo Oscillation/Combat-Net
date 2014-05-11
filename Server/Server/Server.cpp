@@ -198,6 +198,9 @@ sf::Packet Server::simulateGameState() {
 					}
 				}
 			}
+		}else
+		{
+			m_eraseProjectileIDs.push_back(it->m_id);
 		}
 	}
 

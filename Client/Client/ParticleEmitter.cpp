@@ -13,7 +13,7 @@ ParticleEmitter::~ParticleEmitter(){
 }
 
 void ParticleEmitter::update(sf::Time & p_deltaTime){
-	for	(int i = 0; i < m_particles.size();){
+	for	(int i = 0; i < m_particles.size(); i++){
 		if (m_particles[i].m_time <= 0)
 		{
 			if (m_particles[i].m_velocity.x > 0.1f || m_particles[i].m_velocity.y > 0.1f)
@@ -22,7 +22,9 @@ void ParticleEmitter::update(sf::Time & p_deltaTime){
 
 				m_particles[i].trail->m_velocity*=0.8f;
 
-				i++;
+				m_particles[i].m_position += m_particles[i].m_velocity;
+
+				m_particles[i].trail->m_position += m_particles[i].trail->m_velocity;
 			}else
 			{
 				if (m_particles[i].m_color.a > 10)
@@ -32,12 +34,9 @@ void ParticleEmitter::update(sf::Time & p_deltaTime){
 
 					m_particles[i].trail->m_velocity = sf::Vector2<float>();
 					m_particles[i].trail->m_color.a *= 0.7f;
-
-					i++;
 				}else
 				{
 					m_particles.erase(m_particles.begin() + i);
-					i++;
 				}
 			}
 		}else
@@ -46,8 +45,6 @@ void ParticleEmitter::update(sf::Time & p_deltaTime){
 			m_particles[i].m_position += m_particles[i].m_velocity;
 
 			m_particles[i].trail->m_position += m_particles[i].trail->m_velocity;
-
-			i++;
 		}
 	}
 }
