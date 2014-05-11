@@ -6,7 +6,7 @@ Client::Client(){}
 Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) : 
 	m_address(p_address), 
 	m_port(p_port),
-	m_shootDelay(sf::seconds(0.3f)),
+	m_shootDelay(sf::seconds(0.01f)),
 	m_speed(300),
 	m_health(100),
 	m_score(),

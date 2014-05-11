@@ -37,6 +37,7 @@ void ParticleEmitter::update(sf::Time & p_deltaTime){
 				}else
 				{
 					m_particles.erase(m_particles.begin() + i);
+					i++;
 				}
 			}
 		}else
