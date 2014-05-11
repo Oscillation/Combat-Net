@@ -83,6 +83,7 @@
     <ClCompile Include="ParticleType.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scoreboard.cpp" />
+    <ClCompile Include="ScoreText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\GeneralMath.h" />
@@ -98,6 +99,7 @@
     <ClInclude Include="ParticleType.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scoreboard.h" />
+    <ClInclude Include="ScoreText.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Common\GeneralMath.inl" />

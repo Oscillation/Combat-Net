@@ -50,6 +50,9 @@
     <ClCompile Include="..\..\Common\Score.cpp">
       <Filter>Source Files\Score</Filter>
     </ClCompile>
+    <ClCompile Include="ScoreText.cpp">
+      <Filter>Source Files\Score</Filter>
+    </ClCompile>
     <ClCompile Include="ParticleType.cpp">
       <Filter>Source Files\Particle</Filter>
     </ClCompile>
@@ -89,6 +92,9 @@
       <Filter>Source Files\Score</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\Score.h">
+      <Filter>Source Files\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreText.h">
       <Filter>Source Files\Score</Filter>
     </ClInclude>
     <ClInclude Include="ParticleType.h">
