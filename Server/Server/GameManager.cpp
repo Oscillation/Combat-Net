@@ -65,7 +65,10 @@ void GameManager::update(Client & p_client){
 
 	for (int i = 0; i < 4; i++)
 	{
-		m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].update(p_client);
+		if ((clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)) >= 0 || (clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)) < m_branches.size())
+		{
+			m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].update(p_client);
+		}
 	}
 }
 
@@ -74,7 +77,10 @@ void GameManager::update(Projectile & p_projectile){
 
 	for (int i = 0; i < 4; i++)
 	{
-		m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].update(p_projectile);
+		if ((projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)) >= 0 || (projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)) < m_branches.size())
+		{
+			m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].update(p_projectile);
+		}
 	}
 }
 
