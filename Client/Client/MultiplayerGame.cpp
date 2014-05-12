@@ -200,7 +200,11 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 
 	m_particleEmitter.update(p_deltaTime);
 
+	updateViewShake(p_deltaTime);
+
 	m_view.setCenter(m_players[m_name]->getPosition());
+
+	m_view.move(m_viewVelocity);
 
 	if (m_active)
 	{
@@ -324,6 +328,7 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 		{
 			Projectile projectile = Projectile();
 			projectile.setName(m_name);
+			projectile.setPosition(m_players[m_name].get()->getPosition());
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
 				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak)))));
@@ -338,8 +343,6 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 			{
 				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x + (m_projectileSpeed + (m_projectileSpeed*((m_multiplier/100)*m_streak))), projectile.getVelocity().y));
 			}
-
-			projectile.setPosition(m_players[m_name].get()->getPosition());
 
 			projectiles.push_back(projectile);
 		}
@@ -436,7 +439,8 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 			m_particleEmitter.Emit("test", it->getPosition(), 
 				sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1),
-				10);
+				5);
+			shakeView(sf::seconds(0.15f));
 			m_projectiles.erase(it);
 		}
 	}
@@ -461,7 +465,6 @@ void MultiplayerGame::handlePing()
 
 void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time){
 	m_elapsedGameTime = 0;
-	std::vector<int> projectile_ids;
 	while (!p_packet.endOfPacket())
 	{
 		int type;
@@ -499,5 +502,35 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			m_players[name]->setPosition(position);
 			m_players[name]->setHealth(100);
 		}
+		/*else if ((cn::PacketType)type == cn::ProjectileIDCleanUp)
+		{
+			int size;
+			p_packet >> size;
+			for (int i = 0; i < size; i++)
+			{
+				int at, to;
+				p_packet >> at >> to;
+				std::cout << m_projectiles.back().m_id << "\n";
+				{
+					findID(at)->m_id = to;
+				}
+			}
+		}*/
+	}
+}
+
+void MultiplayerGame::shakeView(const sf::Time & p_time){
+	m_viewShakeTime = p_time.asSeconds();
+}
+
+void MultiplayerGame::updateViewShake(const sf::Time & p_deltaTime){
+	if (m_viewShakeTime > 0)
+	{
+		m_viewVelocity.x = math::random(-5, 5);
+		m_viewVelocity.y = math::random(-5, 5);
+		m_viewShakeTime -= p_deltaTime.asSeconds();
+	}else
+	{
+		m_viewVelocity = sf::Vector2<float>();
 	}
 }

@@ -166,44 +166,49 @@ sf::Packet Server::simulateGameState() {
 
 	m_eraseProjectileIDs.clear();
 
+	//update projectiles
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
-		if (!it->erase)
+		if (it != m_projectiles.end())
 		{
-			it->move(it->getVelocity());
-			it->erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x - 2.5f, it->getPosition().y - 2.5f, 5, 5));
-			if (it->erase)
+			if (!it->erase)
 			{
-				m_eraseProjectileIDs.push_back(it->m_id);
-			}else
-			{
-				m_gameManager.update(*it);
-				std::vector<Client> clients = m_gameManager.getClients(*it);
-				// itER = playER, it ends with an "er" deuuuug
-				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
-					if (m_gameManager.intersect(*iter, *it))
-					{
-						if (iter->getName() != it->getName())
-						{	
-							m_clientList[iter->getName()].damage(it->m_damage);
-							retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
-							it->erase = true;
-							m_eraseProjectileIDs.push_back(it->m_id);
-							if (m_clientList[iter->getName()].getHealth() <= 0) {
-								respawnPlayerPacket(m_clientList[iter->getName()], retPacket);
-								m_clientList[iter->getName()].m_score.m_deaths++;
-								m_clientList[it->getName()].m_score.m_kills++;
-								m_clientList[it->getName()].m_score.m_points++;
+				it->move(it->getVelocity());
+				it->erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x - 2.5f, it->getPosition().y - 2.5f, 5, 5));
+				if (it->erase)
+				{
+					m_eraseProjectileIDs.push_back(it->m_id);
+				}else
+				{
+					m_gameManager.update(*it);
+					std::vector<Client> clients = m_gameManager.getClients(*it);
+					// itER = playER, it ends with an "er" deuuuug
+					for (auto iter = clients.begin(); iter != clients.end(); ++iter){
+						if (m_gameManager.intersect(*iter, *it))
+						{
+							if (iter->getName() != it->getName())
+							{	
+								m_clientList[iter->getName()].damage(it->m_damage);
+								retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
+								it->erase = true;
+								m_eraseProjectileIDs.push_back(it->m_id);
+								if (m_clientList[iter->getName()].getHealth() <= 0) {
+									respawnPlayerPacket(m_clientList[iter->getName()], retPacket);
+									m_clientList[iter->getName()].m_score.m_deaths++;
+									m_clientList[it->getName()].m_score.m_kills++;
+									m_clientList[it->getName()].m_score.m_points++;
+								}
 							}
 						}
 					}
 				}
+			}else
+			{
+				m_eraseProjectileIDs.push_back(it->m_id);
 			}
-		}else
-		{
-			m_eraseProjectileIDs.push_back(it->m_id);
 		}
 	}
 
+	//erase projectiles
 	if (!m_eraseProjectileIDs.empty())
 	{
 		retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
@@ -219,6 +224,16 @@ sf::Packet Server::simulateGameState() {
 		m_eraseProjectileIDs.clear();
 	}
 
+	//clean projectile IDs
+	/*if (!m_projectiles.empty())
+	{
+		if (m_projectiles.size() < m_projectileID && m_projectiles.back().m_id > m_projectiles.size())
+		{
+			retPacket << ProjectileIDCleanup(retPacket);
+		}
+	}*/
+
+	//send projectiles
 	if (!m_projectiles.empty())
 	{
 		retPacket << cn::Projectile << m_projectiles;
@@ -381,4 +396,15 @@ void Server::respawnPlayerPacket(Client& client, sf::Packet& p_packet)
 	client.setHealth(100);
 	client.setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
 	p_packet << cn::PlayerRespawn << client.getName() << client.getPosition();
+}
+
+sf::Packet Server::ProjectileIDCleanup(sf::Packet & p_packet){
+	p_packet << cn::ProjectileIDCleanUp << m_projectiles.size();
+	m_projectileID = 0;
+	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
+		p_packet << it->m_id << m_projectileID;
+		it->m_id = m_projectileID;
+		m_projectileID++;
+	}
+	return p_packet;
 }

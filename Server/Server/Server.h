@@ -30,8 +30,11 @@ private:
 	sf::Packet simulateGameState();
 
 	void playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port);
+
 	void playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port);
+
 	void playerInput(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port, const int & p_int);
+
 	sf::Packet projectile(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port, const int & p_int);
 
 	void pingClients();
@@ -42,6 +45,11 @@ private:
 
 	///<summary>Inserts a respawn packet to p_packet and respawns a player on the server side</summary>
 	void respawnPlayerPacket(Client& player, sf::Packet& p_packet);
+
+	///<summary>Reset the projectile ID to 0. Set the ID of each projectile, and send the new ID to the clients.</summary>
+	sf::Packet ProjectileIDCleanup(sf::Packet & p_packet);
+
+	std::vector<Projectile>::iterator findID(const int & p_id);
 
 private:
 	sf::Clock m_clock, m_elapsed;
@@ -56,8 +64,9 @@ private:
 	sf::UdpSocket m_socket;
 	
 	std::map<std::string, Client> m_clientList;
+
 	std::vector<Projectile> m_projectiles;
-	std::vector<Projectile>::iterator findID(const int & p_id);
+	
 	std::vector<int> m_eraseProjectileIDs;
 
 	int m_projectileID;
