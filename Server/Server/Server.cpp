@@ -100,6 +100,8 @@ std::vector<Projectile>::iterator Server::findID(const int & p_id){
 sf::Packet Server::simulateGameState() {
 	sf::Packet retPacket;
 	retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::MegaPacket;
+
+#pragma region Move players
 	for (InputData input : m_clientInputs) {
 		Client* client = &m_clientList[input.getPlayer()];
 		if (client->getHealth() > 0) {
@@ -156,61 +158,57 @@ sf::Packet Server::simulateGameState() {
 			}
 		}
 	}
+#pragma endregion
 
+#pragma region Clear lists
 	m_clientInputs.clear();
 	m_eraseProjectileIDs.clear();
 	m_gameManager.cleanClients();
 	m_gameManager.cleanProjectiles();
+#pragma endregion
 
+#pragma region Send players
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		m_gameManager.update(it->second);
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
+#pragma endregion
 
-	//update projectiles
+#pragma region Update projectiles
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
-		m_gameManager.update(*it);
-		if (it != m_projectiles.end())
+		it->move(it->getVelocity());
+		it->erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x - 2.5f, it->getPosition().y - 2.5f, 5, 5));
+		if (it->erase)
 		{
-			if (!it->erase)
-			{
-				it->move(it->getVelocity());
-				it->erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x - 2.5f, it->getPosition().y - 2.5f, 5, 5));
-				if (it->erase)
+			m_eraseProjectileIDs.push_back(it->m_id);
+		}else
+		{
+			m_gameManager.update(*it);
+			std::vector<Client> clients = m_gameManager.getClients(*it);
+
+			for (auto iter = clients.begin(); iter != clients.end(); ++iter){
+				if (m_gameManager.intersect(*iter, *it))
 				{
-					m_eraseProjectileIDs.push_back(it->m_id);
-				}else
-				{
-					m_gameManager.update(*it);
-					std::vector<Client> clients = m_gameManager.getClients(*it);
-					// itER = playER, it ends with an "er" deuuuug
-					for (auto iter = clients.begin(); iter != clients.end(); ++iter){
-						if (m_gameManager.intersect(*iter, *it))
-						{
-							if (iter->getName() != it->getName())
-							{	
-								m_clientList[iter->getName()].damage(it->m_damage);
-								retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
-								it->erase = true;
-								m_eraseProjectileIDs.push_back(it->m_id);
-								if (m_clientList[iter->getName()].getHealth() <= 0) {
-									respawnPlayerPacket(m_clientList[iter->getName()], retPacket);
-									m_clientList[iter->getName()].m_score.m_deaths++;
-									m_clientList[it->getName()].m_score.m_kills++;
-									m_clientList[it->getName()].m_score.m_points++;
-								}
-							}
+					if (iter->getName() != it->getName())
+					{	
+						m_clientList[iter->getName()].damage(it->m_damage);
+						retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
+						m_eraseProjectileIDs.push_back(it->m_id);
+
+						if (m_clientList[iter->getName()].getHealth() <= 0) {
+							respawnPlayerPacket(m_clientList[iter->getName()], retPacket);
+							m_clientList[iter->getName()].m_score.m_deaths++;
+							m_clientList[it->getName()].m_score.m_kills++;
+							m_clientList[it->getName()].m_score.m_points++;
 						}
 					}
 				}
-			}else
-			{
-				m_eraseProjectileIDs.push_back(it->m_id);
 			}
 		}
 	}
+#pragma endregion
 
-	//erase projectiles
+#pragma region Erase projectiles
 	if (!m_eraseProjectileIDs.empty())
 	{
 		retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
@@ -225,21 +223,15 @@ sf::Packet Server::simulateGameState() {
 		}
 		m_eraseProjectileIDs.clear();
 	}
+#pragma endregion
 
-	//clean projectile IDs
-	/*if (!m_projectiles.empty())
-	{
-	if (m_projectiles.size() < m_projectileID && m_projectiles.back().m_id > m_projectiles.size())
-	{
-	retPacket << ProjectileIDCleanup(retPacket);
-	}
-	}*/
-
-	//send projectiles
+#pragma region Send projectiles
 	if (!m_projectiles.empty())
 	{
 		retPacket << cn::Projectile << m_projectiles;
 	}
+#pragma endregion
+
 
 	for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
 	{

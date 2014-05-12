@@ -12,7 +12,6 @@ Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) :
 	m_score(),
 	m_damage(10)
 {
-	std::cout << "Called constructor for: " << p_address.toString() << ":" << p_port << "\n";
 }
 
 Client::~Client(){
