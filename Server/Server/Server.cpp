@@ -156,12 +156,12 @@ sf::Packet Server::simulateGameState() {
 #pragma region Clean
 	m_clientInputs.clear();
 	m_eraseProjectileIDs.clear();
-	m_gameManager.clean();
+	//m_gameManager.clean();
 #pragma endregion
 
 #pragma region Send player positions
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-		m_gameManager.update(it->second);
+		//m_gameManager.update(it->second);
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
 #pragma endregion
@@ -172,13 +172,30 @@ sf::Packet Server::simulateGameState() {
 		{
 			bool erase = false;
 			it->move(it->getVelocity());
-			erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x - 2.5f, it->getPosition().y - 2.5f, 5, 5));
+			erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5));
 			if (erase)
 			{
+				/*if (it->getPosition().x < 1)
+				{
+					it->setPosition(1, it->getPosition().y);
+				}else if (it->getPosition().x > map.m_tiles.size()*64 - 1)
+				{
+					it->setPosition(map.m_tiles.size()*64 - 1, it->getPosition().y);
+				}
+				if (it->getPosition().y < 1)
+				{
+					it->setPosition(it->getPosition().x, 1);
+				}else if (it->getPosition().y > map.m_tiles.back().size()*64 - 1)
+				{
+					it->setPosition(it->getPosition().x, map.m_tiles.back().size()*64 - 1);
+				}*/
+
+				it->setPosition(map.getIntersectingWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)));
+
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
-				m_gameManager.update(*it);
+				/*m_gameManager.update(*it);
 				std::vector<Client> clients = m_gameManager.getClients(*it);
 
 				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
@@ -200,7 +217,7 @@ sf::Packet Server::simulateGameState() {
 							}
 						}
 					}
-				}
+				}*/
 			}
 		}
 	}
@@ -211,10 +228,11 @@ sf::Packet Server::simulateGameState() {
 	{
 		retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
 		for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
-			retPacket << *it;
+			
 			std::vector<Projectile>::iterator iter = findID(*it);
 			if (iter != m_projectiles.end())
 			{
+				retPacket << *it;
 				m_gameManager.erase(*iter);
 				m_projectiles.erase(iter);
 			}

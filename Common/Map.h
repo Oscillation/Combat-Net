@@ -17,7 +17,9 @@ public:
 
 	bool intersectsWall(const sf::Vector2<float> & p_position);
 	bool intersectsWall(const sf::Rect<float> & p_position);
+
 	sf::Vector2<float> getIntersectingWall(const sf::Vector2<float> & p_position);
+	sf::Vector2<float> getIntersectingWall(const sf::Rect<float> & p_position);
 
 	std::vector<sf::Vector2<float>> m_spawnPositions;
 };

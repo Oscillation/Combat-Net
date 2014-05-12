@@ -82,11 +82,6 @@ private:
 
 	static const unsigned short m_projectileSpeed = 50;
 
-	//%
-	static const unsigned short m_multiplier = 15;
-
-	int m_streak;
-
 	Map m_map;
 
 	sf::Font gameFont;
