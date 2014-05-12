@@ -310,7 +310,7 @@ void GameManager::erase(Projectile & p_projectile){
 	{
 		if (!m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.empty())
 		{
-			for (auto it = m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.begin(); it != m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.end(); ++it){
+			for (auto it = m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.end() - 1; it != m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.begin(); --it){
 				if (m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.empty())
 				{
 					break;
@@ -327,5 +327,17 @@ void GameManager::erase(Projectile & p_projectile){
 				}
 			}
 		}
+	}
+}
+
+void GameManager::cleanClients(){
+	for (auto it = m_branches.begin(); it != m_branches.end(); ++it){
+		it->m_clientList.clear();
+	}
+}
+
+void GameManager::cleanProjectiles(){
+	for (auto it = m_branches.begin(); it != m_branches.end(); ++it){
+		it->m_projectiles.clear();
 	}
 }

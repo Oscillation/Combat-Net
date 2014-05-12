@@ -53,6 +53,9 @@ public:
 	void erase(Client & p_client);
 	void erase(Projectile & p_projectile);
 
+	void cleanProjectiles();
+	void cleanClients();
+
 private:
 
 	bool shareBranch(Client & p_client, Projectile & p_projectile) const;

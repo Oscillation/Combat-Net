@@ -158,16 +158,18 @@ sf::Packet Server::simulateGameState() {
 	}
 
 	m_clientInputs.clear();
+	m_eraseProjectileIDs.clear();
+	m_gameManager.cleanClients();
+	m_gameManager.cleanProjectiles();
 
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		m_gameManager.update(it->second);
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
 
-	m_eraseProjectileIDs.clear();
-
 	//update projectiles
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
+		m_gameManager.update(*it);
 		if (it != m_projectiles.end())
 		{
 			if (!it->erase)
@@ -227,10 +229,10 @@ sf::Packet Server::simulateGameState() {
 	//clean projectile IDs
 	/*if (!m_projectiles.empty())
 	{
-		if (m_projectiles.size() < m_projectileID && m_projectiles.back().m_id > m_projectiles.size())
-		{
-			retPacket << ProjectileIDCleanup(retPacket);
-		}
+	if (m_projectiles.size() < m_projectileID && m_projectiles.back().m_id > m_projectiles.size())
+	{
+	retPacket << ProjectileIDCleanup(retPacket);
+	}
 	}*/
 
 	//send projectiles
