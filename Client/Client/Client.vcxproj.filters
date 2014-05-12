@@ -27,6 +27,9 @@
     <Filter Include="Source Files\Gui">
       <UniqueIdentifier>{597f8b2e-ae54-429e-9215-7ac6a0a6f865}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\State stack">
+      <UniqueIdentifier>{7ea6c6e3-aab4-4030-8330-a106c939aff0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -73,6 +76,15 @@
     </ClCompile>
     <ClCompile Include="Component.cpp">
       <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Source Files\State stack</Filter>
+    </ClCompile>
+    <ClCompile Include="StateStack.cpp">
+      <Filter>Source Files\State stack</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +135,18 @@
     </ClInclude>
     <ClInclude Include="Component.h">
       <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
+      <Filter>Source Files\State stack</Filter>
+    </ClInclude>
+    <ClInclude Include="StateStack.h">
+      <Filter>Source Files\State stack</Filter>
+    </ClInclude>
+    <ClInclude Include="StateIdentifiers.h">
+      <Filter>Source Files\State stack</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

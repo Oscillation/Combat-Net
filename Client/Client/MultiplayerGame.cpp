@@ -24,6 +24,7 @@ MultiplayerGame::~MultiplayerGame()
 	m_socket.send(packet, server_address, server_port);
 	m_socket.unbind();
 	m_window.close();
+	
 }
 
 void MultiplayerGame::run(sf::IpAddress p_address, unsigned short p_port)
