@@ -1,11 +1,12 @@
 #include "Projectile.h"
 
 Projectile::Projectile() : m_id(-1){
-
+	targetPos = getPosition();
 }
 
 Projectile::Projectile(const int & p_id, const int& p_damage) : 
 	m_id(p_id), m_damage(p_damage){
+		targetPos = getPosition();
 }
 
 Projectile::~Projectile(){
