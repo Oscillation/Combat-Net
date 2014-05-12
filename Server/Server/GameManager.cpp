@@ -283,19 +283,19 @@ void GameManager::erase(Client & p_client){
 	{
 		if (!m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.empty())
 		{
-			for (auto it = m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.begin(); it != m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.end();){
+			for (auto it = m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.begin(); it != m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.end(); ++it){
 				if (m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.empty())
 				{
 					break;
 				}else
 				{
-					if (*(*it) == p_client)
+					if (*it != nullptr)
 					{
-						m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.erase(it);
-						break;
-					}else
-					{
-						++it;
+						if (*(*it) == p_client)
+						{
+							m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_clientList.erase(it);
+							break;
+						}
 					}
 				}
 			}
@@ -310,19 +310,19 @@ void GameManager::erase(Projectile & p_projectile){
 	{
 		if (!m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.empty())
 		{
-			for (auto it = m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.begin(); it != m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.end();){
+			for (auto it = m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.begin(); it != m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.end(); ++it){
 				if (m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.empty())
 				{
 					break;
 				}else
 				{
-					if (*(*it) == p_projectile)
+					if (*it != nullptr)
 					{
-						m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.erase(it);
-						break;
-					}else
-					{
-						++it;
+						if (*(*it) == p_projectile)
+						{
+							m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_projectiles.erase(it);
+							break;
+						}
 					}
 				}
 			}
