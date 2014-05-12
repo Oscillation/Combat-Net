@@ -100,6 +100,8 @@ std::vector<Projectile>::iterator Server::findID(const int & p_id){
 sf::Packet Server::simulateGameState() {
 	sf::Packet retPacket;
 	retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::MegaPacket;
+
+#pragma region Player movement
 	for (InputData input : m_clientInputs) {
 		Client* client = &m_clientList[input.getPlayer()];
 		if (client->getHealth() > 0) {
@@ -147,68 +149,64 @@ sf::Packet Server::simulateGameState() {
 				}
 				break;
 			}
-
-			sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(pos.x/(64*m_gameManager.m_size), pos.y/(64*m_gameManager.m_size)), sf::Vector2<int>((pos.x + 40)/(64*m_gameManager.m_size), pos.y/(64*m_gameManager.m_size)), sf::Vector2<int>(pos.x/(64*m_gameManager.m_size), (pos.y + 40)/(64*m_gameManager.m_size)), sf::Vector2<int>((pos.x + 40)/(64*m_gameManager.m_size), (pos.y + 40)/(64*m_gameManager.m_size))};
-
-			for (int i = 0; i < 4; i++)
-			{
-				m_gameManager.m_branches[clientPoints[i].x+((clientPoints[i].y)*m_gameManager.m_mapSize.x)].update(*client);
-			}
 		}
 	}
+#pragma endregion
 
+#pragma region Clean
 	m_clientInputs.clear();
+	m_eraseProjectileIDs.clear();
+	m_gameManager.clean();
+#pragma endregion
 
+#pragma region Send player positions
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		m_gameManager.update(it->second);
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
+#pragma endregion
 
-	m_eraseProjectileIDs.clear();
-
-	//update projectiles
+#pragma region Update projectiles
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
 		if (it != m_projectiles.end())
 		{
-			if (!it->erase)
+			bool erase = false;
+			it->move(it->getVelocity());
+			erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x - 2.5f, it->getPosition().y - 2.5f, 5, 5));
+			if (erase)
 			{
-				it->move(it->getVelocity());
-				it->erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x - 2.5f, it->getPosition().y - 2.5f, 5, 5));
-				if (it->erase)
-				{
-					m_eraseProjectileIDs.push_back(it->m_id);
-				}else
-				{
-					m_gameManager.update(*it);
-					std::vector<Client> clients = m_gameManager.getClients(*it);
-					// itER = playER, it ends with an "er" deuuuug
-					for (auto iter = clients.begin(); iter != clients.end(); ++iter){
-						if (m_gameManager.intersect(*iter, *it))
-						{
-							if (iter->getName() != it->getName())
-							{	
-								m_clientList[iter->getName()].damage(it->m_damage);
-								retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
-								it->erase = true;
-								m_eraseProjectileIDs.push_back(it->m_id);
-								if (m_clientList[iter->getName()].getHealth() <= 0) {
-									respawnPlayerPacket(m_clientList[iter->getName()], retPacket);
-									m_clientList[iter->getName()].m_score.m_deaths++;
-									m_clientList[it->getName()].m_score.m_kills++;
-									m_clientList[it->getName()].m_score.m_points++;
-								}
+				m_eraseProjectileIDs.push_back(it->m_id);
+			}else
+			{
+				m_gameManager.update(*it);
+				std::vector<Client> clients = m_gameManager.getClients(*it);
+
+				for (auto iter = clients.begin(); iter != clients.end(); ++iter){
+					if (m_gameManager.intersect(*iter, *it))
+					{
+						if (iter->getName() != it->getName())
+						{	
+							m_clientList[iter->getName()].damage(it->m_damage);
+
+							retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
+
+							m_eraseProjectileIDs.push_back(it->m_id);
+
+							if (m_clientList[iter->getName()].getHealth() <= 0) {
+								respawnPlayerPacket(m_clientList[iter->getName()], retPacket);
+								m_clientList[iter->getName()].m_score.m_deaths++;
+								m_clientList[it->getName()].m_score.m_kills++;
+								m_clientList[it->getName()].m_score.m_points++;
 							}
 						}
 					}
 				}
-			}else
-			{
-				m_eraseProjectileIDs.push_back(it->m_id);
 			}
 		}
 	}
+#pragma endregion
 
-	//erase projectiles
+#pragma region Erase projectiles
 	if (!m_eraseProjectileIDs.empty())
 	{
 		retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
@@ -223,21 +221,23 @@ sf::Packet Server::simulateGameState() {
 		}
 		m_eraseProjectileIDs.clear();
 	}
+#pragma endregion
 
-	//clean projectile IDs
-	/*if (!m_projectiles.empty())
-	{
-		if (m_projectiles.size() < m_projectileID && m_projectiles.back().m_id > m_projectiles.size())
-		{
-			retPacket << ProjectileIDCleanup(retPacket);
-		}
-	}*/
-
-	//send projectiles
+#pragma region Send projectiles
 	if (!m_projectiles.empty())
 	{
 		retPacket << cn::Projectile << m_projectiles;
 	}
+#pragma endregion
+
+	//clean projectile IDs
+	/*if (!m_projectiles.empty())
+	{
+	if (m_projectiles.size() < m_projectileID && m_projectiles.back().m_id > m_projectiles.size())
+	{
+	retPacket << ProjectileIDCleanup(retPacket);
+	}
+	}*/
 
 	for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
 	{

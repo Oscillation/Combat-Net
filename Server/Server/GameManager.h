@@ -2,6 +2,7 @@
 #include "Client.h"
 #include "..\..\Common\Projectile.h"
 #include <map>
+#include <iostream>
 
 class GameManager{
 public:
@@ -52,6 +53,8 @@ public:
 
 	void erase(Client & p_client);
 	void erase(Projectile & p_projectile);
+
+	void clean();
 
 private:
 

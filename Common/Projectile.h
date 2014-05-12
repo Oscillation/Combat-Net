@@ -30,8 +30,6 @@ struct Projectile : public sf::Transformable, public sf::Drawable{
 	void setTargetTime(int p_targetTime);
 	void setTargetPosition(sf::Vector2f p_targetPos);
 
-	bool erase;
-
 	bool operator==(Projectile & p_projectile) const;
 
 private:
