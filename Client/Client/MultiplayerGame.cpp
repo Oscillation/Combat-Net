@@ -416,6 +416,7 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 			{
 				Projectile projectile = Projectile(id, 0);
 				projectile.setPosition(pos);
+				projectile.setTargetPosition(pos);
 				projectile.setVelocity(vel);
 				projectile.setName(name);
 				m_projectiles.push_back(projectile);
@@ -440,7 +441,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 				sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1),
 				5);
-			shakeView(sf::seconds(0.05f));
+			shakeView(sf::seconds(0.15f));
 			m_projectiles.erase(it);
 		}
 	}

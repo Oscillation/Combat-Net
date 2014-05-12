@@ -1,12 +1,10 @@
 #include "Projectile.h"
 
 Projectile::Projectile() : m_id(-1){
-	targetPos = getPosition();
 }
 
 Projectile::Projectile(const int & p_id, const int& p_damage) : 
 	m_id(p_id), m_damage(p_damage){
-		targetPos = getPosition();
 }
 
 Projectile::~Projectile(){
@@ -33,9 +31,12 @@ void Projectile::update(sf::Time p_deltaTime, int p_elapsedGameTime)
 {
 	move(getVelocity());
 
-	float t = (float)(p_elapsedGameTime) / (float)(targetTime - prevTime);
-	sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(prevPos, targetPos, t);
-	setPosition(sf::Vector2f(pos));
+	if (targetPos != getPosition())
+	{
+		float t = (float)(p_elapsedGameTime) / (float)(targetTime - prevTime);
+		sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(prevPos, targetPos, t);
+		setPosition(sf::Vector2f(pos));
+	}
 }
 
 void Projectile::setTargetTime(int p_targetTime)
