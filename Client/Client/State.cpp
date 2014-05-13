@@ -1,10 +1,13 @@
 #include "State.h"
 #include "StateStack.h"
 
-State::Context::Context(sf::RenderWindow& window, sf::UdpSocket& socket)
+State::Context::Context(sf::RenderWindow& window, sf::UdpSocket& socket, sf::Font& font, sf::IpAddress address, int port)
 	:
 	window(&window),
-	socket(&socket)
+	socket(&socket),
+	font(&font),
+	address(address),
+	port(port)
 {
 }
 

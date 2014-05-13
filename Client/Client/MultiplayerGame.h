@@ -23,23 +23,22 @@
 #include <map>
 #include <memory>
 
-class MultiplayerGame
+#include "State.h"
+
+class MultiplayerGame : public State
 {
 public:
-	MultiplayerGame();
-	~MultiplayerGame();
+	MultiplayerGame(StateStack& stateStack, Context context, States::ID id);
+	virtual ~MultiplayerGame();
 
-	void run(sf::IpAddress p_address, unsigned short p_port);
+	bool update(sf::Time & p_deltaTime);
+	void draw();
+	bool handleEvents(const sf::Event& event);
 
 private:
 	
-	void initialize(sf::IpAddress p_address, unsigned short p_port);
-
-	void update(sf::Time & p_deltaTime);
-	void render();
-
-	void handleEvents();
-
+	void initialize();
+ 
 private:
 	bool connect();
 
@@ -55,7 +54,6 @@ private:
 	void handlePing();
 	void handleMegaPacket(sf::Packet & p_packet, int const& p_time);
 
-	sf::RenderWindow m_window;
 	sf::View m_view;
 
 	///<summary>Screen shake.</summary>
@@ -65,9 +63,6 @@ private:
 	void shakeView(const sf::Time & p_time);
 
 	void updateViewShake(const sf::Time & p_deltaTime);
-
-	bool m_running, m_active;
-	sf::UdpSocket m_socket;
 
 	sf::IpAddress server_address;
 	unsigned short server_port;
@@ -88,6 +83,8 @@ private:
 	int m_streak;
 
 	Map m_map;
+
+	sf::UdpSocket& m_socket;
 
 	sf::Font gameFont;
 

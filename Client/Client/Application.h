@@ -4,6 +4,8 @@
 #include <SFML\Graphics\RenderWindow.hpp>
 #include <SFML\Network\UdpSocket.hpp>
 #include <SFML\Window\Event.hpp>
+#include <SFML\Graphics\Font.hpp>
+#include <SFML\Network\IpAddress.hpp>
 
 class Application 
 {
@@ -26,4 +28,7 @@ private:
 	StateStack m_stateStack;
 
 	bool m_running;
+	bool m_active;
+
+	sf::Font m_font;
 };

@@ -6,14 +6,13 @@
 
 #include <iostream>
 
-MultiplayerGame::MultiplayerGame() :
-	m_running(true),
-	m_socket(),
-	m_window(),
+MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context context, States::ID id) :
 	serverTimeout(sf::milliseconds(500)),
 	m_streak(0),
 	m_scoreboard(m_players),
-	m_lastServerUpdateTime(0)
+	m_lastServerUpdateTime(0),
+	State(stateStack, context, id),
+	m_socket(*context.socket)
 {
 	m_scoreboard.setPosition(1280/2, 300);
 }
@@ -23,36 +22,10 @@ MultiplayerGame::~MultiplayerGame()
 	sf::Packet packet;
 	m_socket.send(packet, server_address, server_port);
 	m_socket.unbind();
-	m_window.close();
-	
 }
 
-void MultiplayerGame::run(sf::IpAddress p_address, unsigned short p_port)
+void MultiplayerGame::initialize()
 {
-	initialize(p_address, p_port);
-
-	sf::Clock dt;
-	sf::Time lag;
-	sf::Time updateTime = sf::seconds(1.f/60.f);
-
-	while (m_running)
-	{
-		lag += dt.getElapsedTime();
-		dt.restart();
-
-		handleEvents();
-		render();
-		while (lag >= updateTime)
-		{
-			update(updateTime);
-			lag -= updateTime;
-		}
-	}
-}
-
-void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
-{
-	gameFont.loadFromFile("Segan-Light.ttf");
 	m_scoreboard.setFont(gameFont);
 
 	statusText.setFont(gameFont);
@@ -60,8 +33,8 @@ void MultiplayerGame::initialize(sf::IpAddress p_address, unsigned short p_port)
 	statusText.setPosition(30, 30);
 	statusText.setStyle(sf::Text::Bold);
 
-	server_address = p_address;
-	server_port = p_port;
+	server_address = getContext().address;
+	server_port = getContext().port;
 
 	m_particleLoader = ParticleLoader("Particles/");
 	m_particleEmitter = ParticleEmitter(&m_particleLoader);
@@ -114,7 +87,6 @@ bool MultiplayerGame::connect(){
 				newPlayer->setTargetTime(100);
 				m_players[name] = std::move(newPlayer);
 				m_socket.setBlocking(false);
-				m_window.create(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close);
 				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
 				m_view.setCenter(m_players[m_name].get()->getPosition());
 				std::cout << m_name << std::endl;
@@ -130,27 +102,12 @@ bool MultiplayerGame::connect(){
 	return false;
 }
 
-void MultiplayerGame::handleEvents()
+bool MultiplayerGame::handleEvents(const sf::Event& event)
 {
-	sf::Event event;
-	while (m_window.pollEvent(event))
-	{
-		if (event.type == sf::Event::Closed || (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)))
-		{
-			sf::Packet packet;
-			packet << 0 << cn::PlayerDisconnected << m_name;
-			m_socket.send(packet, server_address, server_port);
-			m_running = false;
-			exit(0);
-		}else if (event.type == sf::Event::GainedFocus){
-			m_active = true;
-		} else if (event.type == sf::Event::LostFocus) {
-			m_active = false;
-		}
-	}
+	return false;
 }
 
-void MultiplayerGame::update(sf::Time & p_deltaTime)
+bool MultiplayerGame::update(sf::Time & p_deltaTime)
 {
 	m_elapsedGameTime += p_deltaTime.asMilliseconds();
 	sf::Packet packet;
@@ -207,23 +164,20 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 
 	m_view.move(m_viewVelocity);
 
-	if (m_active)
+
+	sf::Packet inputPacket;
+	sf::Packet projectilePacket;
+	if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
 	{
-		sf::Packet inputPacket;
-		sf::Packet projectilePacket;
-		if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
-		{
-			m_socket.send(inputPacket, server_address, server_port);
-		}
-		if (handleProjectileInput(projectilePacket, p_deltaTime.asMilliseconds()))
-		{
-			m_socket.send(projectilePacket, server_address, server_port);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
-			m_scoreboard.activate();
-		else 
-			m_scoreboard.deactivate();
-	}else 
+		m_socket.send(inputPacket, server_address, server_port);
+	}
+	if (handleProjectileInput(projectilePacket, p_deltaTime.asMilliseconds()))
+	{
+		m_socket.send(projectilePacket, server_address, server_port);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+		m_scoreboard.activate();
+	else 
 		m_scoreboard.deactivate();
 
 	// Handle server crash/random disconnect
@@ -233,12 +187,13 @@ void MultiplayerGame::update(sf::Time & p_deltaTime)
 	}
 
 	m_scoreboard.updateStats();
+	return false;
 }
 
-void MultiplayerGame::render()
+void MultiplayerGame::draw()
 {
-	m_window.clear(sf::Color::Black);
-	m_window.setView(m_view);
+	sf::RenderWindow* window = getContext().window;
+	window->setView(m_view);
 
 	for (unsigned int x = ((m_view.getCenter().x - m_view.getSize().x/2)/64 - 1 >= 0  ? ((m_view.getCenter().x - m_view.getSize().x/2)/64 - 1):0),
 		y = ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1 >= 0  ? ((m_view.getCenter().y - m_view.getSize().y/2)/64 - 1):0);
@@ -260,28 +215,27 @@ void MultiplayerGame::render()
 						tile.setFillColor(sf::Color::Black);
 						break;
 					}
-					m_window.draw(tile);
+					window->draw(tile);
 			}
 	}
 
 	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
 		if (!i->second.get()->isDead())
 		{
-			m_window.draw(*(i->second));
+			window->draw(*(i->second));
 		}
 	}
 
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
-		m_window.draw(*it);
+		window->draw(*it);
 	}
 
-	m_window.draw(m_particleEmitter);
+	window->draw(m_particleEmitter);
 
-	m_window.setView(m_window.getDefaultView());
-	m_window.draw(m_scoreboard);
-	m_window.draw(statusText);
+	window->setView(window->getDefaultView());
+	window->draw(m_scoreboard);
+	window->draw(statusText);
 
-	m_window.display();
 }
 
 bool MultiplayerGame::handleInput(sf::Packet& packet, const int & p_deltaTime)
@@ -506,17 +460,17 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 		}
 		/*else if ((cn::PacketType)type == cn::ProjectileIDCleanUp)
 		{
-			int size;
-			p_packet >> size;
-			for (int i = 0; i < size; i++)
-			{
-				int at, to;
-				p_packet >> at >> to;
-				std::cout << m_projectiles.back().m_id << "\n";
-				{
-					findID(at)->m_id = to;
-				}
-			}
+		int size;
+		p_packet >> size;
+		for (int i = 0; i < size; i++)
+		{
+		int at, to;
+		p_packet >> at >> to;
+		std::cout << m_projectiles.back().m_id << "\n";
+		{
+		findID(at)->m_id = to;
+		}
+		}
 		}*/
 	}
 }

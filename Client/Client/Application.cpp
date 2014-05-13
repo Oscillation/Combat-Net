@@ -1,11 +1,15 @@
 #include "Application.h"
 
+#include <SFML\Network\IpAddress.hpp>
+#include "MenuState.h"
+
 Application::Application()
 	:
 	m_window(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close),
 	m_socket(),
-	m_stateStack(State::Context(m_window, m_socket)),
-	m_running(true)
+	m_stateStack(State::Context(m_window, m_socket, m_font, sf::IpAddress::None, 2828)),
+	m_running(true),
+	m_active(true)
 {
 }
 
@@ -40,19 +44,38 @@ void Application::run()
 
 void Application::initialize()
 {
+	m_font.loadFromFile("Segan-Light.ttf");
 
+	m_stateStack.registerState<MenuState>(States::Menu);
+	//m_stateStack.registerState<GameState>(States::Game);
+	m_stateStack.pushState(States::Menu);
 }
 
 void Application::update(sf::Time dt)
 {
+	m_stateStack.update(dt);
 }
 
 void Application::handleEvents()
 {
-
+	sf::Event event;
+	while (m_window.pollEvent(event))
+	{
+		if (event.type == sf::Event::Closed || (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)))
+		{
+			m_window.close();
+			m_running = false;
+		}else if (event.type == sf::Event::GainedFocus){
+			m_active = true;
+		} else if (event.type == sf::Event::LostFocus) {
+			m_active = false;
+		}
+	}
 }
 
 void Application::draw()
 {
-
+	m_window.clear();
+	m_stateStack.draw();
+	m_window.display();
 }

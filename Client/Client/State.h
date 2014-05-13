@@ -7,11 +7,15 @@
 
 #include "StateIdentifiers.h"
 
+#include <SFML\Network\IpAddress.hpp>
+
 
 namespace sf
 {
 	class RenderWindow;
 	class UdpSocket;
+	class Font;
+	class IpAddress;
 }
 
 class StateStack;
@@ -23,17 +27,20 @@ public:
 
 	struct Context
 	{
-		Context(sf::RenderWindow& window, sf::UdpSocket& socket);
+		Context(sf::RenderWindow& window, sf::UdpSocket& socket, sf::Font& font, sf::IpAddress address, int port);
 
 		sf::RenderWindow*	window;
 		sf::UdpSocket* socket;
+		sf::Font* font;
+		sf::IpAddress address;
+		int port;
 	};
 
 public:
 	State(StateStack& stateStack, Context context, States::ID id);
 	virtual				~State();
 
-	virtual bool		update(sf::Time dt) = 0;
+	virtual bool		update(sf::Time & p_deltaTime) = 0;
 	virtual void		draw() = 0;
 	virtual bool		handleEvents(const sf::Event& event) = 0;
 
