@@ -20,9 +20,7 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 
 MultiplayerGame::~MultiplayerGame()
 {
-	sf::Packet packet;
-	m_socket.send(packet, server_address, server_port);
-	m_socket.unbind();
+	
 }
 
 void MultiplayerGame::initialize()
@@ -107,7 +105,9 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 	if (!m_connected)
 	{
 		initialize();
-		while (!connect()){}
+		if (!connect()) {
+			requestStackPop();
+		}
 	}
 	else 
 	{
