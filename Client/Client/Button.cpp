@@ -5,22 +5,21 @@
 
 #include <SFML\Window\Event.hpp>
 
-gui::Button::Button(sf::Texture* texture, sf::Font* font, bool fade)
+gui::Button::Button(sf::Vector2f size, sf::Font* font, bool fade)
 	:
-	mTexture(texture),
 	mText(),
-	mSprite()
+	mBackground(size)
 {
-	mSprite.setTexture(*texture);
 	mText.setFont(*font);
 	mText.setCharacterSize(22);
 	deactivate();
 	mText.setColor(sf::Color::Black);
-
-	if (fade)
-		mSprite.setColor(sf::Color(255, 255, 255, 0));
-
-	setOrigin(mSprite.getLocalBounds().width/2, mSprite.getLocalBounds().height/2);
+	
+	mBackground.setFillColor(sf::Color::Red);
+	mBackground.setOutlineColor(sf::Color::Black);
+	mBackground.setOutlineThickness(2.f);
+	setOrigin(mBackground.getLocalBounds().width/2, mBackground.getLocalBounds().height/2);
+	mText.setStyle(sf::Text::Bold);
 }
 
 gui::Button::~Button()
@@ -39,7 +38,7 @@ void gui::Button::setText(std::string text)
 	mText.setOrigin(mText.getLocalBounds().width/2, mText.getLocalBounds().height);
 
 	// Set the position of the text 
-	mText.setPosition(sf::Vector2f(mTexture->getSize() / 2u));
+	mText.setPosition(sf::Vector2f(mBackground.getSize().x / 2, mBackground.getSize().y/2));
 }
 
 void gui::Button::activate()
@@ -58,7 +57,7 @@ void gui::Button::handleEvent(sf::Event const& event)
 			int x = event.mouseButton.x;
 			int y = event.mouseButton.y;
 
-			sf::FloatRect bounds = mSprite.getLocalBounds();
+			sf::FloatRect bounds = mBackground.getLocalBounds();
 			bounds.left = getPosition().x - bounds.width / 2;
 			bounds.top = getPosition().y - bounds.height / 2;
 
@@ -74,7 +73,7 @@ void gui::Button::handleEvent(sf::Event const& event)
 		int x = event.mouseMove.x;
 		int y = event.mouseMove.y;
 
-		sf::FloatRect bounds = mSprite.getLocalBounds();
+		sf::FloatRect bounds = mBackground.getLocalBounds();
 		bounds.left = getPosition().x - bounds.width / 2;
 		bounds.top = getPosition().y - bounds.height / 2;
 
@@ -100,16 +99,6 @@ void gui::Button::select()
 	mText.setColor(sf::Color::White);
 }
 
-bool gui::Button::fade_in()
-{
-	sf::Color c = mSprite.getColor();
-	c.a += 5;
-
-	mSprite.setColor(c);
-
-	return c.a >= 255;
-}
-
 void gui::Button::deselect()
 {
 	Component::deselect();
@@ -119,6 +108,6 @@ void gui::Button::deselect()
 void gui::Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
-	target.draw(mSprite, states);
+	target.draw(mBackground, states);
 	target.draw(mText, states);
 }

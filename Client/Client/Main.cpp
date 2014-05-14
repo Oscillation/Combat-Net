@@ -1,11 +1,10 @@
 #include <iostream>
 
-#include "MultiplayerGame.h"
+#include "Application.h"
 
 int main(int argc, char* argv[])
 {
-	MultiplayerGame game;
-	game.run(sf::IpAddress(argv[1]), 2828);
-	
+	Application app;
+	app.run();
 	return 0;
 }
