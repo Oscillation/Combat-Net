@@ -32,7 +32,7 @@ public:
 	virtual ~MultiplayerGame();
 
 	bool update(sf::Time & p_deltaTime);
-	void draw();
+	bool draw();
 	bool handleEvents(const sf::Event& event);
 
 private:

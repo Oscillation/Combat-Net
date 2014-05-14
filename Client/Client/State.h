@@ -42,7 +42,7 @@ public:
 	virtual				~State();
 
 	virtual bool		update(sf::Time & p_deltaTime) = 0;
-	virtual void		draw() = 0;
+	virtual bool		draw() = 0;
 	virtual bool		handleEvents(const sf::Event& event) = 0;
 
 	bool				isPersistent() const;

@@ -67,10 +67,11 @@ bool MenuState::handleEvents(const sf::Event& event)
 	return false;
 }
 
-void MenuState::draw()
+bool MenuState::draw()
 {
 	getContext()->window->clear(sf::Color(64, 64, 64));
 	getContext()->window->draw(m_button);
 	getContext()->window->draw(m_ipbox);
 	getContext()->window->draw(m_namebox);
+	return true;
 }

@@ -12,7 +12,7 @@ public:
 
 	bool update(sf::Time& p_deltaTime);
 	bool handleEvents(const sf::Event& event);
-	void draw();
+	bool draw();
 
 private:
 	gui::Button m_button;

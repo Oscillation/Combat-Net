@@ -33,8 +33,11 @@ void StateStack::update(sf::Time dt)
 
 void StateStack::draw()
 {
-	for(State::ptr& state : mStack)
-		state->draw();
+	for (auto itr = mStack.rbegin(); itr != mStack.rend(); ++itr)
+	{
+		if (!(*itr)->draw())
+			break;
+	}
 }
 
 void StateStack::handleEvent(const sf::Event& event)

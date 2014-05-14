@@ -198,7 +198,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 	return false;
 }
 
-void MultiplayerGame::draw()
+bool MultiplayerGame::draw()
 {
 	sf::RenderWindow* window = getContext()->window;
 	window->setView(m_view);
@@ -243,7 +243,7 @@ void MultiplayerGame::draw()
 	window->setView(window->getDefaultView());
 	window->draw(m_scoreboard);
 	window->draw(statusText);
-
+	return false;
 }
 
 bool MultiplayerGame::handleInput(sf::Packet& packet, const int & p_deltaTime)
