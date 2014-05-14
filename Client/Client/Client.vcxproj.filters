@@ -89,6 +89,9 @@
     <ClCompile Include="MenuState.cpp">
       <Filter>Source Files\State stack</Filter>
     </ClCompile>
+    <ClCompile Include="Textbox.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MultiplayerGame.h">
@@ -153,6 +156,9 @@
     </ClInclude>
     <ClInclude Include="MenuState.h">
       <Filter>Source Files\State stack</Filter>
+    </ClInclude>
+    <ClInclude Include="Textbox.h">
+      <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

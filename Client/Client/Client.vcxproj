@@ -90,6 +90,7 @@
     <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateStack.cpp" />
+    <ClCompile Include="Textbox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\GeneralMath.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateIdentifiers.h" />
     <ClInclude Include="StateStack.h" />
+    <ClInclude Include="Textbox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Common\GeneralMath.inl" />

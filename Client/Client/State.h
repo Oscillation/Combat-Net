@@ -33,6 +33,7 @@ public:
 		sf::UdpSocket* socket;
 		sf::Font* font;
 		sf::IpAddress* address;
+		std::string username;
 		int port;
 	};
 

@@ -50,12 +50,9 @@ void MultiplayerGame::initialize()
 bool MultiplayerGame::connect(){
 	sf::Packet packet;
 
-	std::string username = "h0wser";
-	//std::cout << "Username: ";
-	//std::getline(std::cin, username);
-	m_name = username;
+	m_name = getContext()->username;
 
-	packet << 0 << (int)cn::PlayerConnected << std::string(username);
+	packet << 0 << (int)cn::PlayerConnected << std::string(m_name);
 	m_socket.send(packet, server_address, server_port);
 
 	// Wait for the PlayerConnected packet from the server

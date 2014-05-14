@@ -71,6 +71,7 @@ void Application::handleEvents()
 		} else if (event.type == sf::Event::LostFocus) {
 			m_active = false;
 		}
+		m_stateStack.handleEvent(event);
 	}
 }
 
