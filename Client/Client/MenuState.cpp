@@ -20,7 +20,6 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 	});
 	m_button.setText("Connect");
 
-
 	m_ipbox.setPosition(400, 350);
 	m_ipbox.setSize(sf::Vector2f(400, 30));
 	m_ipbox.setFont(*context.font);

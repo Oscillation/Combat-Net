@@ -12,7 +12,8 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 	m_lastServerUpdateTime(0),
 	State(stateStack, context, id),
 	m_socket(*context.socket),
-	m_connected(false)
+	m_connected(false),
+	gameFont(*context.font)
 {
 	m_scoreboard.setPosition(1280/2, 300);
 }
