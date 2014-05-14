@@ -160,7 +160,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		{
-			m_particleEmitter.Emit("test", m_players[m_name]->getPosition());
+			m_particleEmitter.Emit("test", m_players[m_name]->getPosition(), 50);
 		}
 
 		m_particleEmitter.update(p_deltaTime);
@@ -415,10 +415,8 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 				position.y -= m_projectileSpeed;
 			}
 
-			m_particleEmitter.Emit("test", position, 
-				sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
-				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1),
-				5);
+			m_particleEmitter.Emit("test", position,
+				50);
 			shakeView(sf::seconds(0.05f));
 			m_projectiles.erase(it);
 		}
@@ -481,6 +479,7 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			m_players[name]->setPosition(position);
 			m_players[name]->setHealth(100);
 		}
+
 		/*else if ((cn::PacketType)type == cn::ProjectileIDCleanUp)
 		{
 		int size;
