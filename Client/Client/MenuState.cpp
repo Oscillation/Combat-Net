@@ -59,6 +59,26 @@ bool MenuState::handleEvents(const sf::Event& event)
 			m_ipbox.deactivate();
 		}
 	}
+	else if (event.type == sf::Event::KeyPressed)
+	{
+		if (event.key.code == sf::Keyboard::Tab)
+		{
+			if (m_ipbox.isActive())
+			{
+				m_ipbox.deactivate();
+				m_namebox.activate();
+			}
+			else 
+			{
+				m_namebox.deactivate();
+				m_ipbox.activate();
+			}
+		}
+		else if (event.key.code == sf::Keyboard::Return)
+		{
+			m_button.activate();
+		}
+	}
 	
 	m_button.handleEvent(event);
 	m_ipbox.handleEvent(event);

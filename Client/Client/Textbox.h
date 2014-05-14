@@ -18,6 +18,8 @@ namespace gui
 		void activate();
 		void deactivate();
 
+		bool isActive() const;
+
 		void handleEvent(sf::Event const& event);
 		std::string getValue() const;
 

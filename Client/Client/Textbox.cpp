@@ -33,6 +33,11 @@ namespace gui
 		m_background.setFillColor(sf::Color(100, 100, 100));
 	}
 
+	bool Textbox::isActive() const
+	{
+		return m_active;
+	}
+
 	void Textbox::handleEvent(sf::Event const& event)
 	{
 		if (m_active)
@@ -50,7 +55,7 @@ namespace gui
 			}
 			else if (event.type == sf::Event::TextEntered)
 			{
-				if (event.text.unicode != 0x8) // backspace
+				if (event.text.unicode != 0x8 && event.text.unicode != 0x9) // backspace, tab
 				{
 					m_text.setString(m_text.getString() + static_cast<char>(event.text.unicode));
 				}
