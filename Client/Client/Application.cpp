@@ -2,6 +2,7 @@
 
 #include <SFML\Network\IpAddress.hpp>
 #include "MenuState.h"
+#include "MultiplayerGame.h"
 
 Application::Application()
 	:
@@ -47,7 +48,7 @@ void Application::initialize()
 	m_font.loadFromFile("Segan-Light.ttf");
 
 	m_stateStack.registerState<MenuState>(States::Menu);
-	//m_stateStack.registerState<GameState>(States::Game);
+	m_stateStack.registerState<MultiplayerGame>(States::Game);
 	m_stateStack.pushState(States::Menu);
 }
 

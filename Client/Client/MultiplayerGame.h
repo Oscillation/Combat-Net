@@ -28,7 +28,7 @@
 class MultiplayerGame : public State
 {
 public:
-	MultiplayerGame(StateStack& stateStack, Context context, States::ID id);
+	MultiplayerGame(StateStack& stateStack, Context& context, States::ID id);
 	virtual ~MultiplayerGame();
 
 	bool update(sf::Time & p_deltaTime);
@@ -81,6 +81,8 @@ private:
 	static const unsigned short m_multiplier = 15;
 
 	int m_streak;
+
+	bool m_connected;
 
 	Map m_map;
 

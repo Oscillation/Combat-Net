@@ -6,13 +6,14 @@
 
 #include <iostream>
 
-MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context context, States::ID id) :
+MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, States::ID id) :
 	serverTimeout(sf::milliseconds(500)),
 	m_streak(0),
 	m_scoreboard(m_players),
 	m_lastServerUpdateTime(0),
 	State(stateStack, context, id),
-	m_socket(*context.socket)
+	m_socket(*context.socket),
+	m_connected(false)
 {
 	m_scoreboard.setPosition(1280/2, 300);
 }
@@ -33,8 +34,8 @@ void MultiplayerGame::initialize()
 	statusText.setPosition(30, 30);
 	statusText.setStyle(sf::Text::Bold);
 
-	server_address = getContext().address;
-	server_port = getContext().port;
+	server_address = *getContext()->address;
+	server_port = getContext()->port;
 
 	m_particleLoader = ParticleLoader("Particles/");
 	m_particleEmitter = ParticleEmitter(&m_particleLoader);
@@ -44,18 +45,14 @@ void MultiplayerGame::initialize()
 		system("pause");
 		exit(-1);
 	}
-
-	while(!connect()){
-
-	}
 }
 
 bool MultiplayerGame::connect(){
 	sf::Packet packet;
 
-	std::string username;
-	std::cout << "Username: ";
-	std::getline(std::cin, username);
+	std::string username = "h0wser";
+	//std::cout << "Username: ";
+	//std::getline(std::cin, username);
 	m_name = username;
 
 	packet << 0 << (int)cn::PlayerConnected << std::string(username);
@@ -90,6 +87,7 @@ bool MultiplayerGame::connect(){
 				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
 				m_view.setCenter(m_players[m_name].get()->getPosition());
 				std::cout << m_name << std::endl;
+				m_connected = true;
 				return true;
 			}
 		}else if ((cn::PacketType)type == cn::NameTaken)
@@ -109,90 +107,98 @@ bool MultiplayerGame::handleEvents(const sf::Event& event)
 
 bool MultiplayerGame::update(sf::Time & p_deltaTime)
 {
-	m_elapsedGameTime += p_deltaTime.asMilliseconds();
-	sf::Packet packet;
-	sf::IpAddress address;
-	unsigned short port;
-	while (m_socket.receive(packet, address, port) == sf::Socket::Done)
+	if (!m_connected)
 	{
-		if (address != server_address || port != server_port || packet.endOfPacket())
-			break;
-		int type, time;
-		packet >> time >> type;
-
-		if ((cn::PacketType)type == cn::PlayerConnected) 
-		{
-			handlePlayerConnect(packet);
-		}
-		if ((cn::PacketType)type == cn::PlayerDisconnected) 
-		{
-			handlePlayerDisconnect(packet);
-		}
-		if ((cn::PacketType)type == cn::Ping) 
-		{
-			handlePing();
-		}
-		if ((cn::PacketType)type == cn::MegaPacket)
-		{
-			if (time > m_lastServerUpdateTime)
-			{
-				handleMegaPacket(packet, time);
-				m_lastServerUpdateTime = time;
-			}
-		}
-		timeSinceLastServerUpdate.restart();
+		initialize();
+		while (!connect()){}
 	}
-
-	for (auto it = m_players.begin(); it != m_players.end(); ++it) {
-		it->second->update(p_deltaTime, m_elapsedGameTime);
-	}
-
-	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
-		it->update(p_deltaTime, m_elapsedGameTime);
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-	{
-		m_particleEmitter.Emit("test", m_players[m_name]->getPosition());
-	}
-
-	m_particleEmitter.update(p_deltaTime);
-
-	updateViewShake(p_deltaTime);
-
-	m_view.setCenter(m_players[m_name]->getPosition());
-
-	m_view.move(m_viewVelocity);
-
-
-	sf::Packet inputPacket;
-	sf::Packet projectilePacket;
-	if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
-	{
-		m_socket.send(inputPacket, server_address, server_port);
-	}
-	if (handleProjectileInput(projectilePacket, p_deltaTime.asMilliseconds()))
-	{
-		m_socket.send(projectilePacket, server_address, server_port);
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
-		m_scoreboard.activate();
 	else 
-		m_scoreboard.deactivate();
-
-	// Handle server crash/random disconnect
-	if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
 	{
-		statusText.setString("Lost connection to server...");
-	}
+		m_elapsedGameTime += p_deltaTime.asMilliseconds();
+		sf::Packet packet;
+		sf::IpAddress address;
+		unsigned short port;
+		while (m_socket.receive(packet, address, port) == sf::Socket::Done)
+		{
+			if (address != server_address || port != server_port || packet.endOfPacket())
+				break;
+			int type, time;
+			packet >> time >> type;
 
-	m_scoreboard.updateStats();
+			if ((cn::PacketType)type == cn::PlayerConnected) 
+			{
+				handlePlayerConnect(packet);
+			}
+			if ((cn::PacketType)type == cn::PlayerDisconnected) 
+			{
+				handlePlayerDisconnect(packet);
+			}
+			if ((cn::PacketType)type == cn::Ping) 
+			{
+				handlePing();
+			}
+			if ((cn::PacketType)type == cn::MegaPacket)
+			{
+				if (time > m_lastServerUpdateTime)
+				{
+					handleMegaPacket(packet, time);
+					m_lastServerUpdateTime = time;
+				}
+			}
+			timeSinceLastServerUpdate.restart();
+		}
+
+		for (auto it = m_players.begin(); it != m_players.end(); ++it) {
+			it->second->update(p_deltaTime, m_elapsedGameTime);
+		}
+
+		for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
+			it->update(p_deltaTime, m_elapsedGameTime);
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		{
+			m_particleEmitter.Emit("test", m_players[m_name]->getPosition());
+		}
+
+		m_particleEmitter.update(p_deltaTime);
+
+		updateViewShake(p_deltaTime);
+
+		m_view.setCenter(m_players[m_name]->getPosition());
+
+		m_view.move(m_viewVelocity);
+
+		sf::Packet inputPacket;
+		sf::Packet projectilePacket;
+		if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
+		{
+			m_socket.send(inputPacket, server_address, server_port);
+		}
+		if (handleProjectileInput(projectilePacket, p_deltaTime.asMilliseconds()))
+		{
+			m_socket.send(projectilePacket, server_address, server_port);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+			m_scoreboard.activate();
+		else 
+			m_scoreboard.deactivate();
+
+		// Handle server crash/random disconnect
+		if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
+		{
+			statusText.setString("Lost connection to server...");
+		}
+
+		m_scoreboard.updateStats();	
+	}
+	
 	return false;
 }
 
 void MultiplayerGame::draw()
 {
-	sf::RenderWindow* window = getContext().window;
+	sf::RenderWindow* window = getContext()->window;
 	window->setView(m_view);
 
 	for (unsigned int x = ((m_view.getCenter().x - m_view.getSize().x/2)/64 - 1 >= 0  ? ((m_view.getCenter().x - m_view.getSize().x/2)/64 - 1):0),

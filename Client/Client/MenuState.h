@@ -6,7 +6,7 @@
 class MenuState : public State
 {
 public:
-	MenuState(StateStack& stateStack, Context context, States::ID id);
+	MenuState(StateStack& stateStack, Context& context, States::ID id);
 	virtual ~MenuState();
 
 	bool update(sf::Time& p_deltaTime);

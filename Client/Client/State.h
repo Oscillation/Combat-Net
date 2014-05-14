@@ -32,12 +32,12 @@ public:
 		sf::RenderWindow*	window;
 		sf::UdpSocket* socket;
 		sf::Font* font;
-		sf::IpAddress address;
+		sf::IpAddress* address;
 		int port;
 	};
 
 public:
-	State(StateStack& stateStack, Context context, States::ID id);
+	State(StateStack& stateStack, Context& context, States::ID id);
 	virtual				~State();
 
 	virtual bool		update(sf::Time & p_deltaTime) = 0;
@@ -54,11 +54,11 @@ protected:
 	void				requestStackPop();
 	void				requestStackClear();
 
-	Context				getContext() const;
+	Context*			getContext();
 
 private:
 	StateStack*			mStack;
-	Context				mContext;
+	Context*			mContext;
 	bool				mIsPersistent;
 	States::ID			mId;
 };

@@ -6,15 +6,15 @@ State::Context::Context(sf::RenderWindow& window, sf::UdpSocket& socket, sf::Fon
 	window(&window),
 	socket(&socket),
 	font(&font),
-	address(address),
+	address(nullptr),
 	port(port)
 {
 }
 
-State::State(StateStack& stateStack, Context context, States::ID id)
+State::State(StateStack& stateStack, Context& context, States::ID id)
 	:
 	mStack(&stateStack),
-	mContext(context),
+	mContext(&context),
 	mId(id),
 	mIsPersistent(false)
 {
@@ -54,7 +54,7 @@ void State::requestStackClear()
 	mStack->clearStates();
 }
 
-State::Context State::getContext() const
+State::Context* State::getContext()
 {
 	return mContext;
 }
