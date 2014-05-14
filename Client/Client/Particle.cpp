@@ -14,18 +14,38 @@ Particle::Particle(const std::string & p_type, const ParticleType & p_particleTy
 }
 
 Particle::Particle(){
-	
+
 }
 
 Particle::~Particle(){
-	
+
 }
 
-void Particle::update(const sf::Time & p_deltaTime){
+bool Particle::update(const sf::Time & p_deltaTime){
+
 	if (m_time > 0)
 	{
 		m_time -= p_deltaTime.asSeconds();
+		m_position += m_velocity;
+		trail->m_position += trail->m_velocity;
+	}else
+	{
+		if ((std::sqrt(std::pow(m_velocity.x, 2))) > 0.2f)
+		{
+			m_velocity *= 0.8f;
+			m_position += m_velocity;
+			trail->m_velocity *= 0.8f;
+			trail->m_position += trail->m_velocity;
+		}else if (m_color.a > 10)
+		{
+			m_color.a *= 0.8f;
+			trail->m_color.a *= 0.8f;
+		}else
+		{
+			return false;
+		}
 	}
+	return true;
 }
 
 sf::Vertex Particle::getVertex() const{ 

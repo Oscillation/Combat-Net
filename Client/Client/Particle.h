@@ -13,7 +13,7 @@ struct Particle{
 
 	~Particle();
 
-	void update(const sf::Time & p_deltaTime);
+	bool update(const sf::Time & p_deltaTime);
 
 	sf::Color m_color;
 
