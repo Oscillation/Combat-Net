@@ -262,6 +262,11 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 	p_packet >> data;
 	if (!nameTaken(data))
 	{
+		if (!m_clientList.empty())
+		{
+			std::cout << "";
+		}
+
 		m_clientList[data] = Client(p_address, p_port);
 		m_clientList[data].setName(data);
 		m_clientList[data].setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));

@@ -30,7 +30,7 @@ bool Particle::update(const sf::Time & p_deltaTime){
 		trail->m_position += trail->m_velocity;
 	}else
 	{
-		if ((std::sqrt(std::pow(m_velocity.x, 2))) > 0.2f)
+		if (std::abs(m_velocity.x) > 0.2f)
 		{
 			m_velocity *= 0.8f;
 			m_position += m_velocity;

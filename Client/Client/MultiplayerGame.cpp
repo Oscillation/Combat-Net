@@ -415,11 +415,10 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 			{
 				position.y -= m_projectileSpeed;
 			}
-
-			m_particleEmitter.Emit("test", position, 
-				sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
-				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1),
-				5);
+			sf::Vector2<float> velocity = sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
+				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1);
+			m_particleEmitter.Emit("test", position, velocity);
+			m_particleEmitter.Emit("projectile", position + velocity);
 			shakeView(sf::seconds(0.05f));
 			m_projectiles.erase(it);
 		}
