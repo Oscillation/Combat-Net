@@ -13,6 +13,7 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 		State::Context* con = getContext();
 		if (con->address)
 			delete con->address;
+		std::string address = m_ipbox.getValue();
 		con->address = new sf::IpAddress(m_ipbox.getValue());
 		con->username = m_namebox.getValue();
 		con->port = 2828;

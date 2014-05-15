@@ -3,7 +3,7 @@
 #include "Application.h"
 //#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
-int main(int argc, char* argv[])
+int main()
 {
 	Application app;
 	app.run();
