@@ -14,12 +14,17 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 		if (con->address)
 			delete con->address;
 		std::string address = m_ipbox.getValue();
-		auto pos = address.find(':');
-		std::string port = address.substr(pos + 1);
-		con->address = new sf::IpAddress(m_ipbox.getValue());
-		con->username = m_namebox.getValue();
-		con->port = std::atoi(port.c_str());
-		requestStackPush(States::Game);
+		int pos = -1;
+		pos = address.find(':');
+		if (pos != -1)
+		{
+			std::string port = address.substr(pos + 1);
+			address = address.substr(0, pos);
+			con->address = new sf::IpAddress(address);
+			con->username = m_namebox.getValue();
+			con->port = std::atoi(port.c_str());
+			requestStackPush(States::Game);
+		}
 	});
 	m_button.setText("Connect");
 
@@ -82,7 +87,7 @@ bool MenuState::handleEvents(const sf::Event& event)
 			m_button.activate();
 		}
 	}
-	
+
 	m_button.handleEvent(event);
 	m_ipbox.handleEvent(event);
 	m_namebox.handleEvent(event);
