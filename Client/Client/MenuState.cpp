@@ -14,9 +14,11 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 		if (con->address)
 			delete con->address;
 		std::string address = m_ipbox.getValue();
+		auto pos = address.find(':');
+		std::string port = address.substr(pos + 1);
 		con->address = new sf::IpAddress(m_ipbox.getValue());
 		con->username = m_namebox.getValue();
-		con->port = 2828;
+		con->port = std::atoi(port.c_str());
 		requestStackPush(States::Game);
 	});
 	m_button.setText("Connect");
