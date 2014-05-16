@@ -93,13 +93,19 @@ void GameManager::update(Projectile & p_projectile){
 bool GameManager::intersect(Client & p_client, Projectile & p_projectile) const{
 	if (shareBranch(p_client, p_projectile))
 	{
-		if (math::circleIntersectsRect(sf::Vector2<float>(p_client.getPosition().x, p_client.getPosition().y), 17, sf::Rect<float>(p_projectile.getPosition().x, p_projectile.getPosition().y, 5, 5)))
+		
+		if (math::LineIntersectsCircle(sf::Vector2<float>(p_projectile.getPosition().x + 2.5f, p_projectile.getPosition().y + 2.5f),
+			sf::Vector2<float>(p_projectile.getPosition().x + 2.5f + p_projectile.getVelocity().x, p_projectile.getPosition().y + 2.5f + p_projectile.getVelocity().y),
+			p_client.getPosition(), 20.f))
 		{
 			return true;
 		}else
 		{
 			return false;
 		}
+	}else
+	{
+		return false;
 	}
 }
 

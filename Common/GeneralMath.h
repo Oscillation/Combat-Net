@@ -32,6 +32,8 @@ namespace math{
 	template <typename T>
 	bool LineIntersectsRect(const sf::Vector2<T> &  p1, const sf::Vector2<T> &  p2, const sf::Rect<T> & r);
 
+	template <typename T>
+	bool LineIntersectsCircle(const sf::Vector2<T> & p1, const sf::Vector2<T> & p2, const sf::Vector2<T> & p_pos, const float & p_radius);
 
 	template <typename T>
 	bool circleIntersectsRect(const sf::Vector2<T> & p_pos, const float & p_radius, const sf::Rect<T> & p_rect);

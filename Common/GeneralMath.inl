@@ -40,3 +40,24 @@ bool math::LineIntersectsRect(const sf::Vector2<T> &  p1, const sf::Vector2<T> &
 		LineIntersectsLine(p1, p2, sf::Vector2<T>(r.left, r.top + r.height), sf::Vector2<T>(r.left, r.top)) ||
 		(r.contains(p1) || r.contains(p2));
 }
+
+template <typename T>
+bool math::LineIntersectsCircle(const sf::Vector2<T> & p1, const sf::Vector2<T> & p2, const sf::Vector2<T> & p_pos, const float & p_radius){
+	/*
+		   b
+	   A______C
+		\	 /|
+		 \	/ |
+		  \/  |a
+		  D\  |
+			\ |
+			 \|
+			  B
+	*/
+	
+	float a = distance(p2, p_pos), b = distance(p1, p_pos), D = distance(p1, p2);
+	float A = std::acos((std::pow(a, 2) - (std::pow(b, 2) + std::pow(D, 2)))/(-2*b*D));
+	float CD = (std::sin(A)*b)/std::sin(90);
+
+	return CD <= p_radius;
+}

@@ -39,7 +39,6 @@ private:
 	
 	void initialize();
  
-private:
 	bool connect();
 
 	// Returns true if the packet has been filled with data
@@ -82,7 +81,7 @@ private:
 
 	int m_streak;
 
-	bool m_connected;
+	bool m_connected, m_active;
 
 	Map m_map;
 

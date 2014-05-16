@@ -13,6 +13,7 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 	State(stateStack, context, id),
 	m_socket(*context.socket),
 	m_connected(false),
+	m_active(true),
 	gameFont(*context.font)
 {
 	m_scoreboard.setPosition(1280/2, 300);
@@ -97,6 +98,11 @@ bool MultiplayerGame::connect(){
 
 bool MultiplayerGame::handleEvents(const sf::Event& event)
 {
+	if (event.type == sf::Event::GainedFocus){
+		m_active = true;
+	} else if (event.type == sf::Event::LostFocus) {
+		m_active = false;
+	}
 	return false;
 }
 
@@ -189,20 +195,27 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		m_view.move(m_viewVelocity);
 
-		sf::Packet inputPacket;
-		sf::Packet projectilePacket;
-		if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
+		if (m_active)
 		{
-			m_socket.send(inputPacket, server_address, server_port);
-		}
-		if (handleProjectileInput(projectilePacket, p_deltaTime.asMilliseconds()))
+			sf::Packet inputPacket;
+			sf::Packet projectilePacket;
+			if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
+			{
+				m_socket.send(inputPacket, server_address, server_port);
+			}
+			if (handleProjectileInput(projectilePacket, p_deltaTime.asMilliseconds()))
+			{
+				m_socket.send(projectilePacket, server_address, server_port);
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+				m_scoreboard.activate();
+			else {
+				m_scoreboard.deactivate();
+			}
+		}else
 		{
-			m_socket.send(projectilePacket, server_address, server_port);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
-			m_scoreboard.activate();
-		else 
 			m_scoreboard.deactivate();
+		}
 
 		// Handle server crash/random disconnect
 		if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)
