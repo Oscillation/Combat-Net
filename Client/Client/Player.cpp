@@ -17,9 +17,9 @@ Player::Player(std::string p_name, sf::Font& p_font, bool p_remote)
 	m_score()
 {
 	std::cout << "Called constructor for: " << p_name << "\n";
-	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
 	nameText.setStyle(sf::Text::Bold);
-	nameText.setColor(sf::Color::Black);
+	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
+	nameText.setColor(sf::Color(150, 150, 150));
 }
 
 Player::~Player()
