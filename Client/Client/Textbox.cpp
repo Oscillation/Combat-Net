@@ -13,7 +13,7 @@ namespace gui
 		m_text.setPosition(10, 5);
 		m_text.setColor(sf::Color::Black);
 		m_text.setCharacterSize(16);
-		
+		m_text.setStyle(sf::Text::Bold);
 	}
 
 	Textbox::~Textbox()
