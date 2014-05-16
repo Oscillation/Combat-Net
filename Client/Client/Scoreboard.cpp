@@ -49,9 +49,10 @@ void Scoreboard::updateStats()
 			m_scoreTexts.push_back(ScoreText(i->first, false));
 			m_scoreTexts[count].setFont(*m_font);
 		}
-		m_scoreTexts[count].update(i->second->m_score);
+		m_scoreTexts[count].update(i->second->m_score, i->first);
 		m_scoreTexts[count].setPosition(22.f, 30.f + count * 16.f);
 	}
+	m_scoreTexts.erase(m_scoreTexts.begin() + count, m_scoreTexts.end());
 }
 
 void Scoreboard::activate()

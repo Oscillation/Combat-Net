@@ -11,7 +11,7 @@ public:
 	ScoreText(std::string const& p_name, bool p_special);
 	~ScoreText();
 
-	void update(Score p_score);
+	void update(Score p_score, std::string p_name);
 	void setFont(sf::Font& p_font);
 
 private:
