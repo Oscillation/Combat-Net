@@ -1,10 +1,10 @@
 #include "Projectile.h"
 
-Projectile::Projectile() : m_id(-1){
+Projectile::Projectile() : m_id(-1), m_updated(true){
 }
 
 Projectile::Projectile(const int & p_id, const int& p_damage) : 
-	m_id(p_id), m_damage(p_damage){
+	m_id(p_id), m_damage(p_damage), m_updated(true){
 }
 
 Projectile::~Projectile(){

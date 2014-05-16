@@ -150,8 +150,26 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 
 		for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
-			it->update(p_deltaTime, m_elapsedGameTime);
+			if (it->m_updated)
+			{
+				it->update(p_deltaTime, m_elapsedGameTime);
+			}else
+			{
+				m_eraseProjectileIDs.push_back(it->m_id);
+			}
+			it->m_updated = false;
 		}
+
+		for (int i = 0; i < m_eraseProjectileIDs.size(); i++)
+		{
+			std::vector<Projectile>::iterator it = findID(m_eraseProjectileIDs[i]);
+			if (it != m_projectiles.end())
+			{
+				m_projectiles.erase(it);
+			}
+		}
+
+		m_eraseProjectileIDs.clear();
 
 		m_particleEmitter.update(p_deltaTime);
 
@@ -376,6 +394,7 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 				iter->setTargetPosition(pos);
 				iter->setVelocity(vel);
 				iter->setTargetTime(p_time);
+				iter->m_updated = true;
 			}else
 			{
 				Projectile projectile = Projectile(id, 0);
