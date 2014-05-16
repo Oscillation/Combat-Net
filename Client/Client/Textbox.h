@@ -12,7 +12,7 @@ namespace gui
 	class Textbox : public sf::Transformable, public sf::Drawable
 	{
 	public:
-		Textbox();
+		Textbox(std::string p_text);
 		~Textbox();
 
 		void activate();
@@ -27,6 +27,7 @@ namespace gui
 		void setFont(sf::Font& p_font);
 
 		sf::FloatRect getRectangle() const;
+		void setEmptyText(std::string p_text);
 
 	private:
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -34,5 +35,7 @@ namespace gui
 		sf::Text m_text;
 		sf::RectangleShape m_background;
 		bool m_active;
+		bool m_empty;
+		std::string m_emptyText;
 	};
 }
