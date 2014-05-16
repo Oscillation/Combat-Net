@@ -31,8 +31,9 @@ ScoreText::~ScoreText()
 {
 }
 
-void ScoreText::update(Score p_score)
+void ScoreText::update(Score p_score, std::string p_name)
 {
+	m_name.setString(p_name);
 	m_score.setString(std::to_string(p_score.m_points));
 	m_kills.setString(std::to_string(p_score.m_kills));
 	m_deaths.setString(std::to_string(p_score.m_deaths));
