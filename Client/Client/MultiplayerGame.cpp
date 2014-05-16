@@ -157,7 +157,6 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 			{
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}
-			it->m_updated = false;
 		}
 
 		for (int i = 0; i < m_eraseProjectileIDs.size(); i++)
@@ -377,6 +376,10 @@ void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
 
 void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 {
+	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it)
+	{
+		it->m_updated = false;
+	}
 	int length;
 	std::string name;
 	p_packet >> length;
@@ -438,7 +441,6 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1);
 			m_particleEmitter.Emit("test", position, velocity);
 			m_particleEmitter.Emit("projectile", position + velocity);
-			shakeView(sf::seconds(0.05f));
 			m_projectiles.erase(it);
 		}
 	}
