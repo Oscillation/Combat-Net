@@ -6,7 +6,8 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 	:
 	State(stateStack, context, id),
 	m_button(sf::Vector2f(100, 40), context.font, false),
-	m_ipbox()
+	m_ipbox("ip:port"),
+	m_namebox("username")
 {
 	m_button.setPosition(400, 400);
 	m_button.setAction([this]() {
