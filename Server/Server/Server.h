@@ -60,7 +60,6 @@ private:
 
 	unsigned short m_port;
 
-	sf::TcpListener m_listener;
 	sf::UdpSocket m_socket;
 	
 	std::map<std::string, Client> m_clientList;
@@ -71,7 +70,12 @@ private:
 
 	int m_projectileID;
 
-	Map map;
+	Map m_map;
 
 	GameManager m_gameManager;
+
+	static const unsigned short m_projectileSpeed = 50;
+
+	//%
+	static const unsigned short m_multiplier = 15;
 };

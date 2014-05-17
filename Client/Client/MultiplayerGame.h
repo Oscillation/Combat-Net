@@ -74,13 +74,6 @@ private:
 	std::vector<Projectile>::iterator findID(const int & p_id);
 	std::vector<int> m_eraseProjectileIDs;
 
-	static const unsigned short m_projectileSpeed = 50;
-
-	//%
-	static const unsigned short m_multiplier = 15;
-
-	int m_streak;
-
 	bool m_connected, m_active;
 
 	Map m_map;

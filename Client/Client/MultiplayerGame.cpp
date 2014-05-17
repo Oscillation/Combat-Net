@@ -99,7 +99,10 @@ bool MultiplayerGame::connect(){
 bool MultiplayerGame::handleEvents(const sf::Event& event)
 {
 	if (event.type == sf::Event::GainedFocus){
-		m_active = true;
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+		{
+			m_active = true;
+		}
 	} else if (event.type == sf::Event::LostFocus) {
 		m_active = false;
 	}
@@ -154,7 +157,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		for (auto it = m_players.begin(); it != m_players.end(); ++it) {
 			it->second->update(p_deltaTime, m_elapsedGameTime);
 		}
-
+		std::cout << m_projectiles.size() << "\n";
 		for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
 			if (it->m_updated)
 			{
@@ -173,7 +176,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 				m_projectiles.erase(it);
 			}
 		}
-
+		std::cout << m_projectiles.size() << "\n";
 		m_eraseProjectileIDs.clear();
 
 		m_particleEmitter.update(p_deltaTime);
@@ -325,17 +328,17 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 			projectile.setPosition(m_players[m_name].get()->getPosition());
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
-				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - m_projectileSpeed));
+				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - 1));
 			}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
-				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y + m_projectileSpeed));
+				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y + 1));
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
-				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x - m_projectileSpeed, projectile.getVelocity().y));
+				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x - 1, projectile.getVelocity().y));
 			}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
-				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x + m_projectileSpeed, projectile.getVelocity().y));
+				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x + 1, projectile.getVelocity().y));
 			}
 
 			projectiles.push_back(projectile);
@@ -431,24 +434,31 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 	for (int i = 0; i < length; i++)
 	{
 		int id;
-		p_packet >> id;
+		sf::Vector2<float> position;
+		p_packet >> id >> position;
 		std::vector<Projectile>::iterator it = findID(id);
 		if (it != m_projectiles.end())
 		{
-			sf::Vector2<float> position = it->getPosition();
-			if (it->getVelocity().x > 0)
+			if (it->getVelocity().x == 0)
 			{
-				position.x += m_projectileSpeed;
-			}else if (it->getVelocity().x < 0)
+				position.x = it->getPosition().x;
+
+				if (it->getVelocity().y < 0)
+				{
+					position.y += 64;
+				}
+			}else if (it->getVelocity().y == 0)
 			{
-				position.x -= m_projectileSpeed;
-			}
-			if (it->getVelocity().y > 0)
+				position.y = it->getPosition().y;
+
+				if (it->getVelocity().x < 0)
+				{
+					position.x += 64;
+				}
+			}else
 			{
-				position.y += m_projectileSpeed;
-			}else if (it->getVelocity().y < 0)
-			{
-				position.y -= m_projectileSpeed;
+				position.x = it->getPosition().x + it->getVelocity().x;
+				position.y = it->getPosition().y + it->getVelocity().y;
 			}
 			sf::Vector2<float> velocity = sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1);

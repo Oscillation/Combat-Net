@@ -9,8 +9,8 @@ Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0
 	system("cls");
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
 
-	map = Map("Maps/map.txt");
-	m_gameManager = GameManager(&m_clientList, &m_projectiles, map.m_tiles.size(), map.m_tiles.begin()->size());
+	m_map = Map("Maps/map.txt");
+	m_gameManager = GameManager(&m_clientList, &m_projectiles, m_map.m_tiles.size(), m_map.m_tiles.begin()->size());
 
 	pingTimer.restart();
 	m_clock.restart();
@@ -110,42 +110,42 @@ sf::Packet Server::simulateGameState() {
 			switch (input.getInputType())
 			{
 			case cn::MoveUp:
-				if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)))
+				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)))
 				{
 					client->move(0, -client->getSpeed()*deltaTime);
 				}else
 				{
-					client->setPosition(client->getPosition().x, map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)).y + 64 + 20);
+					client->setPosition(client->getPosition().x, m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)).y + 64 + 20);
 				}
 				break;
 
 			case cn::MoveDown:
-				if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)))
+				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)))
 				{
 					client->move(0, client->getSpeed()*deltaTime);
 				}else
 				{
-					client->setPosition(client->getPosition().x, map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)).y - 20);
+					client->setPosition(client->getPosition().x, m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)).y - 20);
 				}
 				break;
 
 			case cn::MoveLeft:
-				if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)))
+				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)))
 				{
 					client->move(-client->getSpeed()*deltaTime, 0);
 				}else
 				{
-					client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)).x + 64 + 20, client->getPosition().y);
+					client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)).x + 64 + 20, client->getPosition().y);
 				}
 				break;
 
 			case cn::MoveRight:
-				if (!map.intersectsWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)))
+				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)))
 				{
 					client->move(client->getSpeed()*deltaTime, 0);
 				}else
 				{
-					client->setPosition(map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);
+					client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);
 				}
 				break;
 			}
@@ -172,11 +172,9 @@ sf::Packet Server::simulateGameState() {
 		{
 			bool erase = false;
 			it->move(it->getVelocity());
-			erase = map.intersectsWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5));
+			erase = m_map.intersectsWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5));
 			if (erase)
 			{
-				it->setPosition(map.getIntersectingWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)));
-
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
@@ -217,7 +215,7 @@ sf::Packet Server::simulateGameState() {
 			std::vector<Projectile>::iterator iter = findID(*it);
 			if (iter != m_projectiles.end())
 			{
-				retPacket << *it;
+				retPacket << *it << m_map.getIntersectingWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5));
 				m_gameManager.erase(*iter);
 				m_projectiles.erase(iter);
 			}
@@ -269,11 +267,11 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 
 		m_clientList[data] = Client(p_address, p_port);
 		m_clientList[data].setName(data);
-		sf::Vector2<int> spawn = m_gameManager.selectSpawn(map.m_spawnPositions);
+		sf::Vector2<int> spawn = m_gameManager.selectSpawn(m_map.m_spawnPositions);
 		m_clientList[data].setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 		m_clientList[data].hasRespondedToPing = true;
 
-		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << map << m_projectiles;
+		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << m_map << m_projectiles;
 		m_socket.send(retPacket, p_address, p_port);
 
 		//Send connecting client to already connected clients
@@ -357,7 +355,7 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 					it->m_damage = m_clientList[projectiles.begin()->getName()].getDamage();
 					m_projectileID++;
 				}
-
+				it->setVelocity(sf::Vector2<float>(it->getVelocity().x*m_projectileSpeed, it->getVelocity().y*m_projectileSpeed));
 				m_projectiles.push_back(*it);
 				it++;
 			} else {
@@ -404,7 +402,7 @@ void Server::respawnPlayerPacket(Client& client, sf::Packet& p_packet)
 {
 	client.setHealth(100);
 	//client.setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
-	sf::Vector2<int> spawn = m_gameManager.selectSpawn(map.m_spawnPositions);
+	sf::Vector2<int> spawn = m_gameManager.selectSpawn(m_map.m_spawnPositions);
 	client.setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 	p_packet << cn::PlayerRespawn << client.getName() << client.getPosition();
 }
