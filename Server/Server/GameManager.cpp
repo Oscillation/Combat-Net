@@ -420,7 +420,17 @@ sf::Vector2<int> GameManager::selectSpawn(const std::vector<sf::Vector2<int>> p_
 	int lowIndex = 0;
 
 	for (int i = 0; i < p_spawnPositions.size(); i++){
-		spawns[i] = m_branches[(p_spawnPositions[i].x/m_size)+((p_spawnPositions[i].y/m_size)*m_mapSize.x)].m_clientList.size() +
+		for (int x = (p_spawnPositions[i].x - 10) >= 0 ? p_spawnPositions[i].x - 10:0, y = (p_spawnPositions[i].y - 10) >= 0 ? p_spawnPositions[i].y - 10:0; x < p_spawnPositions[i].x + 10; x++)
+		{
+			for (y = (p_spawnPositions[i].y - 10) >= 0 ? p_spawnPositions[i].y - 10:0; y < p_spawnPositions[i].y + 10; y++)
+			{
+				if (x+(y*m_mapSize.x) >= 0 && x+(y*m_mapSize.x) < m_branches.size())
+				{
+					spawns[i] += m_branches[x+(y*m_mapSize.x)].m_clientList.size();
+				}
+			}
+		}
+		/*spawns[i] = m_branches[(p_spawnPositions[i].x/m_size)+((p_spawnPositions[i].y/m_size)*m_mapSize.x)].m_clientList.size() +
 			(((p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size))*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size))*m_mapSize.x)].m_clientList.size()):0) +
 			(((p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size))*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size))*m_mapSize.x)].m_clientList.size()):0) +
 			(((p_spawnPositions[i].x/m_size) + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)].m_clientList.size()):0) +
@@ -429,9 +439,19 @@ sf::Vector2<int> GameManager::selectSpawn(const std::vector<sf::Vector2<int>> p_
 			(((p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)].m_clientList.size()):0) +
 			(((p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)].m_clientList.size()):0) +
 			(((p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)].m_clientList.size()):0);
+		*/
 		if (spawns[i] <= spawns[lowIndex])
 		{
-			lowIndex = i;
+			if (spawns[i] == spawns[lowIndex])
+			{
+				if (math::random(1, 100) < 50)
+				{
+					lowIndex = i;
+				}
+			}else
+			{
+				lowIndex = i;
+			}
 		}
 	}
 
