@@ -269,7 +269,8 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 
 		m_clientList[data] = Client(p_address, p_port);
 		m_clientList[data].setName(data);
-		m_clientList[data].setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
+		sf::Vector2<int> spawn = m_gameManager.selectSpawn(map.m_spawnPositions);
+		m_clientList[data].setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 		m_clientList[data].hasRespondedToPing = true;
 
 		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << map << m_projectiles;
@@ -402,7 +403,9 @@ void Server::pingClients()
 void Server::respawnPlayerPacket(Client& client, sf::Packet& p_packet)
 {
 	client.setHealth(100);
-	client.setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
+	//client.setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
+	sf::Vector2<int> spawn = m_gameManager.selectSpawn(map.m_spawnPositions);
+	client.setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 	p_packet << cn::PlayerRespawn << client.getName() << client.getPosition();
 }
 

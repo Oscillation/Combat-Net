@@ -1,6 +1,7 @@
 #pragma once
 #include "Client.h"
 #include "..\..\Common\Projectile.h"
+#include "..\..\Common\Map.h"
 #include <map>
 #include <iostream>
 
@@ -55,6 +56,9 @@ public:
 	void erase(Projectile & p_projectile);
 
 	void clean();
+
+	///<summary>Returns a spawn location in tiles.</summary>
+	sf::Vector2<int> selectSpawn(const std::vector<sf::Vector2<int>> p_spawnPositions);
 
 private:
 

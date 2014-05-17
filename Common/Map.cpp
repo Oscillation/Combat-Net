@@ -97,7 +97,7 @@ Map::Map(const std::string & p_path){
 						break;
 					case 'S':
 						m_tiles[x][y].m_type = Spawn;
-						m_spawnPositions.push_back(sf::Vector2<float>(x*64.f, y*64.f));
+						m_spawnPositions.push_back(sf::Vector2<int>(x, y));
 						break;
 					case '\n':
 						y++;

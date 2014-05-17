@@ -412,3 +412,28 @@ void GameManager::clean(){
 		it->m_projectiles.clear();
 	}
 }
+
+sf::Vector2<int> GameManager::selectSpawn(const std::vector<sf::Vector2<int>> p_spawnPositions){
+	std::vector<int> spawns;
+	spawns.resize(p_spawnPositions.size(), 0);
+
+	int lowIndex = 0;
+
+	for (int i = 0; i < p_spawnPositions.size(); i++){
+		spawns[i] = m_branches[(p_spawnPositions[i].x/m_size)+((p_spawnPositions[i].y/m_size)*m_mapSize.x)].m_clientList.size() +
+			(((p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size))*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size))*m_mapSize.x)].m_clientList.size()):0) +
+			(((p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size))*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size))*m_mapSize.x)].m_clientList.size()):0) +
+			(((p_spawnPositions[i].x/m_size) + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)].m_clientList.size()):0) +
+			(((p_spawnPositions[i].x/m_size) + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)].m_clientList.size()):0) +
+			(((p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)].m_clientList.size()):0) +
+			(((p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size) - 1)*m_mapSize.x)].m_clientList.size()):0) +
+			(((p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) - 1 + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)].m_clientList.size()):0) +
+			(((p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)) < m_branches.size() ? (m_branches[(p_spawnPositions[i].x/m_size) + 1 + (((p_spawnPositions[i].y/m_size) + 1)*m_mapSize.x)].m_clientList.size()):0);
+		if (spawns[i] <= spawns[lowIndex])
+		{
+			lowIndex = i;
+		}
+	}
+
+	return p_spawnPositions[lowIndex];
+}

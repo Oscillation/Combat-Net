@@ -21,7 +21,7 @@ public:
 	sf::Vector2<float> getIntersectingWall(const sf::Vector2<float> & p_position);
 	sf::Vector2<float> getIntersectingWall(const sf::Rect<float> & p_position);
 
-	std::vector<sf::Vector2<float>> m_spawnPositions;
+	std::vector<sf::Vector2<int>> m_spawnPositions;
 };
 
 	sf::Packet& operator <<(sf::Packet& packet, const Type& type);

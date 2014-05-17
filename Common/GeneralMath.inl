@@ -43,7 +43,10 @@ bool math::LineIntersectsRect(const sf::Vector2<T> &  p1, const sf::Vector2<T> &
 
 template <typename T>
 bool math::LineIntersectsCircle(const sf::Vector2<T> & p1, const sf::Vector2<T> & p2, const sf::Vector2<T> & p_pos, const float & p_radius){
-	if ((p1.x < (p_pos.x - p_radius) && p2.x < (p_pos.x)) || (p1.x > (p_pos.x + p_radius) && p2.x > (p_pos.x + p_radius)) || (p1.y < (p_pos.y - p_radius) && p2.y < (p_pos.y - p_radius)) || (p1.y > (p_pos.y + p_radius) && p2.y > (p_pos.y + p_radius)))
+	if ((p1.x < (p_pos.x - p_radius) && p2.x < (p_pos.x)) ||
+		(p1.x > (p_pos.x + p_radius) && p2.x > (p_pos.x + p_radius)) ||
+		(p1.y < (p_pos.y - p_radius) && p2.y < (p_pos.y - p_radius)) ||
+		(p1.y > (p_pos.y + p_radius) && p2.y > (p_pos.y + p_radius)))
 	{
 		return false;
 	}
