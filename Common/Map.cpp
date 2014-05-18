@@ -156,6 +156,27 @@ bool Map::intersectsWall(const sf::Rect<float> & p_position) {
 	return false;
 }
 
+bool Map::intersectsWall(const sf::Vector2<float> & p_p1, const sf::Vector2<float> & p_p2){
+	unsigned int x = ((p_p1.x < p_p2.x) ? p_p1.x:p_p2.x)/64 - 1, y = ((p_p1.y < p_p2.y) ? p_p1.y:p_p2.y)/64 - 1;
+	for (x = ((p_p1.x < p_p2.x) ? p_p1.x:p_p2.x)/64 - 1, y = ((p_p1.y < p_p2.y) ? p_p1.y:p_p2.y)/64 - 1; x < ((p_p1.x > p_p2.x) ? p_p1.x:p_p2.x)/64 + 1; x++)
+	{
+		for (y = ((p_p1.y < p_p2.y) ? p_p1.y:p_p2.y)/64 - 1; y < ((p_p1.y > p_p2.y) ? p_p1.y:p_p2.y)/64 + 1; y++)
+		{
+			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
+			{
+				if (m_tiles[x][y].m_type == Wall)
+				{
+					if (math::LineIntersectsRect(p_p1, p_p2, sf::Rect<float>(x*64, y*64, 64, 64)))
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
 sf::Vector2<float> Map::getIntersectingWall(const sf::Vector2<float> & p_position){
 	unsigned int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
 	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)

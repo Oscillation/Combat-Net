@@ -52,46 +52,53 @@ bool MultiplayerGame::connect(){
 	m_name = getContext()->username;
 
 	packet << 0 << (int)cn::PlayerConnected << std::string(m_name);
-	m_socket.send(packet, server_address, server_port);
+
+	if (m_socket.send(packet, server_address, server_port) == sf::Socket::Status::Done)
+	{
+		packet.clear();
+	}
 
 	// Wait for the PlayerConnected packet from the server
 	// When the client get's the PlayerConnected packet with the players name
 	// it is connected to the server
-
-	if (m_socket.receive(packet, server_address, server_port) == sf::Socket::Done)
+	if (packet.endOfPacket())
 	{
-		int type, time;
-		std::string name;
-		packet >> time >> type;
+		if (m_socket.receive(packet, server_address, server_port) == sf::Socket::Done)
+		{
+			int type, time;
+			std::string name;
+			packet >> time >> type;
 
-		if ((cn::PacketType)type == cn::PlayerConnected)
-		{
-			packet >> name;
-			if (name == m_name)
+			if ((cn::PacketType)type == cn::PlayerConnected)
 			{
-				std::cout << "Connected to server.\n";
-				sf::Vector2f position;
-				packet >> position.x >> position.y;
-				packet >> m_map;
-				packet >> m_projectiles;
-				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
-				newPlayer->setPosition(position);
-				newPlayer->setTargetPosition(position);
-				newPlayer->setTargetTime(100);
-				m_players[name] = std::move(newPlayer);
-				m_socket.setBlocking(false);
-				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
-				m_view.setCenter(m_players[m_name].get()->getPosition());
-				std::cout << m_name << std::endl;
-				m_connected = true;
-				return true;
+				packet >> name;
+				if (name == m_name)
+				{
+					std::cout << "Connected to server.\n";
+					sf::Vector2f position;
+					packet >> position.x >> position.y;
+					packet >> m_map;
+					packet >> m_projectiles;
+					std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
+					newPlayer->setPosition(position);
+					newPlayer->setTargetPosition(position);
+					newPlayer->setTargetTime(100);
+					m_players[name] = std::move(newPlayer);
+					m_socket.setBlocking(false);
+					m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
+					m_view.setCenter(m_players[m_name].get()->getPosition());
+					std::cout << m_name << std::endl;
+					m_connected = true;
+					return true;
+				}
+			}else if ((cn::PacketType)type == cn::NameTaken)
+			{
+				std::cout << "That name is already taken. Please try again with a different name.\n";
+				return false;
 			}
-		}else if ((cn::PacketType)type == cn::NameTaken)
-		{
-			std::cout << "That name is already taken. Please try again with a different name.\n";
-			return false;
 		}
 	}
+
 	std::cout << "Couldn't connect to server.\n";
 	return false;
 }
@@ -115,7 +122,9 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 	{
 		initialize();
 		if (!connect()) {
-			requestStackPop();
+			requestStackClear();
+			requestStackPush(States::Menu);
+			//requestStackPop();
 		}
 	}
 	else 
@@ -157,7 +166,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		for (auto it = m_players.begin(); it != m_players.end(); ++it) {
 			it->second->update(p_deltaTime, m_elapsedGameTime);
 		}
-		std::cout << m_projectiles.size() << "\n";
+
 		for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
 			if (it->m_updated)
 			{
@@ -176,7 +185,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 				m_projectiles.erase(it);
 			}
 		}
-		std::cout << m_projectiles.size() << "\n";
+
 		m_eraseProjectileIDs.clear();
 
 		m_particleEmitter.update(p_deltaTime);
@@ -525,21 +534,6 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			m_players[name]->setPosition(position);
 			m_players[name]->setHealth(100);
 		}
-
-		/*else if ((cn::PacketType)type == cn::ProjectileIDCleanUp)
-		{
-		int size;
-		p_packet >> size;
-		for (int i = 0; i < size; i++)
-		{
-		int at, to;
-		p_packet >> at >> to;
-		std::cout << m_projectiles.back().m_id << "\n";
-		{
-		findID(at)->m_id = to;
-		}
-		}
-		}*/
 	}
 }
 

@@ -175,6 +175,8 @@ sf::Packet Server::simulateGameState() {
 			erase = m_map.intersectsWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5));
 			if (erase)
 			{
+				//it->setPosition(m_map.getIntersectingWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)));
+
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
@@ -211,7 +213,7 @@ sf::Packet Server::simulateGameState() {
 	{
 		retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
 		for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
-			
+
 			std::vector<Projectile>::iterator iter = findID(*it);
 			if (iter != m_projectiles.end())
 			{
@@ -230,15 +232,6 @@ sf::Packet Server::simulateGameState() {
 		retPacket << cn::Projectile << m_projectiles;
 	}
 #pragma endregion
-
-	//clean projectile IDs
-	/*if (!m_projectiles.empty())
-	{
-	if (m_projectiles.size() < m_projectileID && m_projectiles.back().m_id > m_projectiles.size())
-	{
-	retPacket << ProjectileIDCleanup(retPacket);
-	}
-	}*/
 
 	for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
 	{
@@ -408,12 +401,12 @@ void Server::respawnPlayerPacket(Client& client, sf::Packet& p_packet)
 }
 
 sf::Packet Server::ProjectileIDCleanup(sf::Packet & p_packet){
-	p_packet << cn::ProjectileIDCleanUp << m_projectiles.size();
-	m_projectileID = 0;
-	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
-		p_packet << it->m_id << m_projectileID;
-		it->m_id = m_projectileID;
-		m_projectileID++;
+	p_packet << cn::ProjectileIDCleanUp << m_projectiles.size() - 1;
+	m_projectileID = m_projectiles.size() - 1;
+	for (int i = m_projectiles.size() - 1; i > 0; i--)
+	{
+		p_packet << m_projectiles[i].m_id;
+		m_projectiles[i].m_id = i;
 	}
 	return p_packet;
 }
