@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
+#include "..\..\Common\Power.h"
 #include "Scoreboard.h"
 #include "ParticleLoader.h"
 #include "ParticleEmitter.h"
@@ -93,4 +94,6 @@ private:
 
 	ParticleLoader m_particleLoader;
 	ParticleEmitter m_particleEmitter;
+
+	std::vector<Power> m_powers;
 };

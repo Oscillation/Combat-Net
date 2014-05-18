@@ -30,6 +30,9 @@
     <Filter Include="Source Files\State stack">
       <UniqueIdentifier>{7ea6c6e3-aab4-4030-8330-a106c939aff0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Power">
+      <UniqueIdentifier>{e1dc3ff5-5801-40b6-8107-d70856eee520}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -91,6 +94,12 @@
     </ClCompile>
     <ClCompile Include="Textbox.cpp">
       <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Server\Server\PowerTile.cpp">
+      <Filter>Source Files\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Power.cpp">
+      <Filter>Source Files\Power</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +168,12 @@
     </ClInclude>
     <ClInclude Include="Textbox.h">
       <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Server\Server\PowerTile.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Power.h">
+      <Filter>Source Files\Power</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

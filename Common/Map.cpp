@@ -29,11 +29,11 @@ bool math::circleIntersectsRect(const sf::Vector2<T> & p_pos, const float & p_ra
 	return (cornerDistance <= std::pow(p_radius, 2));
 }
 
-Tile::Tile(const unsigned short & p_x, const unsigned short & p_y, const Type & p_type) : m_x(p_x), m_y(p_y), m_type(p_type){
+Tile::Tile(const unsigned short & p_x, const unsigned short & p_y, const TileType::Type & p_type) : m_x(p_x), m_y(p_y), m_type(p_type){
 
 }
 
-Tile::Tile() : m_type(Floor){
+Tile::Tile() : m_type(TileType::Floor){
 
 }
 
@@ -42,6 +42,7 @@ Tile::~Tile(){
 }
 
 Map::Map(){
+
 }
 
 Map::Map(const std::string & p_path){
@@ -90,14 +91,17 @@ Map::Map(const std::string & p_path){
 					switch (line[x])
 					{
 					case ' ':
-						m_tiles[x][y].m_type = Floor;
+						m_tiles[x][y].m_type = TileType::Floor;
 						break;
 					case 'x':
-						m_tiles[x][y].m_type = Wall;
+						m_tiles[x][y].m_type = TileType::Wall;
 						break;
 					case 'S':
-						m_tiles[x][y].m_type = Spawn;
+						m_tiles[x][y].m_type = TileType::Spawn;
 						m_spawnPositions.push_back(sf::Vector2<int>(x, y));
+						break;
+					case 'P':
+						m_tiles[x][y].m_type = TileType::Power;
 						break;
 					case '\n':
 						y++;
@@ -114,6 +118,23 @@ Map::~Map(){
 
 }
 
+std::vector<PowerTile> Map::getPowerTiles() const{
+	std::vector<PowerTile> ret;
+	
+	for (unsigned int x = 0, y = 0; x < m_tiles.size(); x++)
+	{
+		for (y = 0; y < m_tiles.back().size(); y++)
+		{
+			if (m_tiles[x][y].m_type == TileType::Power)
+			{
+				ret.push_back(PowerTile(x, y));
+			}
+		}
+	}
+
+	return ret;
+}
+
 bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
 	unsigned int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
 	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
@@ -122,7 +143,7 @@ bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
 		{
 			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
 			{
-				if (m_tiles[x][y].m_type == Wall)
+				if (m_tiles[x][y].m_type == TileType::Wall)
 				{
 					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33, p_position.y - 33), 17, sf::Rect<float>(x*64, y*64, 64, 64)))
 					{
@@ -143,7 +164,7 @@ bool Map::intersectsWall(const sf::Rect<float> & p_position) {
 		{
 			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
 			{
-				if (m_tiles[x][y].m_type == Wall)
+				if (m_tiles[x][y].m_type == TileType::Wall)
 				{
 					if (p_position.intersects(sf::Rect<float>(x*64, y*64, 64, 64)))
 					{
@@ -164,7 +185,7 @@ bool Map::intersectsWall(const sf::Vector2<float> & p_p1, const sf::Vector2<floa
 		{
 			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
 			{
-				if (m_tiles[x][y].m_type == Wall)
+				if (m_tiles[x][y].m_type == TileType::Wall)
 				{
 					if (math::LineIntersectsRect(p_p1, p_p2, sf::Rect<float>(x*64, y*64, 64, 64)))
 					{
@@ -185,7 +206,7 @@ sf::Vector2<float> Map::getIntersectingWall(const sf::Vector2<float> & p_positio
 		{
 			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
 			{
-				if (m_tiles[x][y].m_type == Wall)
+				if (m_tiles[x][y].m_type == TileType::Wall)
 				{
 					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33, p_position.y - 33), 17, sf::Rect<float>(x*64, y*64, 64, 64)))
 					{
@@ -205,7 +226,7 @@ sf::Vector2<float> Map::getIntersectingWall(const sf::Rect<float> & p_position){
 		{
 			if (x >= 0 && x < m_tiles.size() && y >= 0 && y < m_tiles.begin()->size())
 			{
-				if (m_tiles[x][y].m_type == Wall)
+				if (m_tiles[x][y].m_type == TileType::Wall)
 				{
 					if (p_position.intersects(sf::Rect<float>(x*64, y*64, 64, 64)))
 					{
@@ -217,15 +238,15 @@ sf::Vector2<float> Map::getIntersectingWall(const sf::Rect<float> & p_position){
 	}
 }
 
-sf::Packet& operator<<(sf::Packet& packet, const Type& type){
+sf::Packet& operator<<(sf::Packet& packet, const TileType::Type & type){
 	int i = type;
 	return packet << i;
 }
 
-sf::Packet& operator>>(sf::Packet& packet, Type& type){
+sf::Packet& operator>>(sf::Packet& packet, TileType::Type & type){
 	int i;
 	packet >> i;
-	type = (Type)i;
+	type = (TileType::Type)i;
 	return packet;
 }
 

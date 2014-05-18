@@ -15,6 +15,8 @@
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
 #include "..\..\Common\GeneralMath.h"
+#include "PowerManager.h"
+
 #include "Client.h"
 #include "InputData.h"
 #include "GameManager.h"
@@ -52,7 +54,7 @@ private:
 	std::vector<Projectile>::iterator findID(const int & p_id);
 
 private:
-	sf::Clock m_clock, m_elapsed;
+	sf::Clock m_clock, m_elapsed, m_deltaTime;
 	sf::Time m_updateTime;
 	sf::Clock pingTimer;
 
@@ -78,4 +80,6 @@ private:
 
 	//%
 	static const unsigned short m_multiplier = 15;
+
+	PowerManager m_powerManager;
 };

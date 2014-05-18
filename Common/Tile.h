@@ -1,17 +1,20 @@
 #pragma once
 
-enum Type{
-	Floor,
-	Wall,
-	Spawn,
-};
+namespace TileType{
+	enum Type{
+		Floor,
+		Wall,
+		Spawn,
+		Power,
+	};
+}
 
 struct Tile{
-	Tile(const unsigned short & p_x, const unsigned short & p_y, const Type & p_type);
+	Tile(const unsigned short & p_x, const unsigned short & p_y, const TileType::Type & p_type);
 	Tile();
 	~Tile();
 
 	int m_x, m_y;
 
-	Type m_type;
+	TileType::Type m_type;
 };

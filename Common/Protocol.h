@@ -19,6 +19,7 @@ namespace cn
 		PlayerRespawn,
 		ScoreUpdate,
 		ProjectileIDCleanUp,
+		Power,
 	};
 
 	enum InputType

@@ -70,23 +70,30 @@
   <ItemGroup>
     <ClCompile Include="..\..\Common\GeneralMath.cpp" />
     <ClCompile Include="..\..\Common\Map.cpp" />
+    <ClCompile Include="..\..\Common\Power.cpp" />
     <ClCompile Include="..\..\Common\Projectile.cpp" />
     <ClCompile Include="..\..\Common\Score.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InputData.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PowerManager.cpp" />
+    <ClCompile Include="PowerTile.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\GeneralMath.h" />
     <ClInclude Include="..\..\Common\Map.h" />
+    <ClInclude Include="..\..\Common\Power.h" />
     <ClInclude Include="..\..\Common\Projectile.h" />
     <ClInclude Include="..\..\Common\Protocol.h" />
     <ClInclude Include="..\..\Common\Score.h" />
+    <ClInclude Include="..\..\Common\Tile.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="InputData.h" />
+    <ClInclude Include="PowerManager.h" />
+    <ClInclude Include="PowerTile.h" />
     <ClInclude Include="Server.h" />
   </ItemGroup>
   <ItemGroup>

@@ -11,10 +11,12 @@ Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0
 
 	m_map = Map("Maps/map.txt");
 	m_gameManager = GameManager(&m_clientList, &m_projectiles, m_map.m_tiles.size(), m_map.m_tiles.begin()->size());
+	m_powerManager = PowerManager(m_map.getPowerTiles());
 
 	pingTimer.restart();
 	m_clock.restart();
 	m_elapsed.restart();
+	m_deltaTime.restart();
 	m_updateTime = sf::milliseconds(50);
 
 	run();
@@ -33,6 +35,9 @@ void Server::run(){
 		unsigned short port;
 		sf::Packet packet;
 		sf::Packet retPacket;
+
+		m_powerManager.update(m_deltaTime.getElapsedTime());
+		//std::cout << m_powerManager.m_powers.size() << "\n";
 
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{
@@ -78,6 +83,7 @@ void Server::run(){
 			}
 			m_clock.restart();
 		}
+		m_deltaTime.restart();
 	}
 }
 
@@ -148,6 +154,18 @@ sf::Packet Server::simulateGameState() {
 					client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);
 				}
 				break;
+			}
+
+			if (!m_powerManager.m_powers.empty())
+			{
+				for (int i = 0; i < m_powerManager.m_powers.size(); i++){
+					if (math::circleIntersectsRect(client->getPosition(), 20.f, sf::Rect<float>(m_powerManager.m_powers[i].getPosition().x, m_powerManager.m_powers[i].getPosition().y, 32, 32)))
+					{
+						m_powerManager.activate(m_powerManager.m_powers[i], *client);
+						retPacket << cn::PlayerHealth << client->getName() << client->getHealth();
+						m_powerManager.m_powers.erase(m_powerManager.m_powers.begin() + i);
+					}
+				}
 			}
 		}
 	}

@@ -31,6 +31,9 @@
     <Filter Include="Source Files\Score">
       <UniqueIdentifier>{1435fc04-4313-4cbf-b5ec-6ddb02301ca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Power">
+      <UniqueIdentifier>{8e99f355-1025-44e2-8806-58bb7e431807}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -60,6 +63,15 @@
     <ClCompile Include="..\..\Common\Score.cpp">
       <Filter>Source Files\Score</Filter>
     </ClCompile>
+    <ClCompile Include="PowerTile.cpp">
+      <Filter>Source Files\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="PowerManager.cpp">
+      <Filter>Source Files\Power</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Power.cpp">
+      <Filter>Source Files\Power</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -88,6 +100,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Score.h">
       <Filter>Source Files\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Tile.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerTile.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="PowerManager.h">
+      <Filter>Source Files\Power</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Power.h">
+      <Filter>Source Files\Power</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
