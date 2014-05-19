@@ -16,7 +16,6 @@ Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0
 	pingTimer.restart();
 	m_clock.restart();
 	m_elapsed.restart();
-	m_deltaTime.restart();
 	m_updateTime = sf::milliseconds(50);
 
 	run();
@@ -82,7 +81,6 @@ void Server::run(){
 			}
 			m_clock.restart();
 		}
-		m_deltaTime.restart();
 	}
 }
 
@@ -107,7 +105,7 @@ sf::Packet Server::simulateGameState() {
 
 	retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::MegaPacket;
 
-	m_powerManager.update(m_elapsed.getElapsedTime());
+	m_powerManager.update(m_clock.getElapsedTime());
 
 #pragma region Player movement
 	for (InputData input : m_clientInputs) {
@@ -157,19 +155,6 @@ sf::Packet Server::simulateGameState() {
 				}
 				break;
 			}
-
-			if (!m_powerManager.m_powers.empty())
-			{
-				for (int i = 0; i < m_powerManager.m_powers.size(); i++){
-					if (math::circleIntersectsRect(client->getPosition(), 20.f, sf::Rect<float>(m_powerManager.m_powers[i].getPosition().x, m_powerManager.m_powers[i].getPosition().y, 32, 32)))
-					{
-						m_powerManager.activate(m_powerManager.m_powers[i], *client);
-						retPacket << cn::PlayerHealth << client->getName() << client->getHealth();
-						m_powerManager.m_powers.erase(m_powerManager.m_powers.begin() + i);
-					}
-				}
-			}
-			retPacket << cn::Power << m_powerManager.m_powers;
 		}
 	}
 #pragma endregion
@@ -182,6 +167,17 @@ sf::Packet Server::simulateGameState() {
 
 #pragma region Send player positions
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+		if (!m_powerManager.m_powers.empty())
+		{
+			for (int i = 0; i < m_powerManager.m_powers.size(); i++){
+				if (math::circleIntersectsRect(sf::Vector2<float>(it->second.getPosition().x - 20, it->second.getPosition().y - 20), 20.f, sf::Rect<float>(m_powerManager.m_powers[i].getPosition().x, m_powerManager.m_powers[i].getPosition().y, 32, 32)))
+				{
+					m_powerManager.activate(m_powerManager.m_powers[i], it->second);
+					retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
+					m_powerManager.m_powers.erase(m_powerManager.m_powers.begin() + i);
+				}
+			}
+		}
 		if (it->second.getHealth() <= 0)
 		{
 			respawnPlayerPacket(it->second, retPacket);
@@ -190,6 +186,8 @@ sf::Packet Server::simulateGameState() {
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
 #pragma endregion
+
+	retPacket << cn::Power << m_powerManager.m_powers;
 
 #pragma region Update projectiles
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){

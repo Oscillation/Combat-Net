@@ -18,7 +18,7 @@ void Power::activate(Client & p_client){
 		
 		m_power(p_client);
 
-		ptr_tile->m_time = math::random(0, 5);
+		ptr_tile->m_time = 5;
 		ptr_tile->m_hasPower = false;
 	}
 }
