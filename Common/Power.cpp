@@ -15,7 +15,7 @@ Power::~Power(){
 void Power::activate(Client & p_client){
 	if (ptr_tile != NULL)
 	{
-		
+
 		m_power(p_client);
 
 		ptr_tile->m_time = 1;
@@ -27,8 +27,22 @@ void Power::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const{
 	p_states.transform = getTransform();
 	sf::RectangleShape rectShape = sf::RectangleShape(sf::Vector2<float>(32, 32));
 	rectShape.setPosition(getPosition());
-	rectShape.setFillColor(sf::Color::Magenta);
+
+	switch (m_powerType)
+	{
+	case Health:
+		rectShape.setFillColor(sf::Color::Green);
+		break;
+	default:
+		rectShape.setFillColor(sf::Color::Magenta);
+		break;
+	}
+
 	p_target.draw(rectShape);
+}
+
+bool Power::operator==(Power & p_power) const{
+	return getPosition() == p_power.getPosition();
 }
 
 sf::Packet& operator <<(sf::Packet& packet, const Power & p_power){

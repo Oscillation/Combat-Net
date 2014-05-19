@@ -21,13 +21,36 @@ sf::Packet & PowerManager::update(const sf::Time & p_deltaTime){
 			it->m_hasPower = it->update(p_deltaTime);
 			if (it->m_hasPower)
 			{
-				Power power = Power(([this](Client & p_client) {
-					p_client.setHealth(p_client.getHealth() - 50);
-				}), PowerType::Health);
-				m_powers.push_back(power);
-				m_powers.back().setPosition(it->m_x*64 + 16, it->m_y*64 + 16);
-				m_powers.back().ptr_tile = &(*it);
-				packet << cn::Power << power;
+				int i = math::random(1, 100);
+
+				if (i > 50)
+				{
+					Power power = Power(([this](Client & p_client) {
+						if (p_client.getHealth() + 20 <= 100)
+						{
+							p_client.setHealth(p_client.getHealth() + 20);
+						}else
+						{
+							p_client.setHealth(100);
+						}
+					}), PowerType::Health);
+					m_powers.push_back(power);
+					m_powers.back().setPosition(it->m_x*64 + 16, it->m_y*64 + 16);
+					m_powers.back().ptr_tile = &(*it);
+					packet << cn::Power << power;
+				}else
+				{
+					Power power = Power(([this](Client & p_client) {
+						if (p_client.m_speedBoost < 25)
+						{
+							p_client.m_speedBoost += 5;
+						}
+					}), PowerType::Speed);
+					m_powers.push_back(power);
+					m_powers.back().setPosition(it->m_x*64 + 16, it->m_y*64 + 16);
+					m_powers.back().ptr_tile = &(*it);
+					packet << cn::Power << power;
+				}
 			}
 		}
 	}

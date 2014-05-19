@@ -43,6 +43,8 @@ struct Client : public sf::Transformable {
 	///<summary>Seconds.</summary>
 	float m_respawnTime;
 
+	int m_speedBoost;
+
 private:
 	int m_health;
 

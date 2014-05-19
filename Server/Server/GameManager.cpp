@@ -61,10 +61,12 @@ GameManager::~GameManager(){
 }
 
 void GameManager::update(Client & p_client){
-	sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
+	sf::Vector2<int> clientPoints[4] = {
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))
+	};
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -76,10 +78,12 @@ void GameManager::update(Client & p_client){
 }
 
 void GameManager::update(Projectile & p_projectile){
-	sf::Vector2<int> projectilePoints[4] = {sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
+	sf::Vector2<int> projectilePoints[4] = {
+		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))
+	};
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -142,15 +146,19 @@ bool GameManager::intersect(Projectile & p_projectileA, Projectile & p_projectil
 }
 
 bool GameManager::shareBranch(Client & p_client, Projectile & p_projectile) const{
-	sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
+	sf::Vector2<int> clientPoints[4] = {
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))
+	};
 
-	sf::Vector2<int> projectilePoints[4] = {sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
+	sf::Vector2<int> projectilePoints[4] = {
+		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))
+	};
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -166,15 +174,19 @@ bool GameManager::shareBranch(Client & p_client, Projectile & p_projectile) cons
 }
 
 bool GameManager::shareBranch(Client & p_clientA, Client & p_clientB) const{
-	sf::Vector2<int> clientAPoints[4] = {sf::Vector2<int>(p_clientA.getPosition().x/(64*m_size), p_clientA.getPosition().y/(64*m_size)),
+	sf::Vector2<int> clientAPoints[4] = {
+		sf::Vector2<int>(p_clientA.getPosition().x/(64*m_size), p_clientA.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_clientA.getPosition().x + 40)/(64*m_size), p_clientA.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_clientA.getPosition().x/(64*m_size), (p_clientA.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_clientA.getPosition().x + 40)/(64*m_size), (p_clientA.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_clientA.getPosition().x + 40)/(64*m_size), (p_clientA.getPosition().y + 40)/(64*m_size))
+	};
 
-	sf::Vector2<int> clientBPoints[4] = {sf::Vector2<int>(p_clientB.getPosition().x/(64*m_size), p_clientB.getPosition().y/(64*m_size)),
+	sf::Vector2<int> clientBPoints[4] = {
+		sf::Vector2<int>(p_clientB.getPosition().x/(64*m_size), p_clientB.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_clientB.getPosition().x + 40)/(64*m_size), p_clientB.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_clientB.getPosition().x/(64*m_size), (p_clientB.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_clientB.getPosition().x + 40)/(64*m_size), (p_clientB.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_clientB.getPosition().x + 40)/(64*m_size), (p_clientB.getPosition().y + 40)/(64*m_size))
+	};
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -189,15 +201,19 @@ bool GameManager::shareBranch(Client & p_clientA, Client & p_clientB) const{
 }
 
 bool GameManager::shareBranch(Projectile & p_projectileA, Projectile & p_projectileB) const{
-	sf::Vector2<int> projectileAPoints[4] = {sf::Vector2<int>(p_projectileA.getPosition().x/(64*m_size), p_projectileA.getPosition().y/(64*m_size)),
+	sf::Vector2<int> projectileAPoints[4] = {
+		sf::Vector2<int>(p_projectileA.getPosition().x/(64*m_size), p_projectileA.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_projectileA.getPosition().x + 40)/(64*m_size), p_projectileA.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_projectileA.getPosition().x/(64*m_size), (p_projectileA.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectileA.getPosition().x + 40)/(64*m_size), (p_projectileA.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_projectileA.getPosition().x + 40)/(64*m_size), (p_projectileA.getPosition().y + 40)/(64*m_size))
+	};
 
-	sf::Vector2<int> projectileBPoints[4] = {sf::Vector2<int>(p_projectileB.getPosition().x/(64*m_size), p_projectileB.getPosition().y/(64*m_size)),
+	sf::Vector2<int> projectileBPoints[4] = {
+		sf::Vector2<int>(p_projectileB.getPosition().x/(64*m_size), p_projectileB.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_projectileB.getPosition().x + 40)/(64*m_size), p_projectileB.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_projectileB.getPosition().x/(64*m_size), (p_projectileB.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectileB.getPosition().x + 40)/(64*m_size), (p_projectileB.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_projectileB.getPosition().x + 40)/(64*m_size), (p_projectileB.getPosition().y + 40)/(64*m_size))
+	};
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -212,10 +228,12 @@ bool GameManager::shareBranch(Projectile & p_projectileA, Projectile & p_project
 }
 
 std::vector<Client> GameManager::getClients(Projectile & p_projectile) const{
-	sf::Vector2<int> projectilePoints[4] = {sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
+	sf::Vector2<int> projectilePoints[4] = {
+		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))
+	};
 
 	std::vector<Client> clients;
 
@@ -233,10 +251,12 @@ std::vector<Client> GameManager::getClients(Projectile & p_projectile) const{
 }
 
 std::vector<Client> GameManager::getClients(Client & p_client) const{
-	sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
+	sf::Vector2<int> clientPoints[4] = {
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))
+	};
 
 	std::vector<Client> clients;
 
@@ -254,10 +274,12 @@ std::vector<Client> GameManager::getClients(Client & p_client) const{
 }
 
 std::vector<Projectile> GameManager::getProjectiles(Projectile & p_projectile) const{
-	sf::Vector2<int> projectilePoints[4] = {sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
+	sf::Vector2<int> projectilePoints[4] = {
+		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))
+	};
 
 	std::vector<Projectile> projectiles;
 
@@ -275,10 +297,12 @@ std::vector<Projectile> GameManager::getProjectiles(Projectile & p_projectile) c
 }
 
 std::vector<Projectile> GameManager::getProjectiles(Client & p_client) const{
-	sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
+	sf::Vector2<int> clientPoints[4] = {
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
 		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)),
 		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))};
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))
+	};
 
 	std::vector<Projectile> projectiles;
 

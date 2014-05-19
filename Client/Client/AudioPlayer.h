@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML\Audio\Sound.hpp>
 #include <SFML\Audio\SoundBuffer.hpp>
+#include <SFML\Audio\Listener.hpp>
+#include <SFML\System\Vector2.hpp>
 #include <map>
 #include <iostream>
 #include <fstream>

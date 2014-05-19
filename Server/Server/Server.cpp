@@ -1,6 +1,6 @@
 #include "Server.h"
 
-Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0){
+Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0), m_speedBoost(5){
 	while (m_socket.bind(m_port) != sf::Socket::Done)
 	{
 		std::cout << "Retry with port: ";
@@ -118,7 +118,7 @@ sf::Packet Server::simulateGameState() {
 			case cn::MoveUp:
 				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)))
 				{
-					client->move(0, -client->getSpeed()*deltaTime);
+					client->move(0, (-client->getSpeed()*deltaTime) - (client->m_speedBoost*m_speedBoost*deltaTime));
 				}else
 				{
 					client->setPosition(client->getPosition().x, m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)).y + 64 + 20);
@@ -128,7 +128,7 @@ sf::Packet Server::simulateGameState() {
 			case cn::MoveDown:
 				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)))
 				{
-					client->move(0, client->getSpeed()*deltaTime);
+					client->move(0, client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime));
 				}else
 				{
 					client->setPosition(client->getPosition().x, m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)).y - 20);
@@ -138,7 +138,7 @@ sf::Packet Server::simulateGameState() {
 			case cn::MoveLeft:
 				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)))
 				{
-					client->move(-client->getSpeed()*deltaTime, 0);
+					client->move(-client->getSpeed()*deltaTime - (client->m_speedBoost*m_speedBoost*deltaTime), 0);
 				}else
 				{
 					client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)).x + 64 + 20, client->getPosition().y);
@@ -148,7 +148,7 @@ sf::Packet Server::simulateGameState() {
 			case cn::MoveRight:
 				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)))
 				{
-					client->move(client->getSpeed()*deltaTime, 0);
+					client->move(client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime), 0);
 				}else
 				{
 					client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);

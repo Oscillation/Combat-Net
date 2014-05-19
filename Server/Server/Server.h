@@ -81,5 +81,7 @@ private:
 	//%
 	static const unsigned short m_multiplier = 15;
 
+	float m_speedBoost;
+
 	PowerManager m_powerManager;
 };

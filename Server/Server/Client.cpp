@@ -10,7 +10,8 @@ Client::Client(const sf::IpAddress & p_address, const unsigned short & p_port) :
 	m_speed(300),
 	m_health(100),
 	m_score(),
-	m_damage(10)
+	m_damage(10),
+	m_speedBoost(0)
 {
 }
 

@@ -9,6 +9,7 @@
 
 enum PowerType{
 	Health,
+	Speed,
 };
 
 struct Power : public sf::Drawable, public sf::Transformable{
@@ -23,6 +24,8 @@ struct Power : public sf::Drawable, public sf::Transformable{
 	PowerTile* ptr_tile;
 
 	PowerType m_powerType;
+
+	bool operator==(Power & p_power) const;
 
 private:
 	void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;

@@ -13,6 +13,8 @@
 
 #include <SFML\System\Clock.hpp>
 
+#include <SFML\Audio\Listener.hpp>
+
 #include "Player.h"
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
@@ -105,4 +107,5 @@ private:
 	std::vector<Power> m_powers;
 
 	AudioPlayer m_audioPlayer;
+	//sf::Listener m_listener;
 };
