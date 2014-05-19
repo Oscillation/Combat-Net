@@ -7,8 +7,12 @@
 #include "..\Server\Server\Client.h"
 #include "..\Server\Server\PowerTile.h"
 
+enum PowerType{
+	Health,
+};
+
 struct Power : public sf::Drawable, public sf::Transformable{
-	Power(const std::function<void(Client & p_client)> & p_power);
+	Power(const std::function<void(Client & p_client)> & p_power, const PowerType & p_powerType);
 	Power();
 	~Power();
 
@@ -18,9 +22,13 @@ struct Power : public sf::Drawable, public sf::Transformable{
 
 	PowerTile* ptr_tile;
 
+	PowerType m_powerType;
+
 private:
 	void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;
 };
 
 sf::Packet& operator <<(sf::Packet& packet, const Power & p_power);
 sf::Packet& operator >>(sf::Packet& packet, Power & p_power);
+sf::Packet& operator <<(sf::Packet& packet, const std::vector<Power> & p_powers);
+sf::Packet& operator >>(sf::Packet& packet, std::vector<Power> & p_powers);

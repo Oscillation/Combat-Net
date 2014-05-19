@@ -54,7 +54,7 @@ private:
 	std::vector<Projectile>::iterator findID(const int & p_id);
 
 private:
-	sf::Clock m_clock, m_elapsed, m_deltaTime;
+	sf::Clock m_clock, m_elapsed;
 	sf::Time m_updateTime;
 	sf::Clock pingTimer;
 

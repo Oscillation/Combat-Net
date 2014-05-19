@@ -72,25 +72,23 @@ bool MultiplayerGame::connect(){
 			if ((cn::PacketType)type == cn::PlayerConnected)
 			{
 				packet >> name;
-				if (name == m_name)
-				{
-					std::cout << "Connected to server.\n";
-					sf::Vector2f position;
-					packet >> position.x >> position.y;
-					packet >> m_map;
-					packet >> m_projectiles;
-					std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
-					newPlayer->setPosition(position);
-					newPlayer->setTargetPosition(position);
-					newPlayer->setTargetTime(100);
-					m_players[name] = std::move(newPlayer);
-					m_socket.setBlocking(false);
-					m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
-					m_view.setCenter(m_players[m_name].get()->getPosition());
-					std::cout << m_name << std::endl;
-					m_connected = true;
-					return true;
-				}
+				std::cout << "Connected to server.\n";
+				sf::Vector2f position;
+				packet >> position.x >> position.y;
+				packet >> m_map;
+				packet >> m_projectiles;
+				packet >> m_powers;
+				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
+				newPlayer->setPosition(position);
+				newPlayer->setTargetPosition(position);
+				newPlayer->setTargetTime(100);
+				m_players[name] = std::move(newPlayer);
+				m_socket.setBlocking(false);
+				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
+				m_view.setCenter(m_players[m_name].get()->getPosition());
+				std::cout << m_name << std::endl;
+				m_connected = true;
+				return true;
 			}else if ((cn::PacketType)type == cn::NameTaken)
 			{
 				std::cout << "That name is already taken. Please try again with a different name.\n";
@@ -160,12 +158,6 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 					m_lastServerUpdateTime = time;
 				}
 			}
-			/*if ((cn::PacketType)type == cn::Power)
-			{
-				Power power = Power();
-				packet >> power;
-				m_powers.push_back(power);
-			}*/
 			timeSinceLastServerUpdate.restart();
 		}
 
@@ -202,7 +194,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		{
-			m_particleEmitter.Emit("test", m_players[m_name]->getPosition(), 5);
+			m_players[m_name].get()->setPosition(130, 130);
 		}
 
 		m_particleEmitter.update(p_deltaTime);
@@ -215,24 +207,24 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		/*if (m_active)
 		{*/
-			sf::Packet inputPacket;
-			sf::Packet projectilePacket;
-			if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
-			{
-				m_socket.send(inputPacket, server_address, server_port);
-			}
-			if (handleProjectileInput(projectilePacket, p_deltaTime.asMilliseconds()))
-			{
-				m_socket.send(projectilePacket, server_address, server_port);
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
-				m_scoreboard.activate();
-			else {
-				m_scoreboard.deactivate();
-			}
+		sf::Packet inputPacket;
+		sf::Packet projectilePacket;
+		if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
+		{
+			m_socket.send(inputPacket, server_address, server_port);
+		}
+		if (handleProjectileInput(projectilePacket, p_deltaTime.asMilliseconds()))
+		{
+			m_socket.send(projectilePacket, server_address, server_port);
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+			m_scoreboard.activate();
+		else {
+			m_scoreboard.deactivate();
+		}
 		/*}else
 		{
-			m_scoreboard.deactivate();
+		m_scoreboard.deactivate();
 		}*/
 
 		// Handle server crash/random disconnect
@@ -279,6 +271,10 @@ bool MultiplayerGame::draw()
 			}
 	}
 
+	for (auto it = m_powers.begin(); it != m_powers.end(); ++it) {
+		window->draw(*it);
+	}
+
 	for (auto i = m_players.begin(); i != m_players.end(); ++i) {
 		if (!i->second.get()->isDead())
 		{
@@ -287,10 +283,6 @@ bool MultiplayerGame::draw()
 	}
 
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
-		window->draw(*it);
-	}
-
-	for (auto it = m_powers.begin(); it != m_powers.end(); ++it) {
 		window->draw(*it);
 	}
 
@@ -546,6 +538,10 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			p_packet >> name >> position;
 			m_players[name]->setPosition(position);
 			m_players[name]->setHealth(100);
+		} else if ((cn::PacketType)type == cn::Power)
+		{
+			m_powers.clear();
+			p_packet >> m_powers;
 		}
 	}
 }
