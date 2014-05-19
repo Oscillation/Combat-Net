@@ -13,6 +13,6 @@ public:
 	void playSound(const std::string & p_sound);
 
 private:
-	sf::SoundBuffer m_soundBuffer;
 	std::map<std::string, sf::Sound> m_sounds;
+	std::map<std::string, sf::SoundBuffer> m_buffers;
 };

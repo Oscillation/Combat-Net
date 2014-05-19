@@ -17,11 +17,17 @@ AudioPlayer::AudioPlayer(){
 
 			std::string key = line.substr(0, pos), path = line.substr(pos + 1, line.size());
 
-			if (!m_soundBuffer.loadFromFile("Audio/" + path))
+			sf::SoundBuffer soundBuffer;
+
+			m_buffers[key] = soundBuffer;
+
+			if (!m_buffers[key].loadFromFile("Audio/" + path))
 			{
 				std::cout << "Failed to load audio file: " << "Audio/" + path << "\n";
 			}
-			sf::Sound sound = sf::Sound(m_soundBuffer);
+
+			sf::Sound sound = sf::Sound(m_buffers[key]);
+			
 			m_sounds[key] = sound;
 		}
 

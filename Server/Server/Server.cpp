@@ -173,6 +173,9 @@ sf::Packet Server::simulateGameState() {
 				if (math::circleIntersectsRect(sf::Vector2<float>(it->second.getPosition().x - 20, it->second.getPosition().y - 20), 20.f, sf::Rect<float>(m_powerManager.m_powers[i].getPosition().x, m_powerManager.m_powers[i].getPosition().y, 32, 32)))
 				{
 					m_powerManager.activate(m_powerManager.m_powers[i], it->second);
+					sf::Packet packet;
+					packet << 0 << cn::ActivatePower;
+					m_socket.send(packet, it->second.getAddress(), it->second.getPort());
 					retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
 					m_powerManager.m_powers.erase(m_powerManager.m_powers.begin() + i);
 				}

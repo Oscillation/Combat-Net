@@ -21,6 +21,7 @@ namespace cn
 		ProjectileIDCleanUp,
 		Power,
 		ErasePower,
+		ActivatePower,
 	};
 
 	enum InputType

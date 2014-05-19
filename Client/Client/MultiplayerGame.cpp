@@ -165,6 +165,10 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 					m_lastServerUpdateTime = time;
 				}
 			}
+			if ((cn::PacketType)type == cn::ActivatePower)
+			{
+				m_audioPlayer.playSound("power");
+			}
 			timeSinceLastServerUpdate.restart();
 		}
 
