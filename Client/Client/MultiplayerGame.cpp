@@ -38,6 +38,8 @@ void MultiplayerGame::initialize()
 
 	m_particleLoader = ParticleLoader("Particles/");
 	m_particleEmitter = ParticleEmitter(&m_particleLoader);
+	
+	m_audioPlayer = AudioPlayer();
 
 	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
 		std::cout << "Failed to bind to port" << std::endl;
@@ -478,6 +480,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1);
 			m_particleEmitter.Emit("test", position, velocity);
 			m_particleEmitter.Emit("projectile", position + velocity);
+			m_audioPlayer.playSound("projectile_hit_wall");
 			m_projectiles.erase(it);
 		}
 	}

@@ -33,6 +33,9 @@
     <Filter Include="Source Files\Power">
       <UniqueIdentifier>{e1dc3ff5-5801-40b6-8107-d70856eee520}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Sound">
+      <UniqueIdentifier>{8a463bae-731c-43ef-8af6-a1e9bbd8ac12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -100,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Common\Power.cpp">
       <Filter>Source Files\Power</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioPlayer.cpp">
+      <Filter>Source Files\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +180,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Power.h">
       <Filter>Source Files\Power</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioPlayer.h">
+      <Filter>Source Files\Sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

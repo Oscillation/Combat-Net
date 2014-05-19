@@ -20,6 +20,7 @@
 #include "Scoreboard.h"
 #include "ParticleLoader.h"
 #include "ParticleEmitter.h"
+#include "AudioPlayer.h"
 
 #include <map>
 #include <memory>
@@ -96,4 +97,6 @@ private:
 	ParticleEmitter m_particleEmitter;
 
 	std::vector<Power> m_powers;
+
+	AudioPlayer m_audioPlayer;
 };
