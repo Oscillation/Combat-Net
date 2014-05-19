@@ -3,6 +3,7 @@
 #include <SFML\Audio\SoundBuffer.hpp>
 #include <map>
 #include <iostream>
+#include <fstream>
 
 class AudioPlayer{
 public:

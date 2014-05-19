@@ -1,16 +1,35 @@
 #include "AudioPlayer.h"
 
 AudioPlayer::AudioPlayer(){
-	
+	std::ifstream file;
 
-	if (!m_soundBuffer.loadFromFile("Audio/projectile_hit_wall.wav"))
+	file.open("Audio/audio files.txt");
+
+	if (file.is_open())
 	{
-		std::cout << "failed to load wav file.\n";
+		std::string line;
+		
+		while (!file.eof())
+		{
+			std::getline(file, line);
+
+			auto pos = line.find(' ');
+
+			std::string key = line.substr(0, pos), path = line.substr(pos + 1, line.size());
+
+			if (!m_soundBuffer.loadFromFile("Audio/" + path))
+			{
+				std::cout << "Failed to load audio file: " << "Audio/" + path << "\n";
+			}
+			sf::Sound sound = sf::Sound(m_soundBuffer);
+			m_sounds[key] = sound;
+		}
+
+		file.close();
+	}else
+	{
+		std::cout << "Failed to open file: Audio/audio files.txt";
 	}
-
-	sf::Sound sound = sf::Sound(m_soundBuffer);
-
-	m_sounds["projectile_hit_wall"] = sound;
 }
 
 AudioPlayer::~AudioPlayer(){

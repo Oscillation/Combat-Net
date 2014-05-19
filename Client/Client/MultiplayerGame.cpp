@@ -507,6 +507,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 			m_particleEmitter.Emit("projectile", position + velocity);
 			m_audioPlayer.playSound("projectile_hit_wall");
 			m_projectiles.erase(it);
+			shakeView(sf::seconds(0.05f));
 		}
 	}
 }
@@ -587,8 +588,8 @@ void MultiplayerGame::shakeView(const sf::Time & p_time){
 void MultiplayerGame::updateViewShake(const sf::Time & p_deltaTime){
 	if (m_viewShakeTime > 0)
 	{
-		m_viewVelocity.x = math::random(-5, 5);
-		m_viewVelocity.y = math::random(-5, 5);
+		m_viewVelocity.x = math::random(-2.5f, 2.5f);
+		m_viewVelocity.y = math::random(-2.5f, 2.5f);
 		m_viewShakeTime -= p_deltaTime.asSeconds();
 	}else
 	{
