@@ -39,7 +39,7 @@ void MultiplayerGame::initialize()
 	m_particleLoader = ParticleLoader("Particles/");
 	m_particleEmitter = ParticleEmitter(&m_particleLoader);
 	
-	m_audioPlayer = AudioPlayer();
+	//m_audioPlayer = AudioPlayer();
 
 	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
 		std::cout << "Failed to bind to port" << std::endl;

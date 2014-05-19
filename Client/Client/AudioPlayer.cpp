@@ -1,14 +1,14 @@
 #include "AudioPlayer.h"
 
 AudioPlayer::AudioPlayer(){
-	sf::SoundBuffer soundBuffer = sf::SoundBuffer();
+	
 
-	if (!soundBuffer.loadFromFile("Audio/projectile_hit_wall.wav"))
+	if (!m_soundBuffer.loadFromFile("Audio/projectile_hit_wall.wav"))
 	{
-		
+		std::cout << "failed to load wav file.\n";
 	}
 
-	sf::Sound sound = sf::Sound(soundBuffer);
+	sf::Sound sound = sf::Sound(m_soundBuffer);
 
 	m_sounds["projectile_hit_wall"] = sound;
 }
