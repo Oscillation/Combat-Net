@@ -21,11 +21,15 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 		{
 			std::string port = address.substr(pos + 1);
 			address = address.substr(0, pos);
-			con->address = new sf::IpAddress(address);
-			con->username = m_namebox.getValue();
 			con->port = std::atoi(port.c_str());
-			requestStackPush(States::Game);
 		}
+		else 
+		{
+			con->port = 2828;
+		}
+		con->address = new sf::IpAddress(address);
+		con->username = m_namebox.getValue();
+		requestStackPush(States::Game);
 	});
 	m_button.setText("Connect");
 
