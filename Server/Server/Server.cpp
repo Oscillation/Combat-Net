@@ -36,7 +36,6 @@ void Server::run(){
 		sf::Packet packet;
 		sf::Packet retPacket;
 
-		m_powerManager.update(m_deltaTime.getElapsedTime());
 		//std::cout << m_powerManager.m_powers.size() << "\n";
 
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
@@ -105,7 +104,10 @@ std::vector<Projectile>::iterator Server::findID(const int & p_id){
 
 sf::Packet Server::simulateGameState() {
 	sf::Packet retPacket;
+
 	retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::MegaPacket;
+
+	m_powerManager.update(m_elapsed.getElapsedTime());
 
 #pragma region Player movement
 	for (InputData input : m_clientInputs) {
@@ -167,6 +169,7 @@ sf::Packet Server::simulateGameState() {
 					}
 				}
 			}
+			retPacket << cn::Power << m_powerManager.m_powers;
 		}
 	}
 #pragma endregion
@@ -179,6 +182,10 @@ sf::Packet Server::simulateGameState() {
 
 #pragma region Send player positions
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+		if (it->second.getHealth() <= 0)
+		{
+			respawnPlayerPacket(it->second, retPacket);
+		}
 		m_gameManager.update(it->second);
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
@@ -282,7 +289,7 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		m_clientList[data].setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 		m_clientList[data].hasRespondedToPing = true;
 
-		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << m_map << m_projectiles;
+		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << m_map << m_projectiles << m_powerManager.m_powers;
 		m_socket.send(retPacket, p_address, p_port);
 
 		//Send connecting client to already connected clients

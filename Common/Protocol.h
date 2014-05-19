@@ -20,6 +20,7 @@ namespace cn
 		ScoreUpdate,
 		ProjectileIDCleanUp,
 		Power,
+		ErasePower,
 	};
 
 	enum InputType

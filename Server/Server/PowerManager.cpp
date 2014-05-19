@@ -21,14 +21,13 @@ sf::Packet & PowerManager::update(const sf::Time & p_deltaTime){
 			it->m_hasPower = it->update(p_deltaTime);
 			if (it->m_hasPower)
 			{
-				Power power = Power(Power([this](Client & p_client) {
+				Power power = Power(([this](Client & p_client) {
 					p_client.setHealth(p_client.getHealth() - 10);
-				}));
+				}), PowerType::Health);
 				m_powers.push_back(power);
 				m_powers.back().setPosition(it->m_x*64 + 16, it->m_y*64 + 16);
 				m_powers.back().ptr_tile = &(*it);
-				std::cout << "asdf\n";
-				//packet << 0 << cn::Power << m_powers.back();
+				packet << cn::Power << power;
 			}
 		}
 	}
