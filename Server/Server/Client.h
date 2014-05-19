@@ -40,6 +40,9 @@ struct Client : public sf::Transformable {
 	int getDamage() const;
 	void setDamage(const int& p_damage);
 
+	///<summary>Seconds.</summary>
+	float m_respawnTime;
+
 private:
 	int m_health;
 

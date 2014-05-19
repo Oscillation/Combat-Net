@@ -33,12 +33,17 @@ void MultiplayerGame::initialize()
 	statusText.setPosition(30, 30);
 	statusText.setStyle(sf::Text::Bold);
 
+	m_respawnTimer.setFont(gameFont);
+	m_respawnTimer.setColor(sf::Color::Red);
+	m_respawnTimer.setPosition(m_view.getSize().x/2, m_view.getSize().y/2);
+	m_respawnTimer.setStyle(sf::Text::Bold);
+
 	server_address = *getContext()->address;
 	server_port = getContext()->port;
 
 	m_particleLoader = ParticleLoader("Particles/");
 	m_particleEmitter = ParticleEmitter(&m_particleLoader);
-	
+
 	//m_audioPlayer = AudioPlayer();
 
 	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
@@ -236,6 +241,17 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 
 		m_scoreboard.updateStats();	
+
+		if (m_respawnTime > 0)
+		{
+			m_displayRespawnTimer = true;
+			m_respawnTime -= p_deltaTime.asSeconds();
+			m_respawnTimer.setString(std::to_string(m_respawnTime));
+			m_respawnTimer.setPosition(m_view.getSize().x/2 - m_respawnTimer.getLocalBounds().width/2, m_view.getSize().y/2);
+		}else
+		{
+			m_displayRespawnTimer = false;
+		}
 	}
 
 	return false;
@@ -293,6 +309,15 @@ bool MultiplayerGame::draw()
 	window->setView(window->getDefaultView());
 	window->draw(m_scoreboard);
 	window->draw(statusText);
+
+	if (m_displayRespawnTimer)
+	{
+		if (m_respawnTime > 0 && m_players[m_name]->getHealth() == 0)
+		{
+			window->draw(m_respawnTimer);
+		}
+	}
+
 	return false;
 }
 
@@ -529,7 +554,13 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			int health;
 			p_packet >> name >> health;
 			m_players[name]->setHealth(health);
-
+			if (name == m_name)
+			{
+				if (m_players[name]->getHealth() <= 0)
+				{
+					setRespawnTimer(3.f);
+				}
+			}
 		}else if ((cn::PacketType)type == cn::ScoreUpdate)
 		{
 			std::string name;
@@ -563,4 +594,10 @@ void MultiplayerGame::updateViewShake(const sf::Time & p_deltaTime){
 	{
 		m_viewVelocity = sf::Vector2<float>();
 	}
+}
+
+void MultiplayerGame::setRespawnTimer(const float & p_time){
+	m_displayRespawnTimer = true;
+	m_respawnTime = p_time;
+	m_respawnTimer.setString(std::to_string(m_respawnTime));
 }

@@ -65,6 +65,12 @@ private:
 
 	void updateViewShake(const sf::Time & p_deltaTime);
 
+	float m_respawnTime;
+	bool m_displayRespawnTimer;
+	void setRespawnTimer(const float & p_time);
+
+	sf::Text m_respawnTimer;
+
 	sf::IpAddress server_address;
 	unsigned short server_port;
 

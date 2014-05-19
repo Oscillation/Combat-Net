@@ -3,12 +3,13 @@ x   x      x   x
 x S x      x S x
 x   x      x   x
 x              x
-x      xx      x
 x              x
-x   x  PP  x   x
-x   x  PP  x   x
 x              x
-x      xx      x
+x              x
+x   P      P   x
+x              x
+x              x
+x              x
 x              x
 x   x      x   x
 x S x      x S x

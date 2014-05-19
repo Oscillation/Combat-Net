@@ -54,11 +54,21 @@ int Client::getHealth() const
 void Client::setHealth(const int& p_health)
 {
 	m_health = p_health;
+	
+	if (m_health <= 0)
+	{
+		m_respawnTime = 3.f;
+	}
 }
 
 void Client::damage(const int& p_damage)
 {
 	m_health -= p_damage;
+
+	if (m_health <= 0)
+	{
+		m_respawnTime = 3.f;
+	}
 }
 
 int Client::getDamage() const
