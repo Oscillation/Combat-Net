@@ -417,7 +417,6 @@ void Server::pingClients()
 void Server::respawnPlayerPacket(Client& client, sf::Packet& p_packet)
 {
 	client.setHealth(100);
-	//client.setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
 	sf::Vector2<int> spawn = m_gameManager.selectSpawn(m_map.m_spawnPositions);
 	client.setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 	p_packet << cn::PlayerRespawn << client.getName() << client.getPosition();
@@ -432,4 +431,24 @@ sf::Packet Server::ProjectileIDCleanup(sf::Packet & p_packet){
 		m_projectiles[i].m_id = i;
 	}
 	return p_packet;
+}
+
+bool Server::isMatchOver() const
+{
+	return currentMatch.active;
+}
+
+void Server::startMatch()
+{
+
+}
+
+int Server::getHightestScore()
+{
+	int maxScore = 0;
+	for (auto i = m_clientList.begin(); i != m_clientList.end(); ++i)
+	{
+		maxScore = (i->second.m_score.m_points > maxScore) ? i->second.m_score.m_points : maxScore;
+	}
+	return maxScore;
 }

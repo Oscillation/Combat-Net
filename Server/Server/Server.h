@@ -15,6 +15,7 @@
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
 #include "..\..\Common\GeneralMath.h"
+#include "Match.h"
 #include "PowerManager.h"
 
 #include "Client.h"
@@ -53,6 +54,11 @@ private:
 
 	std::vector<Projectile>::iterator findID(const int & p_id);
 
+	bool isMatchOver() const;
+	void startMatch();
+	int getHightestScore();
+
+
 private:
 	sf::Clock m_clock, m_elapsed;
 	sf::Time m_updateTime;
@@ -73,6 +79,8 @@ private:
 	int m_projectileID;
 
 	Map m_map;
+
+	Match currentMatch;
 
 	GameManager m_gameManager;
 

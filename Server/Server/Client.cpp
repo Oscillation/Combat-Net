@@ -70,6 +70,14 @@ void Client::setDamage(const int& p_damage)
 {
 	m_damage = p_damage;
 }
+int Client::getTeam() const
+{
+	return m_team;
+}
+void Client::setTeam(const int& p_team)
+{
+	m_team = p_team;
+}
 
 std::string Client::getName() const{
 	return m_name;

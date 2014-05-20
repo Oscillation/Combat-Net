@@ -21,6 +21,8 @@ namespace cn
 		ProjectileIDCleanUp,
 		Power,
 		ErasePower,
+		MatchStart,
+		MatchEnd,
 	};
 
 	enum InputType
@@ -34,4 +36,11 @@ namespace cn
 		ShootLeft,
 		ShootRight,
 	};
-};
+
+	enum MatchType
+	{
+		FreeForAll,
+		TeamDeathmatch,
+		CaptureTheFlag,
+	};
+}

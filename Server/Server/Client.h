@@ -40,10 +40,15 @@ struct Client : public sf::Transformable {
 	int getDamage() const;
 	void setDamage(const int& p_damage);
 
+	int getTeam() const;
+	void setTeam(const int& p_team);
+
 private:
 	int m_health;
 
 	int m_damage;
+
+	int m_team;
 
 	sf::IpAddress m_address;
 	unsigned short m_port;
