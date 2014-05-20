@@ -6,6 +6,7 @@ namespace States
 	{
 		Menu,
 		Game,
+		PreMatch,
 		None
 	};
 }
