@@ -49,6 +49,7 @@ void AudioPlayer::update(){
 	{
 		if (m_activeSounds[i]->getStatus() == sf::Sound::Status::Stopped)
 		{
+			delete m_activeSounds[i];
 			m_activeSounds.erase(m_activeSounds.begin() + i);
 		}
 	}
