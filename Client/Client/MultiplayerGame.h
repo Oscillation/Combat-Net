@@ -108,5 +108,5 @@ private:
 	std::vector<Power> m_powers;
 
 	AudioPlayer m_audioPlayer;
-	//sf::Listener m_listener;
+	sf::Listener m_listener;
 };

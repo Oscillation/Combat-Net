@@ -27,6 +27,7 @@ AudioPlayer::AudioPlayer(){
 			}
 
 			sf::Sound sound = sf::Sound(m_buffers[key]);
+			sound.setAttenuation(50.f);
 			//sound.setRelativeToListener(true);
 
 			m_sounds[key] = sound;
@@ -44,10 +45,24 @@ AudioPlayer::~AudioPlayer(){
 }
 
 void AudioPlayer::update(){
-
+	std::cout << m_activeSounds.size() << "\n";
+	for (int i = 0; i < m_activeSounds.size(); i++)
+	{
+		if (m_activeSounds[i]->getStatus() == sf::Sound::Status::Stopped)
+		{
+			m_activeSounds.erase(m_activeSounds.begin() + i);
+		}
+	}
 }
 
 void AudioPlayer::playSound(const std::string & p_sound, const sf::Vector3<float> & p_position){
-	//m_sounds[p_sound].setPosition(p_position);
-	m_sounds[p_sound].play();
+	sf::Sound* sound = new sf::Sound(m_sounds[p_sound]);
+
+	sound->setPosition(p_position);
+
+	m_activeSounds.push_back(sound);
+	m_activeSounds.back()->play();
+
+	/*m_sounds[p_sound].setPosition(p_position);
+	m_sounds[p_sound].play();*/
 }

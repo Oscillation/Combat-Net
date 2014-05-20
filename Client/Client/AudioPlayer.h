@@ -16,7 +16,9 @@ public:
 
 	void playSound(const std::string & p_sound, const sf::Vector3<float> & p_position);
 
-private:
+	std::vector<sf::Sound*> m_activeSounds;
+
+	private:
 	std::map<std::string, sf::Sound> m_sounds;
 	std::map<std::string, sf::SoundBuffer> m_buffers;
 };

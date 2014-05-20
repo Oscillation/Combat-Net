@@ -50,6 +50,8 @@ void MultiplayerGame::initialize()
 
 	m_particleLoader = ParticleLoader("Particles/");
 	m_particleEmitter = ParticleEmitter(&m_particleLoader);
+
+	m_listener.setPosition(sf::Vector3<float>(0.5f, 0.5f, 0.f));
 }
 
 bool MultiplayerGame::connect(){
@@ -163,7 +165,10 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 			}
 			if ((cn::PacketType)type == cn::ActivatePower)
 			{
-				m_audioPlayer.playSound("power", sf::Vector3<float>(0, 0, 0));
+				m_audioPlayer.playSound("power", sf::Vector3<float>((m_players[m_name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[m_name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
+				/*sf::Sound* sound = new sf::Sound(m_audioPlayer.m_sounds["power"]);
+				sound->setPosition(sf::Vector3<float>((m_players[m_name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[m_name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
+				sound->play();*/
 			}
 			timeSinceLastServerUpdate.restart();
 		}
@@ -510,7 +515,12 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1);
 			m_particleEmitter.Emit("test", position, velocity);
 			m_particleEmitter.Emit("projectile", position + velocity);
-			m_audioPlayer.playSound("projectile_hit_wall", sf::Vector3<float>(position.x/m_view.getSize().x, position.y/m_view.getSize().y, 0.f));
+
+			m_audioPlayer.playSound("projectile_hit_wall", sf::Vector3<float>((position.x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (position.y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
+
+			/*sf::Sound* sound = new sf::Sound(m_audioPlayer.m_sounds["projectile_hit_wall"]);
+			sound->setPosition(sf::Vector3<float>((position.x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (position.y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
+			sound->play();*/
 			m_projectiles.erase(it);
 			shakeView(sf::seconds(0.05f));
 		}
