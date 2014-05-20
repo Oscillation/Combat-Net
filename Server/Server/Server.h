@@ -56,8 +56,8 @@ private:
 
 	bool isMatchOver() const;
 	void startMatch();
-	int getHightestScore();
-
+	int getHightestScore(); // need to fix this 
+	void resetScores();
 
 private:
 	sf::Clock m_clock, m_elapsed;
@@ -81,6 +81,7 @@ private:
 	Map m_map;
 
 	Match currentMatch;
+	sf::Time m_timeBetweenMatches;
 
 	GameManager m_gameManager;
 

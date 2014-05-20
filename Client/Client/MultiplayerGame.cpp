@@ -158,6 +158,10 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 					m_lastServerUpdateTime = time;
 				}
 			}
+			if ((cn::PacketType)type == cn::MatchEnd)
+			{
+				requestStackPush(States::PreMatch);
+			}
 			timeSinceLastServerUpdate.restart();
 		}
 
@@ -205,8 +209,6 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		m_view.move(m_viewVelocity);
 
-		/*if (m_active)
-		{*/
 		sf::Packet inputPacket;
 		sf::Packet projectilePacket;
 		if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
@@ -222,10 +224,6 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		else {
 			m_scoreboard.deactivate();
 		}
-		/*}else
-		{
-		m_scoreboard.deactivate();
-		}*/
 
 		// Handle server crash/random disconnect
 		if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)

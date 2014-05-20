@@ -1,5 +1,11 @@
 #include "PreMatchState.h"
 
+#include <SFML\Graphics\RenderWindow.hpp>
+#include <SFML\Network\UdpSocket.hpp>
+#include <SFML\Network\Packet.hpp>
+
+#include "..\..\Common\Protocol.h"
+
 PreMatchState::PreMatchState(StateStack& stateStack, Context& context, States::ID id)
 	:
 	State(stateStack, context, id)
@@ -16,6 +22,17 @@ PreMatchState::~PreMatchState()
 
 bool PreMatchState::update(sf::Time & p_deltaTime)
 {
+	sf::Packet packet;
+	sf::IpAddress address;
+	unsigned short port;
+	while (getContext()->socket->receive(packet, address, port) == sf::Socket::Done)
+	{
+		int type, time;
+		packet >> time >> type;
+
+		if ((cn::PacketType)type == cn::MatchStart)
+			requestStackPop();
+	}
 	return false;
 }
 

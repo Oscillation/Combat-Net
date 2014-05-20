@@ -101,6 +101,9 @@
     <ClCompile Include="..\..\Common\Power.cpp">
       <Filter>Source Files\Power</Filter>
     </ClCompile>
+    <ClCompile Include="PreMatchState.cpp">
+      <Filter>Source Files\State stack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MultiplayerGame.h">
@@ -174,6 +177,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Power.h">
       <Filter>Source Files\Power</Filter>
+    </ClInclude>
+    <ClInclude Include="PreMatchState.h">
+      <Filter>Source Files\State stack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
