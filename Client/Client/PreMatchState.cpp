@@ -31,7 +31,16 @@ bool PreMatchState::update(sf::Time & p_deltaTime)
 		packet >> time >> type;
 
 		if ((cn::PacketType)type == cn::MatchStart)
+		{
 			requestStackPop();
+		}
+		else if ((cn::PacketType)type == cn::Ping)
+		{
+			sf::Packet pingPacket;
+			pingPacket << 0 << cn::Ping << m_name;
+			m_socket.send(pingPacket, address, port);
+		}
+
 	}
 	return false;
 }
