@@ -12,8 +12,6 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 	m_button.setPosition(400, 400);
 	m_button.setAction([this]() {
 		State::Context* con = getContext();
-		if (con->address)
-			delete con->address;
 		std::string address = m_ipbox.getValue();
 		int pos = -1;
 		pos = address.find(':');

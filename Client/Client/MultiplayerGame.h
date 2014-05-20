@@ -8,6 +8,7 @@
 
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\Network\UdpSocket.hpp>
+#include <SFML\Network\TcpSocket.hpp>
 
 #include <SFML\Graphics\Font.hpp>
 

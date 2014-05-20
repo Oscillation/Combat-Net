@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML\Network\UdpSocket.hpp>
+#include <SFML\Network\TcpSocket.hpp>
 #include <SFML\Network\IpAddress.hpp>
 #include <SFML\Network\Packet.hpp>
 #include <SFML\Network\TcpListener.hpp>

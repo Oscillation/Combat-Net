@@ -16,7 +16,7 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 	m_active(true),
 	gameFont(*context.font)
 {
-	m_scoreboard.setPosition(1280/2, 300);
+	initialize();
 }
 
 MultiplayerGame::~MultiplayerGame()
@@ -26,6 +26,7 @@ MultiplayerGame::~MultiplayerGame()
 
 void MultiplayerGame::initialize()
 {
+	m_scoreboard.setPosition(1280/2, 300);
 	m_scoreboard.setFont(gameFont);
 
 	statusText.setFont(gameFont);
@@ -56,20 +57,19 @@ void MultiplayerGame::initialize()
 bool MultiplayerGame::connect(){
 	sf::Packet packet;
 
+	sf::TcpSocket tcpSocket;
+
 	m_name = getContext()->username;
 
 	packet << 0 << (int)cn::PlayerConnected << std::string(m_name);
 
-	if (m_socket.send(packet, server_address, server_port) == sf::Socket::Status::Done)
-	{
-		packet.clear();
-	}
+	m_socket.setBlocking(true);
+	m_socket.send(packet, server_address, server_port);
 
-	// Wait for the PlayerConnected packet from the server
-	// When the client get's the PlayerConnected packet with the players name
-	// it is connected to the server
-	if (packet.endOfPacket())
-	{
+	if (tcpSocket.connect(server_address, server_port, sf::seconds(5)) == sf::Socket::Status::Done){
+		// Wait for the PlayerConnected packet from the server
+		// When the client get's the PlayerConnected packet with the players name
+		// it is connected to the server
 		if (m_socket.receive(packet, server_address, server_port) == sf::Socket::Done)
 		{
 			int type, time;
@@ -125,11 +125,9 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 {
 	if (!m_connected)
 	{
-		initialize();
 		if (!connect()) {
-			requestStackClear();
-			requestStackPush(States::Menu);
-			//requestStackPop();
+			m_socket.unbind();
+			requestStackPop();
 		}
 	}
 	else 

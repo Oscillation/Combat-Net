@@ -297,6 +297,17 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		m_clientList[data].setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 		m_clientList[data].hasRespondedToPing = true;
 
+		sf::TcpListener listener;
+		listener.listen(2828);
+
+		sf::TcpSocket client;
+		
+		while (listener.accept(client) != sf::Socket::Status::Done)
+		{
+
+		}
+		
+
 		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << m_map << m_projectiles << m_powerManager.m_powers;
 		m_socket.send(retPacket, p_address, p_port);
 
