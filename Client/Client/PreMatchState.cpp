@@ -37,8 +37,8 @@ bool PreMatchState::update(sf::Time & p_deltaTime)
 		else if ((cn::PacketType)type == cn::Ping)
 		{
 			sf::Packet pingPacket;
-			pingPacket << 0 << cn::Ping << m_name;
-			m_socket.send(pingPacket, address, port);
+			pingPacket << 0 << cn::Ping << getContext()->username;
+			getContext()->socket->send(pingPacket, address, port);
 		}
 
 	}
