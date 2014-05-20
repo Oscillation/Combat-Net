@@ -12,7 +12,9 @@ public:
 	AudioPlayer();
 	~AudioPlayer();
 
-	void playSound(const std::string & p_sound);
+	void update();
+
+	void playSound(const std::string & p_sound, const sf::Vector3<float> & p_position);
 
 private:
 	std::map<std::string, sf::Sound> m_sounds;

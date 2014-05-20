@@ -21,6 +21,8 @@ public:
 
 	void activate(Power & p_power, Client & p_client);
 
+	void erase(Power & p_power);
+
 	std::vector<Power> m_powers;
 
 private:

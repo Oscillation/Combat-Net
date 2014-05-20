@@ -42,6 +42,23 @@ void GameManager::Branch::update(Projectile & p_projectile){
 	}
 }
 
+void GameManager::Branch::update(Power & p_power){
+	std::vector<Power*>::iterator it = std::find(m_powers.begin(), m_powers.end(), &p_power);
+	if (sf::Rect<float>(p_power.getPosition().x, p_power.getPosition().y, 32, 32).intersects(sf::Rect<float>(m_x*64, m_y*64, 64*m_size, 64*m_size)))
+	{
+		if (it == m_powers.end())
+		{
+			m_powers.push_back(&p_power);
+		}
+	}else
+	{
+		if (it != m_powers.end())
+		{
+			m_powers.erase(it);
+		}
+	}
+}
+
 GameManager::GameManager(){
 
 }
@@ -90,6 +107,23 @@ void GameManager::update(Projectile & p_projectile){
 		if ((projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)) >= 0 && (projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)) < m_branches.size())
 		{
 			m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].update(p_projectile);
+		}
+	}
+}
+
+void GameManager::update(Power & p_power){
+	sf::Vector2<int> powerPoints[4] = {
+		sf::Vector2<int>(p_power.getPosition().x/(64*m_size), p_power.getPosition().y/(64*m_size)),
+		sf::Vector2<int>((p_power.getPosition().x + 40)/(64*m_size), p_power.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_power.getPosition().x/(64*m_size), (p_power.getPosition().y + 40)/(64*m_size)),
+		sf::Vector2<int>((p_power.getPosition().x + 40)/(64*m_size), (p_power.getPosition().y + 40)/(64*m_size))
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		if ((powerPoints[i].x+((powerPoints[i].y)*m_mapSize.x)) >= 0 && (powerPoints[i].x+((powerPoints[i].y)*m_mapSize.x)) < m_branches.size())
+		{
+			m_branches[powerPoints[i].x+((powerPoints[i].y)*m_mapSize.x)].update(p_power);
 		}
 	}
 }
@@ -145,6 +179,22 @@ bool GameManager::intersect(Projectile & p_projectileA, Projectile & p_projectil
 	}
 }
 
+bool GameManager::intersect(Client & p_client, Power & p_power) const{
+	//if (shareBranch(p_client, p_power))
+	{
+		if (math::circleIntersectsRect(p_client.getPosition(), 20.f, sf::Rect<float>(p_power.getPosition().x, p_power.getPosition().y, 32, 32)))
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+	}//else
+	{
+		return false;
+	}
+}
+
 bool GameManager::shareBranch(Client & p_client, Projectile & p_projectile) const{
 	sf::Vector2<int> clientPoints[4] = {
 		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
@@ -155,9 +205,9 @@ bool GameManager::shareBranch(Client & p_client, Projectile & p_projectile) cons
 
 	sf::Vector2<int> projectilePoints[4] = {
 		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
-		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
-		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))
+		sf::Vector2<int>((p_projectile.getPosition().x + 5)/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 5)/(64*m_size)),
+		sf::Vector2<int>((p_projectile.getPosition().x + 5)/(64*m_size), (p_projectile.getPosition().y + 5)/(64*m_size))
 	};
 
 	for (int i = 0; i < 4; i++)
@@ -203,22 +253,50 @@ bool GameManager::shareBranch(Client & p_clientA, Client & p_clientB) const{
 bool GameManager::shareBranch(Projectile & p_projectileA, Projectile & p_projectileB) const{
 	sf::Vector2<int> projectileAPoints[4] = {
 		sf::Vector2<int>(p_projectileA.getPosition().x/(64*m_size), p_projectileA.getPosition().y/(64*m_size)),
-		sf::Vector2<int>((p_projectileA.getPosition().x + 40)/(64*m_size), p_projectileA.getPosition().y/(64*m_size)),
-		sf::Vector2<int>(p_projectileA.getPosition().x/(64*m_size), (p_projectileA.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectileA.getPosition().x + 40)/(64*m_size), (p_projectileA.getPosition().y + 40)/(64*m_size))
+		sf::Vector2<int>((p_projectileA.getPosition().x + 5)/(64*m_size), p_projectileA.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_projectileA.getPosition().x/(64*m_size), (p_projectileA.getPosition().y + 5)/(64*m_size)),
+		sf::Vector2<int>((p_projectileA.getPosition().x + 5)/(64*m_size), (p_projectileA.getPosition().y + 5)/(64*m_size))
 	};
 
 	sf::Vector2<int> projectileBPoints[4] = {
 		sf::Vector2<int>(p_projectileB.getPosition().x/(64*m_size), p_projectileB.getPosition().y/(64*m_size)),
-		sf::Vector2<int>((p_projectileB.getPosition().x + 40)/(64*m_size), p_projectileB.getPosition().y/(64*m_size)),
-		sf::Vector2<int>(p_projectileB.getPosition().x/(64*m_size), (p_projectileB.getPosition().y + 40)/(64*m_size)),
-		sf::Vector2<int>((p_projectileB.getPosition().x + 40)/(64*m_size), (p_projectileB.getPosition().y + 40)/(64*m_size))
+		sf::Vector2<int>((p_projectileB.getPosition().x + 5)/(64*m_size), p_projectileB.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_projectileB.getPosition().x/(64*m_size), (p_projectileB.getPosition().y + 5)/(64*m_size)),
+		sf::Vector2<int>((p_projectileB.getPosition().x + 5)/(64*m_size), (p_projectileB.getPosition().y + 5)/(64*m_size))
 	};
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
 			if (projectileAPoints[i].x+((projectileAPoints[i].y)*m_mapSize.x) == projectileBPoints[j].x+((projectileBPoints[j].y)*m_mapSize.x))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool GameManager::shareBranch(Client & p_client, Power & p_power) const{
+	sf::Vector2<int> clientPoints[4] = {
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)),
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))
+	};
+
+	sf::Vector2<int> powerPoints[4] = {
+		sf::Vector2<int>(p_power.getPosition().x/(64*m_size), p_power.getPosition().y/(64*m_size)),
+		sf::Vector2<int>((p_power.getPosition().x + 32)/(64*m_size), p_power.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_power.getPosition().x/(64*m_size), (p_power.getPosition().y + 32)/(64*m_size)),
+		sf::Vector2<int>((p_power.getPosition().x + 32)/(64*m_size), (p_power.getPosition().y + 32)/(64*m_size))
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (powerPoints[i].x+((powerPoints[i].y)*m_mapSize.x) == clientPoints[j].x+((clientPoints[j].y)*m_mapSize.x))
 			{
 				return true;
 			}
@@ -319,6 +397,29 @@ std::vector<Projectile> GameManager::getProjectiles(Client & p_client) const{
 	return projectiles;
 }
 
+std::vector<Power> GameManager::getPowers(Client & p_client) const{
+	sf::Vector2<int> clientPoints[4] = {
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)),
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))
+	};
+
+	std::vector<Power> powers;
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (auto it = m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_powers.begin(); it != m_branches[clientPoints[i].x+((clientPoints[i].y)*m_mapSize.x)].m_powers.end(); ++it){
+			if (!exists(*(*it), powers))
+			{
+				powers.push_back(*(*it));
+			}
+		}
+	}
+
+	return powers;
+}
+
 bool GameManager::exists(Client & p_client, std::vector<Client> & p_clients) const{
 	if (p_clients.empty())
 	{
@@ -340,6 +441,20 @@ bool GameManager::exists(Projectile & p_projectile, std::vector<Projectile> & p_
 	}
 	for (auto it = p_projectiles.begin(); it != p_projectiles.end(); ++it){
 		if (*it == p_projectile)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GameManager::exists(Power & p_power, std::vector<Power> & p_powers) const{
+	if (p_powers.empty())
+	{
+		return false;
+	}
+	for (auto it = p_powers.begin(); it != p_powers.end(); ++it){
+		if (*it == p_power)
 		{
 			return true;
 		}
@@ -375,8 +490,27 @@ bool GameManager::exists(Projectile & p_projectile, std::vector<Projectile*> & p
 	return false;
 }
 
+bool GameManager::exists(Power & p_power, std::vector<Power*> & p_powers) const{
+	if (p_powers.empty())
+	{
+		return false;
+	}
+	for (auto it = p_powers.begin(); it != p_powers.end(); ++it){
+		if (*(*it) == p_power)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void GameManager::erase(Client & p_client){
-	sf::Vector2<int> clientPoints[4] = {sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)), sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)), sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)), sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))};
+	sf::Vector2<int> clientPoints[4] = {
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), p_client.getPosition().y/(64*m_size)),
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), p_client.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_client.getPosition().x/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size)),
+		sf::Vector2<int>((p_client.getPosition().x + 40)/(64*m_size), (p_client.getPosition().y + 40)/(64*m_size))
+	};
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -403,7 +537,12 @@ void GameManager::erase(Client & p_client){
 }
 
 void GameManager::erase(Projectile & p_projectile){
-	sf::Vector2<int> projectilePoints[4] = {sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)), sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), p_projectile.getPosition().y/(64*m_size)), sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size)), sf::Vector2<int>((p_projectile.getPosition().x + 40)/(64*m_size), (p_projectile.getPosition().y + 40)/(64*m_size))};
+	sf::Vector2<int> projectilePoints[4] = {
+		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
+		sf::Vector2<int>((p_projectile.getPosition().x + 5)/(64*m_size), p_projectile.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_projectile.getPosition().x/(64*m_size), (p_projectile.getPosition().y + 5)/(64*m_size)),
+		sf::Vector2<int>((p_projectile.getPosition().x + 5)/(64*m_size), (p_projectile.getPosition().y + 5)/(64*m_size))
+	};
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -433,10 +572,47 @@ void GameManager::erase(Projectile & p_projectile){
 	}
 }
 
+void GameManager::erase(Power & p_power){
+	sf::Vector2<int> projectilePoints[4] = {
+		sf::Vector2<int>(p_power.getPosition().x/(64*m_size), p_power.getPosition().y/(64*m_size)),
+		sf::Vector2<int>((p_power.getPosition().x + 32)/(64*m_size), p_power.getPosition().y/(64*m_size)),
+		sf::Vector2<int>(p_power.getPosition().x/(64*m_size), (p_power.getPosition().y + 32)/(64*m_size)),
+		sf::Vector2<int>((p_power.getPosition().x + 32)/(64*m_size), (p_power.getPosition().y + 32)/(64*m_size))
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x) >= 0 && projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x) < m_branches.size())
+		{
+			if (!m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_powers.empty())
+			{
+				for (auto it = m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_powers.begin();
+					it != m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_powers.end(); ++it){
+						if (m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_powers.empty())
+						{
+							break;
+						}else
+						{
+							if (*it != nullptr)
+							{
+								if (*(*it) == p_power)
+								{
+									m_branches[projectilePoints[i].x+((projectilePoints[i].y)*m_mapSize.x)].m_powers.erase(it);
+									break;
+								}
+							}
+						}
+				}
+			}
+		}
+	}
+}
+
 void GameManager::clean(){
 	for (auto it = m_branches.begin(); it != m_branches.end(); ++it){
 		it->m_clientList.clear();
 		it->m_projectiles.clear();
+		it->m_powers.clear();
 	}
 }
 

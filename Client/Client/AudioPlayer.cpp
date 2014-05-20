@@ -27,7 +27,8 @@ AudioPlayer::AudioPlayer(){
 			}
 
 			sf::Sound sound = sf::Sound(m_buffers[key]);
-			
+			//sound.setRelativeToListener(true);
+
 			m_sounds[key] = sound;
 		}
 
@@ -42,6 +43,11 @@ AudioPlayer::~AudioPlayer(){
 	
 }
 
-void AudioPlayer::playSound(const std::string & p_sound){
+void AudioPlayer::update(){
+
+}
+
+void AudioPlayer::playSound(const std::string & p_sound, const sf::Vector3<float> & p_position){
+	//m_sounds[p_sound].setPosition(p_position);
 	m_sounds[p_sound].play();
 }

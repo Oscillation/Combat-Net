@@ -165,22 +165,46 @@ sf::Packet Server::simulateGameState() {
 	m_gameManager.clean();
 #pragma endregion
 
-#pragma region Send player positions
+#pragma region Update powers
+	for (auto it = m_powerManager.m_powers.begin(); it != m_powerManager.m_powers.end(); ++it){
+		m_gameManager.update(*it);
+	}
+#pragma endregion
+
+#pragma region Update players
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-		if (!m_powerManager.m_powers.empty() && it->second.getHealth() > 0)
+
+		std::vector<Power> powers = m_gameManager.getPowers(it->second);
+
+		for (int i = 0; i < powers.size(); i++)
 		{
-			for (int i = 0; i < m_powerManager.m_powers.size(); i++){
-				if (math::circleIntersectsRect(sf::Vector2<float>(it->second.getPosition().x - 20, it->second.getPosition().y - 20), 20.f, sf::Rect<float>(m_powerManager.m_powers[i].getPosition().x, m_powerManager.m_powers[i].getPosition().y, 32, 32)))
-				{
-					m_powerManager.activate(m_powerManager.m_powers[i], it->second);
-					sf::Packet packet;
-					packet << 0 << cn::ActivatePower;
-					m_socket.send(packet, it->second.getAddress(), it->second.getPort());
-					retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
-					m_powerManager.m_powers.erase(m_powerManager.m_powers.begin() + i);
-				}
+			if (m_gameManager.intersect(it->second, powers[i]))
+			{
+				m_powerManager.activate(powers[i], it->second);
+				sf::Packet packet;
+				packet << 0 << cn::ActivatePower;
+				m_socket.send(packet, it->second.getAddress(), it->second.getPort());
+				retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
+				m_powerManager.erase(powers[i]);
+				m_gameManager.erase(powers[i]);
 			}
 		}
+
+		/*if (!m_powerManager.m_powers.empty() && it->second.getHealth() > 0)
+		{
+		for (int i = 0; i < m_powerManager.m_powers.size(); i++){
+		if (math::circleIntersectsRect(sf::Vector2<float>(it->second.getPosition().x - 20, it->second.getPosition().y - 20), 20.f, sf::Rect<float>(m_powerManager.m_powers[i].getPosition().x, m_powerManager.m_powers[i].getPosition().y, 32, 32)))
+		{
+		m_powerManager.activate(m_powerManager.m_powers[i], it->second);
+		sf::Packet packet;
+		packet << 0 << cn::ActivatePower;
+		m_socket.send(packet, it->second.getAddress(), it->second.getPort());
+		retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
+		m_powerManager.m_powers.erase(m_powerManager.m_powers.begin() + i);
+		}
+		}
+		}*/
+
 		if (it->second.getHealth() <= 0)
 		{
 			it->second.m_respawnTime -= m_clock.getElapsedTime().asSeconds();
@@ -301,12 +325,9 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		listener.listen(2828);
 
 		sf::TcpSocket client;
-		
-		while (listener.accept(client) != sf::Socket::Status::Done)
-		{
 
-		}
-		
+		listener.accept(client);
+
 
 		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << m_map << m_projectiles << m_powerManager.m_powers;
 		m_socket.send(retPacket, p_address, p_port);

@@ -26,6 +26,12 @@ MultiplayerGame::~MultiplayerGame()
 
 void MultiplayerGame::initialize()
 {
+	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
+		std::cout << "Failed to bind to port" << std::endl;
+		system("pause");
+		exit(-1);
+	}
+
 	m_scoreboard.setPosition(1280/2, 300);
 	m_scoreboard.setFont(gameFont);
 
@@ -44,14 +50,6 @@ void MultiplayerGame::initialize()
 
 	m_particleLoader = ParticleLoader("Particles/");
 	m_particleEmitter = ParticleEmitter(&m_particleLoader);
-
-	//m_audioPlayer = AudioPlayer();
-
-	if (m_socket.bind(sf::UdpSocket::AnyPort) != sf::Socket::Done) {
-		std::cout << "Failed to bind to port" << std::endl;
-		system("pause");
-		exit(-1);
-	}
 }
 
 bool MultiplayerGame::connect(){
@@ -165,7 +163,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 			}
 			if ((cn::PacketType)type == cn::ActivatePower)
 			{
-				m_audioPlayer.playSound("power");
+				m_audioPlayer.playSound("power", sf::Vector3<float>(0, 0, 0));
 			}
 			timeSinceLastServerUpdate.restart();
 		}
@@ -254,6 +252,11 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		{
 			m_displayRespawnTimer = false;
 		}
+
+		/*m_listener.setPosition(sf::Vector3<float>(m_players[m_name]->getPosition().x/m_view.getSize().x, m_players[m_name]->getPosition().y/m_view.getSize().y, 0));
+		m_listener.setDirection(0, 0, 0);*/
+
+		m_audioPlayer.update();
 	}
 
 	return false;
@@ -507,7 +510,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1);
 			m_particleEmitter.Emit("test", position, velocity);
 			m_particleEmitter.Emit("projectile", position + velocity);
-			m_audioPlayer.playSound("projectile_hit_wall");
+			m_audioPlayer.playSound("projectile_hit_wall", sf::Vector3<float>(position.x/m_view.getSize().x, position.y/m_view.getSize().y, 0.f));
 			m_projectiles.erase(it);
 			shakeView(sf::seconds(0.05f));
 		}

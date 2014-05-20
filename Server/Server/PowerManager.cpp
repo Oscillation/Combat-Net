@@ -62,6 +62,17 @@ void PowerManager::activate(Power & p_power, Client & p_client){
 	p_power.activate(p_client);
 }
 
+void PowerManager::erase(Power & p_power){
+	for (int i = 0; i < m_powers.size(); i++)
+	{
+		if (m_powers[i] == p_power)
+		{
+			m_powers.erase(m_powers.begin() + i);
+			return;
+		}
+	}
+}
+
 void PowerManager::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const{
 	for (auto it = m_powers.begin(); it != m_powers.end(); ++it){
 		p_states.transform *= it->getTransform();
