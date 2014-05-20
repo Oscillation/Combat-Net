@@ -45,7 +45,6 @@ AudioPlayer::~AudioPlayer(){
 }
 
 void AudioPlayer::update(){
-	std::cout << m_activeSounds.size() << "\n";
 	for (int i = 0; i < m_activeSounds.size(); i++)
 	{
 		if (m_activeSounds[i]->getStatus() == sf::Sound::Status::Stopped)
