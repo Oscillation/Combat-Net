@@ -163,6 +163,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 				requestStackPush(States::PreMatch);
 			}
 			timeSinceLastServerUpdate.restart();
+			m_statusText.setString("");
 		}
 
 		for (auto it = m_players.begin(); it != m_players.end(); ++it) {
