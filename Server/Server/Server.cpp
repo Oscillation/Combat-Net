@@ -99,7 +99,7 @@ void Server::run(){
 				std::cout << "Some dude one\n";
 
 				sf::Packet matchDone;
-				matchDone << cn::MatchEnd << 0;
+				matchDone << 0 << cn::MatchEnd;
 				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 					m_socket.send(matchDone, it->second.getAddress(), it->second.getPort());
 				}
@@ -114,7 +114,7 @@ void Server::run(){
 				m_clock.restart();
 
 				sf::Packet matchStart;
-				matchStart << cn::MatchStart << 0;
+				matchStart << 0 << cn::MatchStart;
 				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 					m_socket.send(matchStart, it->second.getAddress(), it->second.getPort());
 				}
