@@ -17,6 +17,9 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 	gameFont(*context.font)
 {
 	initialize();
+
+	m_scoreboard.setPosition(1280/2, 300);
+	getContext()->scores = &m_players;
 }
 
 MultiplayerGame::~MultiplayerGame()
@@ -169,8 +172,15 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 				/*sf::Sound* sound = new sf::Sound(m_audioPlayer.m_sounds["power"]);
 				sound->setPosition(sf::Vector3<float>((m_players[m_name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[m_name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
 				sound->play();*/
+
+			}
+
+			if ((cn::PacketType)type == cn::MatchEnd)
+			{
+				requestStackPush(States::PreMatch);
 			}
 			timeSinceLastServerUpdate.restart();
+			statusText.setString("");
 		}
 
 		for (auto it = m_players.begin(); it != m_players.end(); ++it) {
@@ -217,8 +227,6 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		m_view.move(m_viewVelocity);
 
-		/*if (m_active)
-		{*/
 		sf::Packet inputPacket;
 		sf::Packet projectilePacket;
 		if (handleInput(inputPacket, p_deltaTime.asMilliseconds()))
@@ -234,10 +242,6 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		else {
 			m_scoreboard.deactivate();
 		}
-		/*}else
-		{
-		m_scoreboard.deactivate();
-		}*/
 
 		// Handle server crash/random disconnect
 		if (timeSinceLastServerUpdate.getElapsedTime() > serverTimeout)

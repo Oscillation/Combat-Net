@@ -17,6 +17,11 @@ Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0
 	m_clock.restart();
 	m_elapsed.restart();
 	m_updateTime = sf::milliseconds(50);
+	m_timeBetweenMatches = sf::seconds(10);
+
+	currentMatch.pointsToWin = 2;
+	currentMatch.type = cn::MatchType::FreeForAll;
+	currentMatch.active = false;
 
 	run();
 }
@@ -28,14 +33,15 @@ Server::~Server(){
 void Server::run(){
 	bool run = true;
 	m_socket.setBlocking(false);
+
+	startMatch();
+
 	while (run)
 	{
 		sf::IpAddress address;
 		unsigned short port;
 		sf::Packet packet;
 		sf::Packet retPacket;
-
-		//std::cout << m_powerManager.m_powers.size() << "\n";
 
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{
@@ -49,17 +55,21 @@ void Server::run(){
 			{
 				playerDisconnected(packet, address, port);
 			}
-			if (pt == cn::PlayerInput)
+			if (currentMatch.active)	
 			{
-				playerInput(packet, address, port, time);
-			}
-			if (pt == cn::Projectile)
-			{
-				sf::Packet projectilePacket = projectile(packet, address, port, time);
-				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-					m_socket.send(projectilePacket, it->second.getAddress(), it->second.getPort());
+				if (pt == cn::PlayerInput)
+				{
+					playerInput(packet, address, port, time);
+				}
+				if (pt == cn::Projectile)
+				{
+					sf::Packet projectilePacket = projectile(packet, address, port, time);
+					for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+						m_socket.send(projectilePacket, it->second.getAddress(), it->second.getPort());
+					}
 				}
 			}
+			
 			if (pt == cn::Ping) 
 			{
 				std::string name;
@@ -73,13 +83,42 @@ void Server::run(){
 			pingTimer.restart();
 		}
 
-		if (m_clock.getElapsedTime() > m_updateTime)
+		if (currentMatch.active)
 		{
-			retPacket = simulateGameState();
-			for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
-				m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
+			if (m_clock.getElapsedTime() > m_updateTime)
+			{
+				retPacket = simulateGameState();
+				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+					m_socket.send(retPacket, it->second.getAddress(), it->second.getPort());
+				}
+				m_clock.restart();
 			}
-			m_clock.restart();
+			if (getHightestScore() >= currentMatch.pointsToWin)
+			{
+				currentMatch.active = false;
+				std::cout << "Some dude one\n";
+
+				sf::Packet matchDone;
+				matchDone << 0 << cn::MatchEnd;
+				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+					m_socket.send(matchDone, it->second.getAddress(), it->second.getPort());
+				}
+			}
+		}
+		else 
+		{
+			if (m_clock.getElapsedTime() > m_timeBetweenMatches)
+			{
+				std::cout << "Starting match\n";
+				startMatch();
+				m_clock.restart();
+
+				sf::Packet matchStart;
+				matchStart << 0 << cn::MatchStart;
+				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+					m_socket.send(matchStart, it->second.getAddress(), it->second.getPort());
+				}
+			}
 		}
 	}
 }
@@ -275,6 +314,7 @@ sf::Packet Server::simulateGameState() {
 			if (iter != m_projectiles.end())
 			{
 				retPacket << *it << (m_map.intersectsWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)) ? m_map.getIntersectingWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)):iter->getPosition());
+
 				m_gameManager.erase(*iter);
 				m_projectiles.erase(iter);
 			}
@@ -459,7 +499,6 @@ void Server::pingClients()
 void Server::respawnPlayerPacket(Client& client, sf::Packet& p_packet)
 {
 	client.setHealth(100);
-	//client.setPosition(sf::Vector2f(map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].x + 25, map.m_spawnPositions[(math::random(0, map.m_spawnPositions.size() - 1))].y + 25));
 	sf::Vector2<int> spawn = m_gameManager.selectSpawn(m_map.m_spawnPositions);
 	client.setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 	p_packet << cn::PlayerRespawn << client.getName() << client.getPosition();
@@ -474,4 +513,35 @@ sf::Packet Server::ProjectileIDCleanup(sf::Packet & p_packet){
 		m_projectiles[i].m_id = i;
 	}
 	return p_packet;
+}
+
+bool Server::isMatchOver() const
+{
+	return currentMatch.active;
+}
+
+void Server::startMatch()
+{
+	resetScores();
+	currentMatch.active = true;
+}
+
+int Server::getHightestScore()
+{
+	int maxScore = 0;
+	for (auto i = m_clientList.begin(); i != m_clientList.end(); ++i)
+	{
+		maxScore = (i->second.m_score.m_points > maxScore) ? i->second.m_score.m_points : maxScore;
+	}
+	return maxScore;
+}
+
+void Server::resetScores()
+{
+	for (auto i = m_clientList.begin(); i != m_clientList.end(); ++i)
+	{
+		i->second.m_score.m_points = 0;
+		i->second.m_score.m_kills = 0;
+		i->second.m_score.m_deaths = 0;
+	}
 }

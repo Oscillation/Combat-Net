@@ -107,6 +107,9 @@
     <ClCompile Include="AudioPlayer.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="PreMatchState.cpp">
+      <Filter>Source Files\State stack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MultiplayerGame.h">
@@ -183,6 +186,9 @@
     </ClInclude>
     <ClInclude Include="AudioPlayer.h">
       <Filter>Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="PreMatchState.h">
+      <Filter>Source Files\State stack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
