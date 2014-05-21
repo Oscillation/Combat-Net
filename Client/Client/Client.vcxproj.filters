@@ -36,6 +36,9 @@
     <Filter Include="Source Files\Audio">
       <UniqueIdentifier>{8a463bae-731c-43ef-8af6-a1e9bbd8ac12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{72a53abd-4577-437e-9362-663d618e5b5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -106,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="AudioPlayer.cpp">
       <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Server\Server\Object.cpp">
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +189,9 @@
     </ClInclude>
     <ClInclude Include="AudioPlayer.h">
       <Filter>Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Server\Server\Object.h">
+      <Filter>Source Files\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

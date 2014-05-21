@@ -79,6 +79,7 @@
     <ClCompile Include="..\..\Common\Power.cpp" />
     <ClCompile Include="..\..\Common\Projectile.cpp" />
     <ClCompile Include="..\..\Common\Score.cpp" />
+    <ClCompile Include="..\..\Server\Server\Object.cpp" />
     <ClCompile Include="..\..\Server\Server\PowerTile.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="AudioPlayer.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="..\..\Common\Protocol.h" />
     <ClInclude Include="..\..\Common\Score.h" />
     <ClInclude Include="..\..\Common\Tile.h" />
+    <ClInclude Include="..\..\Server\Server\Object.h" />
     <ClInclude Include="..\..\Server\Server\PowerTile.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="AudioPlayer.h" />

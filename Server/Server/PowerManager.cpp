@@ -4,7 +4,10 @@ PowerManager::PowerManager(){
 
 }
 
-PowerManager::PowerManager(const std::vector<PowerTile> & p_powerTiles) : m_powerTiles(p_powerTiles){
+PowerManager::PowerManager(const std::vector<PowerTile> & p_powerTiles) : 
+	m_powerTiles(p_powerTiles),
+	m_id(0)
+{
 
 }
 
@@ -33,7 +36,7 @@ sf::Packet & PowerManager::update(const sf::Time & p_deltaTime){
 						{
 							p_client.setHealth(100);
 						}
-					}), PowerType::Health);
+					}), PowerType::Health, m_id++);
 					m_powers.push_back(power);
 					m_powers.back().setPosition(it->m_x*64 + 16, it->m_y*64 + 16);
 					m_powers.back().ptr_tile = &(*it);
@@ -43,9 +46,9 @@ sf::Packet & PowerManager::update(const sf::Time & p_deltaTime){
 					Power power = Power(([this](Client & p_client) {
 						if (p_client.m_speedBoost < 10)
 						{
-							p_client.m_speedBoost += 2;
+							p_client.m_speedBoost += 2.5f;
 						}
-					}), PowerType::Speed);
+					}), PowerType::Speed, m_id++);
 					m_powers.push_back(power);
 					m_powers.back().setPosition(it->m_x*64 + 16, it->m_y*64 + 16);
 					m_powers.back().ptr_tile = &(*it);
@@ -78,4 +81,14 @@ void PowerManager::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) 
 		p_states.transform *= it->getTransform();
 		p_target.draw(*it, p_states);
 	}
+}
+
+std::vector<Power>::iterator PowerManager::findId(const unsigned int & p_id){
+	for(auto it = m_powers.begin(); it != m_powers.end(); ++it){
+		if (it->getId() == p_id)
+		{
+			return it;
+		}
+	}
+	return m_powers.end();
 }

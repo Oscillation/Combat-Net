@@ -9,6 +9,7 @@
 #include "..\..\Common\Projectile.h"
 #include "..\..\Common\Protocol.h"
 #include "..\..\Common\Score.h"
+#include "Object.h"
 
 struct Client : public sf::Transformable {
 	Client();
@@ -44,6 +45,8 @@ struct Client : public sf::Transformable {
 	float m_respawnTime;
 
 	int m_speedBoost;
+
+	operator Object() const;
 
 private:
 	int m_health;

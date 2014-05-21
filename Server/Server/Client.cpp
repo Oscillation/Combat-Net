@@ -89,3 +89,8 @@ std::string Client::getName() const{
 bool Client::operator==(Client & p_client) const{
 	return m_name == p_client.getName();
 }
+
+Client::operator Object() const{
+	Object object = Object(ObjectType::Player, sf::Rect<float>(getPosition().x, getPosition().y, 40, 40), m_name);
+	return object;
+}

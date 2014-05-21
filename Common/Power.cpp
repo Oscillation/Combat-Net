@@ -1,6 +1,11 @@
 #include "Power.h"
 
-Power::Power(const std::function<void(Client & p_client)> & p_power, const PowerType & p_powerType) : m_power(p_power), ptr_tile(NULL), m_powerType(p_powerType){
+Power::Power(const std::function<void(Client & p_client)> & p_power, const PowerType & p_powerType, const unsigned int & p_id) :
+	m_power(p_power), 
+	ptr_tile(NULL), 
+	m_powerType(p_powerType),
+	m_id(p_id)
+{
 
 }
 
@@ -18,7 +23,7 @@ void Power::activate(Client & p_client){
 
 		m_power(p_client);
 
-		ptr_tile->m_time = 1;
+		ptr_tile->m_time = 2.5f;
 		ptr_tile->m_hasPower = false;
 	}
 }
@@ -79,4 +84,13 @@ sf::Packet& operator >>(sf::Packet& packet, std::vector<Power> & p_powers){
 	}
 
 	return packet;
+}
+
+unsigned int Power::getId() const{
+	return m_id;
+}
+
+Power::operator Object() const{
+	Object object = Object(ObjectType::Power, sf::Rect<float>(getPosition().x, getPosition().y, 32, 32), m_id);
+	return object;
 }

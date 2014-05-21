@@ -77,8 +77,11 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InputData.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="PowerManager.cpp" />
     <ClCompile Include="PowerTile.cpp" />
+    <ClCompile Include="Quadtree.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -92,8 +95,11 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="InputData.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="PowerManager.h" />
     <ClInclude Include="PowerTile.h" />
+    <ClInclude Include="Quadtree.h" />
     <ClInclude Include="Server.h" />
   </ItemGroup>
   <ItemGroup>
