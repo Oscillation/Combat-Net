@@ -10,6 +10,7 @@
 
 #include "Tile.h"
 #include "GeneralMath.h"
+#include "..\Server\Server\Object.h"
 
 struct Projectile : public sf::Transformable, public sf::Drawable{
 	Projectile();
@@ -35,6 +36,8 @@ struct Projectile : public sf::Transformable, public sf::Drawable{
 	bool operator==(Projectile & p_projectile) const;
 
 	sf::Vector2<float> targetPos;
+
+	operator Object() const;
 
 private:
 	sf::Vector2<float> m_velocity;

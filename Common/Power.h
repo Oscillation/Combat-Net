@@ -6,6 +6,7 @@
 
 #include "..\Server\Server\Client.h"
 #include "..\Server\Server\PowerTile.h"
+#include "..\Server\Server\Object.h"
 
 enum PowerType{
 	Health,
@@ -26,6 +27,8 @@ struct Power : public sf::Drawable, public sf::Transformable{
 	PowerType m_powerType;
 
 	bool operator==(Power & p_power) const;
+
+	operator Object() const;
 
 private:
 	void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;

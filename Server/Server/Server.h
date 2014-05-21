@@ -21,6 +21,7 @@
 #include "Client.h"
 #include "InputData.h"
 #include "GameManager.h"
+#include "Quadtree.h"
 
 class Server{
 public:
@@ -76,6 +77,8 @@ private:
 	Map m_map;
 
 	GameManager m_gameManager;
+
+	Quadtree m_quadtree;
 
 	static const unsigned short m_projectileSpeed = 50;
 

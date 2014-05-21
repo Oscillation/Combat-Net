@@ -18,7 +18,7 @@ void Power::activate(Client & p_client){
 
 		m_power(p_client);
 
-		ptr_tile->m_time = 1;
+		ptr_tile->m_time = 0.1f;
 		ptr_tile->m_hasPower = false;
 	}
 }
@@ -79,4 +79,9 @@ sf::Packet& operator >>(sf::Packet& packet, std::vector<Power> & p_powers){
 	}
 
 	return packet;
+}
+
+Power::operator Object() const{
+	Object object = Object(ObjectType::Power, sf::Rect<float>(getPosition().x, getPosition().x, 32, 32));
+	return object;
 }

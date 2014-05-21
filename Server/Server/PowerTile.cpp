@@ -6,7 +6,7 @@ PowerTile::PowerTile(const unsigned short & p_x, const unsigned short & p_y) : m
 	this->m_type = TileType::Type::Power;
 }
 
-PowerTile::PowerTile() : m_time(math::random(0, 5)), m_hasPower(false) {
+PowerTile::PowerTile() : m_time(math::random(0, 1)), m_hasPower(false) {
 	this->m_x = 0;
 	this->m_y = 0;
 	this->m_type = TileType::Type::Power;

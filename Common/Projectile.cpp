@@ -122,3 +122,7 @@ sf::Packet& operator<<(sf::Packet & p_packet, std::vector<Projectile> & p_projec
 	return p_packet;
 }
 
+Projectile::operator Object() const{
+	Object object = Object(ObjectType::Projectile, sf::Rect<float>(getPosition().x, getPosition().x, 5, 5));
+	return object;
+}
