@@ -1,6 +1,7 @@
 #pragma once
 
 #include "State.h"
+#include "Scoreboard.h"
 
 #include <SFML\Graphics\Text.hpp>
 
@@ -16,5 +17,5 @@ public:
 
 private:
 	sf::Text m_statusText;
-
+	Scoreboard m_scoreboard;
 };

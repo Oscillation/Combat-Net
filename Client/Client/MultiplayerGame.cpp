@@ -17,6 +17,7 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 	gameFont(*context.font)
 {
 	m_scoreboard.setPosition(1280/2, 300);
+	getContext()->scores = &m_players;
 }
 
 MultiplayerGame::~MultiplayerGame()
@@ -163,7 +164,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 				requestStackPush(States::PreMatch);
 			}
 			timeSinceLastServerUpdate.restart();
-			m_statusText.setString("");
+			statusText.setString("");
 		}
 
 		for (auto it = m_players.begin(); it != m_players.end(); ++it) {
