@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Power">
       <UniqueIdentifier>{8e99f355-1025-44e2-8806-58bb7e431807}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Server\GameManager">
+      <UniqueIdentifier>{f78ca3b1-de36-4244-b9a0-85e69def3080}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Server\GameManager\Quadtree">
+      <UniqueIdentifier>{12dd1926-5cf1-4378-825a-56fd16910f10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -57,9 +63,6 @@
     <ClCompile Include="..\..\Common\GeneralMath.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Source Files\Server</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Common\Score.cpp">
       <Filter>Source Files\Score</Filter>
     </ClCompile>
@@ -71,6 +74,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Common\Power.cpp">
       <Filter>Source Files\Power</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Source Files\Server\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Quadtree.cpp">
+      <Filter>Source Files\Server\GameManager\Quadtree</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files\Server\GameManager\Quadtree</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files\Server\GameManager\Quadtree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,9 +110,6 @@
     <ClInclude Include="..\..\Common\GeneralMath.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>Source Files\Server</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Common\Score.h">
       <Filter>Source Files\Score</Filter>
     </ClInclude>
@@ -112,6 +124,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Power.h">
       <Filter>Source Files\Power</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Source Files\Server\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Quadtree.h">
+      <Filter>Source Files\Server\GameManager\Quadtree</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Source Files\Server\GameManager\Quadtree</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Source Files\Server\GameManager\Quadtree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
