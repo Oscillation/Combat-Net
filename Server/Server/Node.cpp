@@ -1,6 +1,7 @@
 #include "Node.h"
 
-Node::Node(const unsigned short & p_maxDivisions, const unsigned short & p_maxObjects, const sf::Rect<int> p_bounds) :
+Node::Node(const unsigned short & p_divisions, const unsigned short & p_maxDivisions, const unsigned short & p_maxObjects, const sf::Rect<int> p_bounds) :
+	m_divisions(p_divisions),
 	m_maxDivisions(p_maxDivisions),
 	m_maxObjects(p_maxObjects),
 	m_bounds(p_bounds)
@@ -36,7 +37,7 @@ void Node::insert(const Object & p_object){
 
 	m_objects.push_back(p_object);
 
-	if (m_objects.size() > m_maxObjects && m_level < m_maxDivisions)
+	if (m_objects.size() > m_maxObjects && m_divisions < m_maxDivisions)
 	{
 		if (ptr_children[0] == nullptr)
 		{
@@ -67,10 +68,10 @@ void Node::split(){
 	unsigned int subWidth = m_bounds.width/2;
 	unsigned int subHeight = m_bounds.height/2;
 
-	ptr_children[0] = new Node(m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left, m_bounds.top, subWidth, subHeight));
-	ptr_children[1] = new Node(m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left + subWidth, m_bounds.top, subWidth, subHeight));
-	ptr_children[2] = new Node(m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left, m_bounds.top + subHeight, subWidth, subHeight));
-	ptr_children[3] = new Node(m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left + subWidth, m_bounds.top + subHeight, subWidth, subHeight));
+	ptr_children[0] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left, m_bounds.top, subWidth, subHeight));
+	ptr_children[1] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left + subWidth, m_bounds.top, subWidth, subHeight));
+	ptr_children[2] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left, m_bounds.top + subHeight, subWidth, subHeight));
+	ptr_children[3] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left + subWidth, m_bounds.top + subHeight, subWidth, subHeight));
 }
 
 int Node::getIndex(const Object & p_object) const{

@@ -3,7 +3,7 @@
 #include <vector>
 
 struct Node{
-	Node(const unsigned short & p_maxDivisions, const unsigned short & p_maxObjects, const sf::Rect<int> p_bounds);
+	Node(const unsigned short & p_divisions, const unsigned short & p_maxDivisions, const unsigned short & p_maxObjects, const sf::Rect<int> p_bounds);
 	~Node();
 
 	Node* ptr_children[4];
@@ -15,7 +15,7 @@ struct Node{
 	std::vector<Object> getObjects(std::vector<Object> & p_objects, const Object & p_object);
 
 private:
-	unsigned short m_level;
+	unsigned short m_divisions;
 
 	unsigned short m_maxDivisions;
 	unsigned short m_maxObjects;
