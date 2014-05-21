@@ -8,7 +8,9 @@ public:
 	Quadtree(const Map & p_map);
 	~Quadtree();
 
-	Node* ptr_root;
+	Node m_root;
+
+	void clean();
 
 private:
 	///<summary>Represents the amount of objects that a node can hold before it needs to split into four cild-nodes.</summary>

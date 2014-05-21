@@ -14,7 +14,7 @@ enum PowerType{
 };
 
 struct Power : public sf::Drawable, public sf::Transformable{
-	Power(const std::function<void(Client & p_client)> & p_power, const PowerType & p_powerType);
+	Power(const std::function<void(Client & p_client)> & p_power, const PowerType & p_powerType, const unsigned int & p_id);
 	Power();
 	~Power();
 
@@ -30,8 +30,12 @@ struct Power : public sf::Drawable, public sf::Transformable{
 
 	operator Object() const;
 
+	unsigned int getId() const;
+
 private:
 	void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;
+
+	unsigned int m_id;
 };
 
 sf::Packet& operator <<(sf::Packet& packet, const Power & p_power);

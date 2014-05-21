@@ -1,4 +1,9 @@
 #include "Node.h"
+#include <iostream>
+
+Node::Node(){
+
+}
 
 Node::Node(const unsigned short & p_divisions, const unsigned short & p_maxDivisions, const unsigned short & p_maxObjects, const sf::Rect<int> p_bounds) :
 	m_divisions(p_divisions),
@@ -17,6 +22,7 @@ Node::~Node(){
 	{
 		if (ptr_children[i] != nullptr)
 		{
+			ptr_children[i]->m_objects.clear();
 			delete ptr_children[i];
 		}
 	}
@@ -65,13 +71,14 @@ sf::Rect<int> Node::getBounds() const{
 }
 
 void Node::split(){
-	unsigned int subWidth = m_bounds.width/2;
-	unsigned int subHeight = m_bounds.height/2;
-
-	ptr_children[0] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left, m_bounds.top, subWidth, subHeight));
-	ptr_children[1] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left + subWidth, m_bounds.top, subWidth, subHeight));
-	ptr_children[2] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left, m_bounds.top + subHeight, subWidth, subHeight));
-	ptr_children[3] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left + subWidth, m_bounds.top + subHeight, subWidth, subHeight));
+	ptr_children[0] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left, m_bounds.top, m_bounds.width/2, m_bounds.height/2));
+	ptr_children[0]->m_objects.resize(0, Object());
+	ptr_children[1] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left + m_bounds.width/2, m_bounds.top, m_bounds.width/2, m_bounds.height/2));
+	ptr_children[1]->m_objects.resize(0, Object());
+	ptr_children[2] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left, m_bounds.top + m_bounds.height/2, m_bounds.width/2, m_bounds.height/2));
+	ptr_children[2]->m_objects.resize(0, Object());
+	ptr_children[3] = new Node(m_divisions + 1, m_maxDivisions, m_maxObjects, sf::Rect<int>(m_bounds.left + m_bounds.width/2, m_bounds.top + m_bounds.height/2, m_bounds.width/2, m_bounds.height/2));
+	ptr_children[3]->m_objects.resize(0, Object());
 }
 
 int Node::getIndex(const Object & p_object) const{
@@ -113,13 +120,25 @@ int Node::getIndex(const Object & p_object) const{
 	return index;
 }
 
-std::vector<Object> Node::getObjects(std::vector<Object> & p_objects, const Object & p_object){
+void Node::getObjects(std::vector<Object> & p_objects, const Object & p_object){
 	int index = getIndex(p_object);
 	if (index != -1 && ptr_children[0] != nullptr) {
 		ptr_children[index]->getObjects(p_objects, p_object);
 	}
 
 	p_objects.insert(p_objects.begin() + p_objects.size(), m_objects.begin(), m_objects.end());
+}
 
-	return p_objects;
+void Node::clean(){
+	if (!m_objects.empty())
+	{
+		m_objects.clear();
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		if (ptr_children[i] != nullptr)
+		{
+			ptr_children[i]->clean();
+		}
+	}
 }

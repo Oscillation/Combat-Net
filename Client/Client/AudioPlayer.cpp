@@ -56,12 +56,12 @@ void AudioPlayer::update(){
 }
 
 void AudioPlayer::playSound(const std::string & p_sound, const sf::Vector3<float> & p_position){
-	sf::Sound* sound = new sf::Sound(m_sounds[p_sound]);
+	/*sf::Sound* sound = new sf::Sound(m_sounds[p_sound]);
 
 	sound->setPosition(p_position);
 
 	m_activeSounds.push_back(sound);
-	m_activeSounds.back()->play();
+	m_activeSounds.back()->play();*/
 
 	/*m_sounds[p_sound].setPosition(p_position);
 	m_sounds[p_sound].play();*/

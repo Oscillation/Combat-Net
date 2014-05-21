@@ -164,47 +164,55 @@ sf::Packet Server::simulateGameState() {
 	m_clientInputs.clear();
 	m_eraseProjectileIDs.clear();
 	//m_gameManager.clean();
+	m_quadtree.clean();
 #pragma endregion
 
 #pragma region Update powers
 	for (auto it = m_powerManager.m_powers.begin(); it != m_powerManager.m_powers.end(); ++it){
-		m_quadtree.ptr_root->insert(*it);
+		m_quadtree.m_root.insert(*it);
 	}
 #pragma endregion
 
 #pragma region Update players
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
+		m_quadtree.m_root.insert(it->second);
+		std::vector<Object> objects;
+		m_quadtree.m_root.getObjects(objects, it->second);
 
-		/*std::vector<Power> powers = m_gameManager.getPowers(it->second);
-
-		for (int i = 0; i < powers.size(); i++)
-		{
-			if (m_gameManager.intersect(it->second, powers[i]))
+		for (auto iter = objects.begin(); iter != objects.end(); ++iter){
+			switch (iter->getObjectType())
 			{
-				m_powerManager.activate(powers[i], it->second);
-				sf::Packet packet;
-				packet << 0 << cn::ActivatePower;
-				m_socket.send(packet, it->second.getAddress(), it->second.getPort());
-				retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
-				m_powerManager.erase(powers[i]);
-				m_gameManager.erase(powers[i]);
+			case ObjectType::Player:
+				break;
+			case ObjectType::Projectile:
+				break;
+			case ObjectType::Power:
+				if (math::circleIntersectsRect(sf::Vector2<float>(it->second.getPosition().x - 20.f, it->second.getPosition().y - 20.f), 20.f, iter->getBounds()))
+				{
+					std::vector<Power>::iterator power = m_powerManager.findId(iter->getId());
+					if (power != m_powerManager.m_powers.end())
+					{
+						bool sendHealth = false;
+						if (power->m_powerType == PowerType::Health)
+						{
+							sendHealth = true;
+						}
+						m_powerManager.activate(*power, it->second);
+						m_powerManager.erase(*power);
+						if (sendHealth)
+						{
+							retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
+						}
+						sf::Packet packet;
+						packet << 0 << cn::ActivatePower;
+						m_socket.send(packet, it->second.getAddress(), it->second.getPort());
+					}
+				}
+				break;
+			default:
+				break;
 			}
-		}*/
-
-		/*if (!m_powerManager.m_powers.empty() && it->second.getHealth() > 0)
-		{
-		for (int i = 0; i < m_powerManager.m_powers.size(); i++){
-		if (math::circleIntersectsRect(sf::Vector2<float>(it->second.getPosition().x - 20, it->second.getPosition().y - 20), 20.f, sf::Rect<float>(m_powerManager.m_powers[i].getPosition().x, m_powerManager.m_powers[i].getPosition().y, 32, 32)))
-		{
-		m_powerManager.activate(m_powerManager.m_powers[i], it->second);
-		sf::Packet packet;
-		packet << 0 << cn::ActivatePower;
-		m_socket.send(packet, it->second.getAddress(), it->second.getPort());
-		retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
-		m_powerManager.m_powers.erase(m_powerManager.m_powers.begin() + i);
 		}
-		}
-		}*/
 
 		if (it->second.getHealth() <= 0)
 		{
@@ -214,7 +222,7 @@ sf::Packet Server::simulateGameState() {
 				respawnPlayerPacket(it->second, retPacket);
 			}
 		}
-		//m_gameManager.update(it->second);
+
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
 #pragma endregion
@@ -235,6 +243,45 @@ sf::Packet Server::simulateGameState() {
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
+				m_quadtree.m_root.insert(*it);
+
+				std::vector<Object> objects;
+				m_quadtree.m_root.getObjects(objects, *it);
+
+				for (auto iter = objects.begin(); iter != objects.end(); ++iter){
+					switch (iter->getObjectType())
+					{
+					case ObjectType::Player:
+						if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
+						{
+							if (iter->getName() != it->getName())
+							{
+								if (m_clientList[iter->getName()].getHealth() > 0)
+								{
+									m_clientList[iter->getName()].damage(it->m_damage);
+								}
+
+								retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
+
+								m_eraseProjectileIDs.push_back(it->m_id);
+
+								if (m_clientList[iter->getName()].getHealth() <= 0) {
+									m_clientList[iter->getName()].m_score.m_deaths++;
+									m_clientList[it->getName()].m_score.m_kills++;
+									m_clientList[it->getName()].m_score.m_points++;
+								}
+							}
+						}
+						break;
+					case ObjectType::Projectile:
+						break;
+					case ObjectType::Power:
+						break;
+					default:
+						break;
+					}
+				}
+
 				//m_gameManager.update(*it);
 				//std::vector<Client> clients = m_gameManager.getClients(*it);
 
