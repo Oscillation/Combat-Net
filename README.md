@@ -29,6 +29,9 @@ Libs used
 ---------
 
 SFML: http://www.sfml-dev.org/download.php
+
 Dirent: http://softagalleria.net/dirent.php
+
 OpenAL: http://kcat.strangesoft.net/openal.html
+
 libsndfile-1: http://www.mega-nerd.com/libsndfile/

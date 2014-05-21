@@ -110,8 +110,13 @@
     <ClCompile Include="AudioPlayer.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="..\..\Server\Server\Object.cpp">
       <Filter>Source Files\Object</Filter>
+=======
+    <ClCompile Include="PreMatchState.cpp">
+      <Filter>Source Files\State stack</Filter>
+>>>>>>> bf27e40572ae71f4caa877fda7f13299533985e6
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,8 +195,13 @@
     <ClInclude Include="AudioPlayer.h">
       <Filter>Source Files\Audio</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\..\Server\Server\Object.h">
       <Filter>Source Files\Object</Filter>
+=======
+    <ClInclude Include="PreMatchState.h">
+      <Filter>Source Files\State stack</Filter>
+>>>>>>> bf27e40572ae71f4caa877fda7f13299533985e6
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

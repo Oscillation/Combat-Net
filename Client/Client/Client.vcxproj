@@ -93,6 +93,7 @@
     <ClCompile Include="ParticleLoader.cpp" />
     <ClCompile Include="ParticleType.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PreMatchState.cpp" />
     <ClCompile Include="Scoreboard.cpp" />
     <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="State.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="ParticleLoader.h" />
     <ClInclude Include="ParticleType.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PreMatchState.h" />
     <ClInclude Include="Scoreboard.h" />
     <ClInclude Include="ScoreText.h" />
     <ClInclude Include="State.h" />

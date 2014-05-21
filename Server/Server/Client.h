@@ -48,10 +48,15 @@ struct Client : public sf::Transformable {
 
 	operator Object() const;
 
+	int getTeam() const;
+	void setTeam(const int& p_team);
+
 private:
 	int m_health;
 
 	int m_damage;
+
+	int m_team;
 
 	sf::IpAddress m_address;
 	unsigned short m_port;

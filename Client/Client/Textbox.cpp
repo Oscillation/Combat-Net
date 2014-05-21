@@ -1,7 +1,7 @@
 #include "Textbox.h"
 
 #include <SFML\Graphics\RenderTarget.hpp>
-#include <iostream>
+
 namespace gui
 {
 	Textbox::Textbox(std::string p_text = "")

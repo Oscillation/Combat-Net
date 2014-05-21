@@ -9,6 +9,9 @@
 
 #include <SFML\Network\IpAddress.hpp>
 
+#include "..\..\Common\Score.h"
+#include "Player.h"
+#include <map>
 
 namespace sf
 {
@@ -29,12 +32,13 @@ public:
 	{
 		Context(sf::RenderWindow& window, sf::UdpSocket& socket, sf::Font& font, sf::IpAddress address, int port);
 
-		sf::RenderWindow*	window;
+		sf::RenderWindow* window;
 		sf::UdpSocket* socket;
 		sf::Font* font;
 		sf::IpAddress* address;
 		std::string username;
 		int port;
+		std::map<std::string, std::unique_ptr<Player>>* scores;
 	};
 
 public:
