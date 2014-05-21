@@ -362,12 +362,8 @@ sf::Packet Server::simulateGameState() {
 			if (iter != m_projectiles.end())
 			{
 				retPacket << *it << (m_map.intersectsWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)) ? m_map.getIntersectingWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)):iter->getPosition());
-<<<<<<< HEAD
-				//m_gameManager.erase(*iter);
-=======
 
-				m_gameManager.erase(*iter);
->>>>>>> bf27e40572ae71f4caa877fda7f13299533985e6
+				//m_gameManager.erase(*iter);
 				m_projectiles.erase(iter);
 			}
 		}
