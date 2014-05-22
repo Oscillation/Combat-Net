@@ -293,7 +293,7 @@ sf::Packet Server::simulateGameState() {
 					case ObjectType::Player:
 						if (math::LineIntersectsCircle(it->getPosition(), it->getPosition() + it->getVelocity(), sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f))//if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
 						{
-							if (iter->getName() != it->getName())
+							if (iter->getName() != it->getName() && m_clientList[iter->getName()].getHealth() > 0)
 							{
 								if (m_clientList[iter->getName()].getHealth() > 0)
 								{
@@ -442,7 +442,18 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 
 		retPacket.clear();
 
-		std::cout << from << data << " has connected. Sending map...\n";
+		switch (currentMatch.type)
+		{
+		case cn::MatchType::FreeForAll:
+			m_clientList[data].setTeam(currentMatch.m_teams[0]);
+			break;
+		case cn::MatchType::TeamDeathmatch:
+			break;
+		default:
+			break;
+		}
+
+		std::cout << from << data << " has connected.\n";
 	}else
 	{
 		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::NameTaken;
@@ -577,9 +588,11 @@ void Server::startMatch()
 int Server::getHightestScore()
 {
 	int maxScore = 0;
+	std::map<int, int> teamScores;
 	for (auto i = m_clientList.begin(); i != m_clientList.end(); ++i)
 	{
-		maxScore = (i->second.m_score.m_points > maxScore) ? i->second.m_score.m_points : maxScore;
+		teamScores[i->second.getTeam()] += i->second.m_score.m_points;
+		maxScore = (teamScores[i->second.getTeam()] > maxScore) ? teamScores[i->second.getTeam()] : maxScore;
 	}
 	return maxScore;
 }

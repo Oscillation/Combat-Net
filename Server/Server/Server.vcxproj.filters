@@ -28,9 +28,6 @@
     <Filter Include="Source Files\Projectile">
       <UniqueIdentifier>{ee570f06-c447-4fe5-948f-24ef3cdc4f16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Score">
-      <UniqueIdentifier>{1435fc04-4313-4cbf-b5ec-6ddb02301ca5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Power">
       <UniqueIdentifier>{8e99f355-1025-44e2-8806-58bb7e431807}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,12 @@
     </Filter>
     <Filter Include="Source Files\Server\GameManager\Quadtree">
       <UniqueIdentifier>{12dd1926-5cf1-4378-825a-56fd16910f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Match">
+      <UniqueIdentifier>{7e9117bc-5df0-4437-aef0-9aa52f2341d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Match\Score">
+      <UniqueIdentifier>{1435fc04-4313-4cbf-b5ec-6ddb02301ca5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,7 +67,7 @@
       <Filter>Source Files\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Common\Score.cpp">
-      <Filter>Source Files\Score</Filter>
+      <Filter>Source Files\Match\Score</Filter>
     </ClCompile>
     <ClCompile Include="PowerTile.cpp">
       <Filter>Source Files\Map</Filter>
@@ -111,7 +114,7 @@
       <Filter>Source Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\Score.h">
-      <Filter>Source Files\Score</Filter>
+      <Filter>Source Files\Match\Score</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\Tile.h">
       <Filter>Source Files\Map</Filter>
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>Source Files\Server\GameManager\Quadtree</Filter>
+    </ClInclude>
+    <ClInclude Include="Match.h">
+      <Filter>Source Files\Match</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
