@@ -289,56 +289,72 @@ sf::Packet Server::simulateGameState() {
 		if (it != m_projectiles.end())
 		{
 			bool erase = false;
-			it->move(it->getVelocity());
+
 			erase = m_map.intersectsWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5));
+
 			if (erase)
 			{
 				//it->setPosition(m_map.getIntersectingWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)));
-
+				it->setVelocity(sf::Vector2<float>());
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
-				m_quadtree.m_root.insert(*it);
+				if (it->getVelocity().x != 0 && it->getVelocity().y != 0)
+				{
+					erase = m_map.intersectsWall(it->getPosition(), it->getPosition() + it->getVelocity());
+				}
 
-				std::vector<Object> objects;
-				m_quadtree.m_root.getObjects(objects, *it);
+				if (erase)
+				{
+					it->setVelocity(sf::Vector2<float>());
+					m_eraseProjectileIDs.push_back(it->m_id);
+				}else
+				{
+					it->move(it->getVelocity());
 
-				for (auto iter = objects.begin(); iter != objects.end(); ++iter){
-					switch (iter->getObjectType())
-					{
-					case ObjectType::Player:
-						if (m_clientList[iter->getName()].getTeam() != m_clientList[it->getName()].getTeam())
+					m_quadtree.m_root.insert(*it);
+
+					std::vector<Object> objects;
+					m_quadtree.m_root.getObjects(objects, *it);
+
+					for (auto iter = objects.begin(); iter != objects.end(); ++iter){
+						switch (iter->getObjectType())
 						{
-							if (math::LineIntersectsCircle(it->getPosition(), it->getPosition() + it->getVelocity(), sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f))//if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
+						case ObjectType::Player:
+							if (m_clientList[iter->getName()].getTeam() != m_clientList[it->getName()].getTeam())
 							{
-								if (iter->getName() != it->getName() && m_clientList[iter->getName()].getHealth() > 0)
+								if (math::LineIntersectsCircle(it->getPosition(), it->getPosition() + sf::Vector2<float>(it->getVelocity().x/2, it->getVelocity().y/2), sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f) ||
+									math::circleIntersectsRect(sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))//if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
 								{
-									if (m_clientList[iter->getName()].getHealth() > 0)
+									if (iter->getName() != it->getName() && m_clientList[iter->getName()].getHealth() > 0)
 									{
-										m_clientList[iter->getName()].damage(it->m_damage);
-									}
+										if (m_clientList[iter->getName()].getHealth() > 0)
+										{
+											m_clientList[iter->getName()].damage(it->m_damage);
+										}
 
-									retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
+										retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
 
-									m_eraseProjectileIDs.push_back(it->m_id);
+										m_eraseProjectileIDs.push_back(it->m_id);
 
-									if (m_clientList[iter->getName()].getHealth() <= 0) {
-										m_clientList[iter->getName()].m_score.m_deaths++;
-										m_clientList[it->getName()].m_score.m_kills++;
-										m_clientList[it->getName()].m_score.m_points++;
+										if (m_clientList[iter->getName()].getHealth() <= 0) {
+											m_clientList[iter->getName()].m_score.m_deaths++;
+											m_clientList[it->getName()].m_score.m_kills++;
+											m_clientList[it->getName()].m_score.m_points++;
 
-										retPacket << cn::PlayerKilled << it->getName() << iter->getName();
+											retPacket << cn::PlayerKilled << it->getName() << iter->getName();
+										}
 									}
 								}
 							}
+							break;
+						case ObjectType::Projectile:
+							break;
+						case ObjectType::Power:
+							break;
+						default:
+							break;
 						}
-						break;
-					case ObjectType::Projectile:
-						break;
-					case ObjectType::Power:
-						break;
-					default:
-						break;
 					}
 				}
 
@@ -482,7 +498,7 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		}
 
 		retPacket.clear();
-		
+
 		m_clientList[data].setTeam(team);
 
 		std::cout << from << data << " has connected.\n";
@@ -657,41 +673,41 @@ void Server::loadConfig()
 			currentLine++;
 
 			switch (currentLine) {
-				case 1:
-					m_match.type = (cn::MatchType)std::atoi(line.c_str());
+			case 1:
+				m_match.type = (cn::MatchType)std::atoi(line.c_str());
 				break;
 
-				case 2:
-					m_match.teamAmount = std::atoi(line.c_str());
+			case 2:
+				m_match.teamAmount = std::atoi(line.c_str());
 
-					//init teams
-					for (int i = 0; i < m_match.teamAmount; i++)
-					{
-						m_match.m_teams[i] = 0;
-					}
+				//init teams
+				for (int i = 0; i < m_match.teamAmount; i++)
+				{
+					m_match.m_teams[i] = 0;
+				}
 				break;
 
-				case 3:
-					m_match.maxPlayers = std::atoi(line.c_str());
+			case 3:
+				m_match.maxPlayers = std::atoi(line.c_str());
 				break;
 
-				case 4:
-					m_match.pointsToWin = std::atoi(line.c_str());
+			case 4:
+				m_match.pointsToWin = std::atoi(line.c_str());
 				break;
 
-				case 5:
-					mapNames.str(line);
-					while (std::getline(mapNames, currentMap, ';')){
-						m_match.maps.push_back(currentMap);
-					}
+			case 5:
+				mapNames.str(line);
+				while (std::getline(mapNames, currentMap, ';')){
+					m_match.maps.push_back(currentMap);
+				}
 				break;
 
-				case 6:
-					m_port = std::atoi(line.c_str());
+			case 6:
+				m_port = std::atoi(line.c_str());
 				break;
 
-				default:
-					std::cout << "Dafuq?\n";
+			default:
+				std::cout << "Dafuq?\n";
 				break;
 			}
 		}
