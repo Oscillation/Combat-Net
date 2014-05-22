@@ -326,6 +326,8 @@ sf::Packet Server::simulateGameState() {
 										m_clientList[iter->getName()].m_score.m_deaths++;
 										m_clientList[it->getName()].m_score.m_kills++;
 										m_clientList[it->getName()].m_score.m_points++;
+
+										retPacket << cn::PlayerKilled << it->getName() << iter->getName();
 									}
 								}
 							}

@@ -24,6 +24,7 @@
 #include "ParticleLoader.h"
 #include "ParticleEmitter.h"
 #include "AudioPlayer.h"
+#include "Killfeed.h"
 
 #include <map>
 #include <memory>
@@ -109,4 +110,6 @@ private:
 
 	AudioPlayer m_audioPlayer;
 	sf::Listener m_listener;
+
+	Killfeed m_killfeed;
 };

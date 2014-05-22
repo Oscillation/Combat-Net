@@ -14,11 +14,11 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 	m_socket(*context.socket),
 	m_connected(false),
 	m_active(true),
-	gameFont(*context.font)
+	gameFont(*context.font),
+	m_killfeed(*context.font)
 {
 	initialize();
 
-	m_scoreboard.setPosition(1280/2, 300);
 	getContext()->scores = &m_players;
 }
 
@@ -55,6 +55,10 @@ void MultiplayerGame::initialize()
 	m_particleEmitter = ParticleEmitter(&m_particleLoader);
 
 	m_listener.setPosition(sf::Vector3<float>(0.5f, 0.5f, 0.f));
+
+	m_scoreboard.setPosition(1280/2, 300);
+
+	m_killfeed.setPosition(1260, 20); 
 }
 
 bool MultiplayerGame::connect(){
@@ -631,6 +635,10 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 		{
 			m_powers.clear();
 			p_packet >> m_powers;
+		} else if ((cn::PacketType)type == cn::PlayerKilled) {
+			std::string killer, killed;
+			p_packet >> killer >> killed;
+			m_killfeed.registerKill(killer, killed);
 		}
 	}
 }

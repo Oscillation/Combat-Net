@@ -17,6 +17,7 @@ namespace cn
 		EraseProjectile,
 		PlayerHealth,
 		PlayerRespawn,
+		PlayerKilled,
 		ScoreUpdate,
 		ProjectileIDCleanUp,
 		Power,

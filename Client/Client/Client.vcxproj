@@ -85,6 +85,7 @@
     <ClCompile Include="AudioPlayer.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Killfeed.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuState.cpp" />
     <ClCompile Include="MultiplayerGame.cpp" />
@@ -114,6 +115,7 @@
     <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Killfeed.h" />
     <ClInclude Include="MenuState.h" />
     <ClInclude Include="MultiplayerGame.h" />
     <ClInclude Include="Particle.h" />
