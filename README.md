@@ -9,9 +9,7 @@ It's a simple 2d shooter with zero objectives.
 
 TODO
 ----
-* MAYBE create a ctf mode
-* Create a "game thing"
-* particles
+* See [Issues](https://github.com/Oscillation/Combat-Net/issues)
 
 Particle File Structure
 -----------------------
@@ -28,10 +26,10 @@ Text written in *cursive* represents an example value.
 Libs used
 ---------
 
-SFML: http://www.sfml-dev.org/download.php
+[SFML](http://www.sfml-dev.org/download.php)
 
-Dirent: http://softagalleria.net/dirent.php
+[Dirent](http://softagalleria.net/dirent.php)
 
-OpenAL: http://kcat.strangesoft.net/openal.html
+[OpenAL](http://kcat.strangesoft.net/openal.html)
 
-libsndfile-1: http://www.mega-nerd.com/libsndfile/
+[libsndfile-1](http://www.mega-nerd.com/libsndfile/)
