@@ -4,6 +4,8 @@
 #include <SFML\Graphics\RenderStates.hpp>
 
 ScoreText::ScoreText(std::string const& p_name, bool p_special)
+	:
+	m_background(sf::Vector2f(560, 16))
 {
 
 	m_name.setString(p_name);
@@ -11,12 +13,15 @@ ScoreText::ScoreText(std::string const& p_name, bool p_special)
 		m_score.setString("0");
 		m_kills.setString("0");
 		m_deaths.setString("0");
+		
 	} else {
 		m_score.setString("S");
 		m_kills.setString("K");
 		m_deaths.setString("D");
+		m_background.setFillColor(sf::Color::Transparent);
 	}
 
+	m_name.setPosition(5, 0);
 	m_score.setPosition(450, 0);
 	m_kills.setPosition(480, 0);
 	m_deaths.setPosition(510, 0);
@@ -25,6 +30,9 @@ ScoreText::ScoreText(std::string const& p_name, bool p_special)
 	m_score.setCharacterSize(14);
 	m_kills.setCharacterSize(14);
 	m_deaths.setCharacterSize(14);
+
+	m_background.setOutlineThickness(0);
+	m_background.setPosition(sf::Vector2f(-2, 0));
 }
 
 ScoreText::~ScoreText()
@@ -47,10 +55,16 @@ void ScoreText::setFont(sf::Font& p_font)
 	m_deaths.setFont(p_font);
 }
 
+void ScoreText::setBackgroundColor(sf::Color p_color)
+{
+	m_background.setFillColor(p_color);
+}
+
 void ScoreText::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
 
+	target.draw(m_background, states);
 	target.draw(m_name, states);
 	target.draw(m_score, states);
 	target.draw(m_kills, states);

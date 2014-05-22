@@ -6,11 +6,11 @@
 Scoreboard::Scoreboard(std::map<std::string, std::unique_ptr<Player>>& p_players)
 	:
 	m_players(p_players),
-	m_background(sf::Vector2f(600, 200)),
+	m_background(sf::Vector2f(600, 0)),
 	m_namePanel(sf::Vector2f(560, 20)),
 	m_namePanelText("NAME", true)
 {
-	m_background.setFillColor(sf::Color(128, 128, 128, 200));
+	m_background.setFillColor(sf::Color(128, 128, 128, 128));
 	m_background.setOutlineColor(sf::Color::Black);
 	m_background.setOutlineThickness(2.f);
 	
@@ -50,9 +50,15 @@ void Scoreboard::updateStats()
 			m_scoreTexts[count].setFont(*m_font);
 		}
 		m_scoreTexts[count].update(i->second->m_score, i->first);
-		m_scoreTexts[count].setPosition(22.f, 30.f + count * 16.f);
+		m_scoreTexts[count].setPosition(22.f, 35.f + count * 16.f);
+		if (count % 2 == 0)
+			m_scoreTexts[count].setBackgroundColor(sf::Color(255, 255, 255, 100));
+		else
+			m_scoreTexts[count].setBackgroundColor(sf::Color(100, 100, 100, 100));
 	}
 	m_scoreTexts.erase(m_scoreTexts.begin() + count, m_scoreTexts.end());
+	m_namePanel.setSize(sf::Vector2f(560.f, 20.f));
+	m_background.setSize(sf::Vector2f(600.f, 50.f + count * 16.f));
 }
 
 void Scoreboard::activate()
