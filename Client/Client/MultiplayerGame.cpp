@@ -181,11 +181,13 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 					it->second->setHealth(0);
 				}
 
-				setRespawnTimer(3.0f);
+				setRespawnTimer(3.f);
+				m_map.getPowerTiles().clear();
+				m_map.m_tiles.clear();
+				packet >> m_map;
 
 				requestStackPush(States::PreMatch);
 			}
-			
 			timeSinceLastServerUpdate.restart();
 			statusText.setString("");
 		}
@@ -592,7 +594,14 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			{
 				if (m_players[name]->getHealth() <= 0)
 				{
+					m_particleEmitter.Emit("player_death", m_players[name]->getPosition(), 50);
 					setRespawnTimer(3.f);
+				}
+			}else
+			{
+				if (m_players[name]->getHealth() <= 0)
+				{
+					m_particleEmitter.Emit("player_death", m_players[name]->getPosition(), 50);
 				}
 			}
 		}else if ((cn::PacketType)type == cn::ScoreUpdate)
