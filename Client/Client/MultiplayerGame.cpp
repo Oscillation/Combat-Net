@@ -184,12 +184,14 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 
 		for (auto it = m_players.begin(); it != m_players.end(); ++it) {
+			//m_quadtree.m_root.insert(*it->second);
 			it->second->update(p_deltaTime, m_elapsedGameTime);
 		}
 
 		for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
 			if (it->m_updated)
 			{
+				
 				it->update(p_deltaTime, m_elapsedGameTime);
 			}else
 			{
@@ -302,6 +304,8 @@ bool MultiplayerGame::draw()
 					window->draw(tile);
 			}
 	}
+
+	
 
 	for (auto it = m_powers.begin(); it != m_powers.end(); ++it) {
 		window->draw(*it);

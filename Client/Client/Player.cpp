@@ -90,3 +90,8 @@ void Player::setHealth(const int & p_health){
 bool Player::isDead() const{
 	return m_dead;
 }
+
+Player::operator Object() const{
+	Object object = Object(ObjectType::Player, sf::Rect<float>(getPosition().x, getPosition().y, 40, 40), nameText.getString());
+	return object;
+}

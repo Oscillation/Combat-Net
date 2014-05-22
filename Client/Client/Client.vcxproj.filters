@@ -36,9 +36,6 @@
     <Filter Include="Source Files\Audio">
       <UniqueIdentifier>{8a463bae-731c-43ef-8af6-a1e9bbd8ac12}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Object">
-      <UniqueIdentifier>{72a53abd-4577-437e-9362-663d618e5b5a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -110,13 +107,11 @@
     <ClCompile Include="AudioPlayer.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="..\..\Server\Server\Object.cpp">
-      <Filter>Source Files\Object</Filter>
-=======
     <ClCompile Include="PreMatchState.cpp">
       <Filter>Source Files\State stack</Filter>
->>>>>>> bf27e40572ae71f4caa877fda7f13299533985e6
+    </ClCompile>
+    <ClCompile Include="..\..\Server\Server\Object.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -195,13 +190,11 @@
     <ClInclude Include="AudioPlayer.h">
       <Filter>Source Files\Audio</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="..\..\Server\Server\Object.h">
-      <Filter>Source Files\Object</Filter>
-=======
     <ClInclude Include="PreMatchState.h">
       <Filter>Source Files\State stack</Filter>
->>>>>>> bf27e40572ae71f4caa877fda7f13299533985e6
+    </ClInclude>
+    <ClInclude Include="..\..\Server\Server\Object.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

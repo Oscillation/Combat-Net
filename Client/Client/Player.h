@@ -10,6 +10,7 @@
 
 #include "..\..\Common\Protocol.h"
 #include "..\..\Common\Score.h"
+#include "..\..\Server\Server\Object.h"
 
 class Player : public sf::Drawable, public sf::Transformable
 {
@@ -32,7 +33,9 @@ public:
 
 	Score m_score;
 
-private:
+	operator Object() const;
+
+private: 
 	bool m_remote, m_dead;
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
