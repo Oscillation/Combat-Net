@@ -199,6 +199,8 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 				m_map.m_tiles.clear();
 				packet >> m_map;
 
+				m_killfeed.clear();
+
 				requestStackPush(States::PreMatch);
 			}
 			timeSinceLastServerUpdate.restart();
@@ -246,6 +248,8 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		m_particleEmitter.update(p_deltaTime);
 
 		updateViewShake(p_deltaTime);
+
+		m_killfeed.update(p_deltaTime);
 
 		m_view.setCenter(m_players[m_name]->getPosition());
 
@@ -357,6 +361,8 @@ bool MultiplayerGame::draw()
 			window->draw(m_respawnTimer);
 		}
 	}
+
+	window->draw(m_killfeed);
 
 	return false;
 }

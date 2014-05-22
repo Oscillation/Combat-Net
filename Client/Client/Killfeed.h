@@ -6,6 +6,8 @@
 #include <SFML\Graphics\Font.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics\RenderStates.hpp>
+#include <SFML\System\Time.hpp>
+
 
 class Killfeed : public sf::Transformable, public sf::Drawable
 {
@@ -14,9 +16,17 @@ class Killfeed : public sf::Transformable, public sf::Drawable
 		~Killfeed();
 
 		void registerKill(const std::string & p_killer, const std::string & p_killed);
+		void clear();
 
-	private:	
+		void update(const sf::Time& p_deltaTime);
+
+	private:
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 		sf::Text m_feed[4];
+		sf::Time m_time;
+
+		bool hasText();
+
+		static const int FADE_SECONDS = 20;
 };
