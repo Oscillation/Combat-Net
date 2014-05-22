@@ -448,10 +448,12 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		switch (currentMatch.type)
 		{
 		case cn::MatchType::FreeForAll:
-			m_clientList[data].setTeam(currentMatch.m_teams[currentMatch.m_teams.size()]);
+			m_clientList[data].setTeam(currentMatch.m_teams.size());
+			currentMatch.m_teams[currentMatch.m_teams.size()]++;
 			break;
 		case cn::MatchType::TeamDeathmatch:
-			m_clientList[data].setTeam((currentMatch.m_teams[0] > currentMatch.m_teams[1]) ? currentMatch.m_teams[0]:currentMatch.m_teams[1]);
+			m_clientList[data].setTeam((currentMatch.m_teams[0] > currentMatch.m_teams[1]) ? 0:1);
+			currentMatch.m_teams[m_clientList[data].getTeam()]++;
 			break;
 		default:
 			break;
