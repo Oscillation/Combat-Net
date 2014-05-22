@@ -3,6 +3,8 @@
 #include <SFML\Graphics\Transformable.hpp>
 #include <SFML\Graphics\Drawable.hpp>
 #include <SFML\Graphics\Text.hpp>
+#include <SFML\Graphics\RectangleShape.hpp>
+
 #include "..\..\Common\Score.h"
 
 class ScoreText : public sf::Drawable, public sf::Transformable
@@ -14,6 +16,8 @@ public:
 	void update(Score p_score, std::string p_name);
 	void setFont(sf::Font& p_font);
 
+	void setBackgroundColor(sf::Color p_color);
+
 private:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
@@ -21,4 +25,6 @@ private:
 	sf::Text m_score;
 	sf::Text m_kills;
 	sf::Text m_deaths;
+
+	sf::RectangleShape m_background;
 };
