@@ -103,6 +103,7 @@ void Server::run(){
 				matchDone << 0 << cn::MatchEnd;
 				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 					m_socket.send(matchDone, it->second.getAddress(), it->second.getPort());
+					it->second.setHealth(0);
 				}
 			}
 		}
@@ -264,6 +265,7 @@ sf::Packet Server::simulateGameState() {
 
 		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
+
 #pragma endregion
 
 	retPacket << cn::Power << m_powerManager.m_powers;

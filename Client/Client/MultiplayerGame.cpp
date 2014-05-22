@@ -177,8 +177,11 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 
 			if ((cn::PacketType)type == cn::MatchEnd)
 			{
+				setRespawnTimer(3.f);
+				m_players[m_name]->setHealth(0);
 				requestStackPush(States::PreMatch);
 			}
+			
 			timeSinceLastServerUpdate.restart();
 			statusText.setString("");
 		}

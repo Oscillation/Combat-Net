@@ -84,7 +84,6 @@ private:
 
 	Match currentMatch;
 	sf::Time m_timeBetweenMatches;
-
 	GameManager m_gameManager;
 
 	Quadtree m_quadtree;
