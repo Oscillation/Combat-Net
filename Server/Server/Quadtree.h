@@ -14,7 +14,7 @@ public:
 
 private:
 	///<summary>Represents the amount of objects that a node can hold before it needs to split into four child-nodes.</summary>
-	static const unsigned short m_maxObjects = 10;
+	static const unsigned short m_maxObjects = 3;
 
 	///<summary>Represents the maximum amount of divisions. 0 is the root node.</summary>
 	static const unsigned short m_maxDivisions = 5;
