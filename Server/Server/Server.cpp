@@ -291,7 +291,7 @@ sf::Packet Server::simulateGameState() {
 					switch (iter->getObjectType())
 					{
 					case ObjectType::Player:
-						if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
+						if (math::LineIntersectsCircle(it->getPosition(), it->getPosition() + it->getVelocity(), sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f))//if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
 						{
 							if (iter->getName() != it->getName())
 							{

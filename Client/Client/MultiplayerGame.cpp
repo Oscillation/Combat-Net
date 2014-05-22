@@ -429,7 +429,10 @@ void MultiplayerGame::handlePlayerDisconnect(sf::Packet& packet)
 {
 	std::string name;
 	packet >> name;
-	m_players.erase(name);
+	if (name != m_name)
+	{
+		m_players.erase(name);
+	}
 }
 
 void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
@@ -530,7 +533,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 			sound->setPosition(sf::Vector3<float>((position.x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (position.y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
 			sound->play();*/
 			m_projectiles.erase(it);
-			shakeView(sf::seconds(0.05f));
+			//shakeView(sf::seconds(0.05f));
 		}
 	}
 }
