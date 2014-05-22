@@ -492,7 +492,7 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		{
 			if (i->first != data) {
 				sf::Packet specialDelivery;
-				specialDelivery << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << i->first << m_clientList[i->first].getPosition().x << m_clientList[i->first].getPosition().y << team;
+				specialDelivery << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << i->first << m_clientList[i->first].getPosition().x << m_clientList[i->first].getPosition().y << m_clientList[i->first].getTeam();
 				m_socket.send(specialDelivery, p_address, p_port);
 			}
 		}
