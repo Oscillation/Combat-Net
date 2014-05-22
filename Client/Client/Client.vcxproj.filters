@@ -36,17 +36,17 @@
     <Filter Include="Source Files\Audio">
       <UniqueIdentifier>{8a463bae-731c-43ef-8af6-a1e9bbd8ac12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{9d72f3d6-75c6-40c0-8411-4bce30d9efa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{55177c44-bfab-477a-8b46-7c738eba1d43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Main">
+      <UniqueIdentifier>{3835ba41-ec33-4435-8a54-fbeb115f2007}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MultiplayerGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Common\Map.cpp">
       <Filter>Source Files\Map</Filter>
     </ClCompile>
@@ -89,9 +89,6 @@
     <ClCompile Include="StateStack.cpp">
       <Filter>Source Files\State stack</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MenuState.cpp">
       <Filter>Source Files\State stack</Filter>
     </ClCompile>
@@ -110,18 +107,24 @@
     <ClCompile Include="PreMatchState.cpp">
       <Filter>Source Files\State stack</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Player</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Server\Server\Object.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiplayerGame.cpp">
+      <Filter>Source Files\Main</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MultiplayerGame.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Common\Protocol.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\Map.h">
@@ -172,9 +175,6 @@
     <ClInclude Include="StateIdentifiers.h">
       <Filter>Source Files\State stack</Filter>
     </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="MenuState.h">
       <Filter>Source Files\State stack</Filter>
     </ClInclude>
@@ -193,8 +193,17 @@
     <ClInclude Include="PreMatchState.h">
       <Filter>Source Files\State stack</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Server\Server\Object.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiplayerGame.h">
+      <Filter>Source Files\Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

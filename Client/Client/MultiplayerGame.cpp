@@ -88,15 +88,24 @@ bool MultiplayerGame::connect(){
 				packet >> m_map;
 				packet >> m_projectiles;
 				packet >> m_powers;
+				
+				int team;
+				packet >> team;
+
 				std::unique_ptr<Player> newPlayer(new Player(name, gameFont, false));
 				newPlayer->setPosition(position);
 				newPlayer->setTargetPosition(position);
 				newPlayer->setTargetTime(100);
+				newPlayer->m_team = team;
+				std::cout << team << "\n";
+
 				m_players[name] = std::move(newPlayer);
+
 				m_socket.setBlocking(false);
+
 				m_view = sf::View(sf::Vector2f(1280/2, 720/2), sf::Vector2f(1280, 720));
 				m_view.setCenter(m_players[m_name].get()->getPosition());
-				std::cout << m_name << std::endl;
+
 				m_connected = true;
 				return true;
 			}else if ((cn::PacketType)type == cn::NameTaken)
@@ -426,11 +435,14 @@ void MultiplayerGame::handlePlayerConnect(sf::Packet& packet)
 {
 	std::string name;
 	sf::Vector2f position;
-	packet >> name >> position.x >> position.y;
+	int team;
+	packet >> name >> position >> team;
 	std::cout << "Adding: " << name << " to list of players.\n";
 
 	std::unique_ptr<Player> newPlayer(new Player(name, gameFont, true));
 	newPlayer->setPosition(position);
+	newPlayer->m_team = team;
+
 	m_players[name] = std::move(newPlayer);
 }
 

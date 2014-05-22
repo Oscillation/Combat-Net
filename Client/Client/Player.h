@@ -31,6 +31,8 @@ public:
 	int getHealth() const;
 	void setHealth(const int & p_health);
 
+	unsigned short m_team;
+
 	Score m_score;
 
 	operator Object() const;

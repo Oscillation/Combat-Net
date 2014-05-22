@@ -58,9 +58,29 @@ float Player::getRadius() const{
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
-	
+
 	sf::CircleShape player(m_radius);
-	player.setFillColor(sf::Color::Red);
+	switch (m_team)
+	{
+	case 0:
+		player.setFillColor(sf::Color::Red);
+		break;
+	case 1:
+		player.setFillColor(sf::Color::Blue);
+		break;
+	case 2:
+		player.setFillColor(sf::Color::Green);
+		break;
+	case 3:
+		player.setFillColor(sf::Color::Magenta);
+		break;
+	case 4:
+		player.setFillColor(sf::Color::Cyan);
+	case 5:
+		break;
+	default:
+		break;
+	}
 	player.setOrigin(m_radius, m_radius);
 
 	sf::RectangleShape healthBackground(sf::Vector2<float>(40.f, 5));

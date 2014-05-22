@@ -109,7 +109,7 @@ void Server::run(){
 					m_map.m_tiles.clear();
 					m_powerManager.m_powers.clear();
 					m_powerManager.m_powerTiles.clear();
-					std::string mapPath = "Maps/" + m_match.maps[math::random(0, m_match.maps.size() -1)] + ".map";
+					std::string mapPath = "Maps/" + m_match.maps[math::random(0, m_match.maps.size() - 1)] + ".map";
 					m_map = Map(mapPath);
 					m_powerManager = PowerManager(m_map.getPowerTiles());
 				}
@@ -417,11 +417,6 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 	p_packet >> data;
 	if (!nameTaken(data))
 	{
-		if (!m_clientList.empty())
-		{
-			std::cout << "";
-		}
-
 		m_clientList[data] = Client(p_address, p_port);
 		m_clientList[data].setName(data);
 		sf::Vector2<int> spawn = m_gameManager.selectSpawn(m_map.m_spawnPositions);
@@ -435,8 +430,33 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 
 		listener.accept(client);
 
+		int team;
+		int low = 0;
 
-		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << (int)cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << m_map << m_projectiles << m_powerManager.m_powers;
+		switch (m_match.type)
+		{
+		case cn::MatchType::FreeForAll:
+			team = m_match.m_teams.size();
+			m_match.m_teams[m_match.m_teams.size()]++;
+			break;
+		case cn::MatchType::TeamDeathmatch:
+			for (int i = 0; i < m_match.m_teams.size(); i++)
+			{
+				if (m_match.m_teams[i] < m_match.m_teams[low])
+				{
+					low = i;
+				}
+			}
+			team = low;
+			m_match.m_teams[low]++;
+			break;
+		default:
+			break;
+		}
+
+		std::cout << team << "\n";
+
+		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << m_map << m_projectiles << m_powerManager.m_powers << team;
 		m_socket.send(retPacket, p_address, p_port);
 
 		//Send connecting client to already connected clients
@@ -444,7 +464,7 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		{
 			if (i->first != data) {
 				sf::Packet specialDelivery;
-				specialDelivery << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y;
+				specialDelivery << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << team;
 				m_socket.send(specialDelivery, i->second.getAddress(), i->second.getPort());
 			}
 		}
@@ -454,26 +474,14 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		{
 			if (i->first != data) {
 				sf::Packet specialDelivery;
-				specialDelivery << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << i->first << m_clientList[i->first].getPosition().x << m_clientList[i->first].getPosition().y;
+				specialDelivery << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << i->first << m_clientList[i->first].getPosition().x << m_clientList[i->first].getPosition().y << team;
 				m_socket.send(specialDelivery, p_address, p_port);
 			}
 		}
 
 		retPacket.clear();
-
-		switch (m_match.type)
-		{
-		case cn::MatchType::FreeForAll:
-			m_clientList[data].setTeam(m_match.m_teams.size());
-			m_match.m_teams[m_match.m_teams.size()]++;
-			break;
-		case cn::MatchType::TeamDeathmatch:
-			m_clientList[data].setTeam((m_match.m_teams[0] > m_match.m_teams[1]) ? 0:1);
-			m_match.m_teams[m_clientList[data].getTeam()]++;
-			break;
-		default:
-			break;
-		}
+		
+		m_clientList[data].setTeam(team);
 
 		std::cout << from << data << " has connected.\n";
 	}else
@@ -493,6 +501,8 @@ void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_a
 	sf::Packet packet;
 	packet << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerDisconnected << name;
 	std::cout << from << name << " has disconnected." << std::endl;
+
+	m_match.m_teams[m_clientList[name].getTeam()]--;
 
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		m_socket.send(packet, it->second.getAddress(), it->second.getPort());
@@ -651,6 +661,12 @@ void Server::loadConfig()
 
 				case 2:
 					m_match.teamAmount = std::atoi(line.c_str());
+
+					//init teams
+					for (int i = 0; i < m_match.teamAmount; i++)
+					{
+						m_match.m_teams[i] = 0;
+					}
 				break;
 
 				case 3:
