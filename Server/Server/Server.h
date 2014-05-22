@@ -11,6 +11,8 @@
 #include <map>
 #include <iostream>
 #include <memory>
+#include <fstream>
+#include <sstream>
 
 #include "..\..\Common\Protocol.h"
 #include "..\..\Common\Map.h"
@@ -26,7 +28,7 @@
 
 class Server{
 public:
-	Server(const unsigned short & p_port);
+	Server();
 	~Server();
 
 private:
@@ -82,9 +84,11 @@ private:
 
 	Map m_map;
 
-	Match currentMatch;
+	Match m_match;
 	sf::Time m_timeBetweenMatches;
 	GameManager m_gameManager;
+
+	void loadConfig();
 
 	Quadtree m_quadtree;
 

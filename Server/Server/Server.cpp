@@ -1,15 +1,18 @@
 #include "Server.h"
 
-Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0), m_speedBoost(5){
+Server::Server() : m_projectileID(0), m_speedBoost(5){
+
+	loadConfig();
 	while (m_socket.bind(m_port) != sf::Socket::Done)
 	{
 		std::cout << "Retry with port: ";
 		std::cin >> m_port;
 	}
 	system("cls");
+
 	std::cout << "Server started.\nNow accepting connections to: " << sf::IpAddress::getPublicAddress() << ":" << m_port << ".\n\n\n\n";
 
-	m_map = Map("Maps/map.txt");
+	m_map = Map("Maps/" + m_match.maps[math::random(0, m_match.maps.size() -1)] + ".map");
 	m_gameManager = GameManager(&m_clientList, &m_projectiles, m_map.m_tiles.size(), m_map.m_tiles.begin()->size());
 	m_powerManager = PowerManager(m_map.getPowerTiles());
 	m_quadtree = Quadtree(m_map);
@@ -18,11 +21,9 @@ Server::Server(const unsigned short & p_port) : m_port(p_port), m_projectileID(0
 	m_clock.restart();
 	m_elapsed.restart();
 	m_updateTime = sf::milliseconds(50);
-	m_timeBetweenMatches = sf::seconds(10);
+	m_timeBetweenMatches = sf::seconds(5);
 
-	currentMatch.pointsToWin = 2;
-	currentMatch.type = cn::MatchType::FreeForAll;
-	currentMatch.active = false;
+	m_match.active = false;
 
 	run();
 }
@@ -56,7 +57,7 @@ void Server::run(){
 			{
 				playerDisconnected(packet, address, port);
 			}
-			if (currentMatch.active)	
+			if (m_match.active)	
 			{
 				if (pt == cn::PlayerInput)
 				{
@@ -84,7 +85,7 @@ void Server::run(){
 			pingTimer.restart();
 		}
 
-		if (currentMatch.active)
+		if (m_match.active)
 		{
 			if (m_clock.getElapsedTime() > m_updateTime)
 			{
@@ -94,9 +95,9 @@ void Server::run(){
 				}
 				m_clock.restart();
 			}
-			if (getHightestScore() >= currentMatch.pointsToWin)
+			if (getHightestScore() >= m_match.pointsToWin)
 			{
-				currentMatch.active = false;
+				m_match.active = false;
 				std::cout << "Some dude one\n";
 
 				sf::Packet matchDone;
@@ -108,7 +109,8 @@ void Server::run(){
 					m_map.m_tiles.clear();
 					m_powerManager.m_powers.clear();
 					m_powerManager.m_powerTiles.clear();
-					m_map = Map("Maps/amazing map.txt"); //next map path goes here.
+					std::string mapPath = "Maps/" + m_match.maps[math::random(0, m_match.maps.size() -1)] + ".map";
+					m_map = Map(mapPath);
 					m_powerManager = PowerManager(m_map.getPowerTiles());
 				}
 
@@ -459,15 +461,15 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 
 		retPacket.clear();
 
-		switch (currentMatch.type)
+		switch (m_match.type)
 		{
 		case cn::MatchType::FreeForAll:
-			m_clientList[data].setTeam(currentMatch.m_teams.size());
-			currentMatch.m_teams[currentMatch.m_teams.size()]++;
+			m_clientList[data].setTeam(m_match.m_teams.size());
+			m_match.m_teams[m_match.m_teams.size()]++;
 			break;
 		case cn::MatchType::TeamDeathmatch:
-			m_clientList[data].setTeam((currentMatch.m_teams[0] > currentMatch.m_teams[1]) ? 0:1);
-			currentMatch.m_teams[m_clientList[data].getTeam()]++;
+			m_clientList[data].setTeam((m_match.m_teams[0] > m_match.m_teams[1]) ? 0:1);
+			m_match.m_teams[m_clientList[data].getTeam()]++;
 			break;
 		default:
 			break;
@@ -596,13 +598,13 @@ sf::Packet Server::ProjectileIDCleanup(sf::Packet & p_packet){
 
 bool Server::isMatchOver() const
 {
-	return currentMatch.active;
+	return m_match.active;
 }
 
 void Server::startMatch()
 {
 	resetScores();
-	currentMatch.active = true;
+	m_match.active = true;
 }
 
 int Server::getHightestScore()
@@ -625,4 +627,63 @@ void Server::resetScores()
 		i->second.m_score.m_kills = 0;
 		i->second.m_score.m_deaths = 0;
 	}
+}
+
+void Server::loadConfig()
+{
+	std::ifstream file;
+	file.open("server.cfg");
+
+	if (file.is_open())
+	{
+		int currentLine = 0;
+		std::string line;
+		std::istringstream mapNames;
+		std::string currentMap;
+		while (!file.eof()) {
+			std::getline(file, line);
+			currentLine++;
+
+			switch (currentLine) {
+				case 1:
+					m_match.type = (cn::MatchType)std::atoi(line.c_str());
+				break;
+
+				case 2:
+					m_match.teamAmount = std::atoi(line.c_str());
+				break;
+
+				case 3:
+					m_match.maxPlayers = std::atoi(line.c_str());
+				break;
+
+				case 4:
+					m_match.pointsToWin = std::atoi(line.c_str());
+				break;
+
+				case 5:
+					mapNames.str(line);
+					while (std::getline(mapNames, currentMap, ';')){
+						m_match.maps.push_back(currentMap);
+					}
+				break;
+
+				case 6:
+					m_port = std::atoi(line.c_str());
+				break;
+
+				default:
+					std::cout << "Dafuq?\n";
+				break;
+			}
+		}
+	}
+	else
+	{
+		std::cout << "Failed to open server.cfg\nUsing default config.\n";
+		m_match.type = cn::FreeForAll;
+		m_match.maxPlayers = 10;
+		m_match.maps.push_back("map.map");
+	}
+	file.close();
 }
