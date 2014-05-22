@@ -100,7 +100,19 @@ void Server::run(){
 				std::cout << "Some dude one\n";
 
 				sf::Packet matchDone;
-				matchDone << 0 << cn::MatchEnd;
+
+				/*
+				*Load new map:
+				*/
+				{
+					m_map.m_tiles.clear();
+					m_powerManager.m_powers.clear();
+					m_powerManager.m_powerTiles.clear();
+					m_map = Map("Maps/amazing map.txt"); //next map path goes here.
+					m_powerManager = PowerManager(m_map.getPowerTiles());
+				}
+
+				matchDone << 0 << cn::MatchEnd << m_map;
 				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 					m_socket.send(matchDone, it->second.getAddress(), it->second.getPort());
 					it->second.setHealth(0);

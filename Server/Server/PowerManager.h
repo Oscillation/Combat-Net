@@ -27,8 +27,9 @@ public:
 
 	std::vector<Power>::iterator findId(const unsigned int & p_id);
 
-private:
 	std::vector<PowerTile> m_powerTiles;
+
+private:
 
 	void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;
 
