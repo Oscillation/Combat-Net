@@ -70,7 +70,7 @@ void Server::run(){
 					}
 				}
 			}
-			
+
 			if (pt == cn::Ping) 
 			{
 				std::string name;
@@ -291,23 +291,26 @@ sf::Packet Server::simulateGameState() {
 					switch (iter->getObjectType())
 					{
 					case ObjectType::Player:
-						if (math::LineIntersectsCircle(it->getPosition(), it->getPosition() + it->getVelocity(), sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f))//if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
+						if (m_clientList[iter->getName()].getTeam() != m_clientList[it->getName()].getTeam())
 						{
-							if (iter->getName() != it->getName() && m_clientList[iter->getName()].getHealth() > 0)
+							if (math::LineIntersectsCircle(it->getPosition(), it->getPosition() + it->getVelocity(), sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f))//if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
 							{
-								if (m_clientList[iter->getName()].getHealth() > 0)
+								if (iter->getName() != it->getName() && m_clientList[iter->getName()].getHealth() > 0)
 								{
-									m_clientList[iter->getName()].damage(it->m_damage);
-								}
+									if (m_clientList[iter->getName()].getHealth() > 0)
+									{
+										m_clientList[iter->getName()].damage(it->m_damage);
+									}
 
-								retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
+									retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
 
-								m_eraseProjectileIDs.push_back(it->m_id);
+									m_eraseProjectileIDs.push_back(it->m_id);
 
-								if (m_clientList[iter->getName()].getHealth() <= 0) {
-									m_clientList[iter->getName()].m_score.m_deaths++;
-									m_clientList[it->getName()].m_score.m_kills++;
-									m_clientList[it->getName()].m_score.m_points++;
+									if (m_clientList[iter->getName()].getHealth() <= 0) {
+										m_clientList[iter->getName()].m_score.m_deaths++;
+										m_clientList[it->getName()].m_score.m_kills++;
+										m_clientList[it->getName()].m_score.m_points++;
+									}
 								}
 							}
 						}
@@ -445,9 +448,10 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		switch (currentMatch.type)
 		{
 		case cn::MatchType::FreeForAll:
-			m_clientList[data].setTeam(currentMatch.m_teams[0]);
+			m_clientList[data].setTeam(currentMatch.m_teams[currentMatch.m_teams.size()]);
 			break;
 		case cn::MatchType::TeamDeathmatch:
+			m_clientList[data].setTeam((currentMatch.m_teams[0] > currentMatch.m_teams[1]) ? currentMatch.m_teams[0]:currentMatch.m_teams[1]);
 			break;
 		default:
 			break;
