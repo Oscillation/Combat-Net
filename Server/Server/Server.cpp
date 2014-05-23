@@ -251,15 +251,17 @@ sf::Packet Server::simulateGameState() {
 						{
 							sendHealth = true;
 						}
+
+						sf::Packet packet;
+						packet << 0 << cn::ActivatePower << power->m_powerType;
+						m_socket.send(packet, it->second.getAddress(), it->second.getPort());
+
 						m_powerManager.activate(*power, it->second);
 						m_powerManager.erase(*power);
 						if (sendHealth)
 						{
 							retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
 						}
-						sf::Packet packet;
-						packet << 0 << cn::ActivatePower;
-						m_socket.send(packet, it->second.getAddress(), it->second.getPort());
 					}
 				}
 				break;

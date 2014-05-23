@@ -1,2 +1,4 @@
 projectile_hit_wall projectile_hit_wall.wav
-power power.wav
+player_dead player_dead.wav
+health health.wav
+speed speed.wav

@@ -181,7 +181,20 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 			}
 			if ((cn::PacketType)type == cn::ActivatePower)
 			{
-				m_audioPlayer.playSound("power", sf::Vector3<float>((m_players[m_name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[m_name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
+				int type;
+				packet >> type;
+				switch (type)
+				{
+				case 0:
+					m_audioPlayer.playSound("health", sf::Vector3<float>((m_players[m_name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[m_name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
+					break;
+				case 1:
+					m_audioPlayer.playSound("speed", sf::Vector3<float>((m_players[m_name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[m_name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
+					break;
+				default:
+					break;
+				}
+				
 				/*sf::Sound* sound = new sf::Sound(m_audioPlayer.m_sounds["power"]);
 				sound->setPosition(sf::Vector3<float>((m_players[m_name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[m_name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
 				sound->play();*/
@@ -617,6 +630,7 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 				if (m_players[name]->getHealth() <= 0)
 				{
 					m_particleEmitter.Emit("player_death", m_players[name]->getPosition(), 50);
+					m_audioPlayer.playSound("player_dead", sf::Vector3<float>((m_players[name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
 					setRespawnTimer(3.f);
 				}
 			}else
@@ -624,6 +638,7 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 				if (m_players[name]->getHealth() <= 0)
 				{
 					m_particleEmitter.Emit("player_death", m_players[name]->getPosition(), 50);
+					m_audioPlayer.playSound("player_dead", sf::Vector3<float>((m_players[name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
 				}
 			}
 		}else if ((cn::PacketType)type == cn::ScoreUpdate)
