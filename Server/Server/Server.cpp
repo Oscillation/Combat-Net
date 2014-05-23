@@ -514,13 +514,15 @@ void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_a
 	std::string from = "[" + p_address.toString() + ":" + std::to_string(p_port) + "]: ";
 	std::string name;
 	p_packet >> name;
-	//m_gameManager.erase(m_clientList[name]);
+	m_match.m_teams[m_clientList[name].getTeam()]--;
+	if (m_match.m_teams[m_clientList[name].getTeam()] == 0)
+	{
+		m_match.m_teams.erase(m_clientList[name].getTeam());
+	}
 	m_clientList.erase(name);
 	sf::Packet packet;
 	packet << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerDisconnected << name;
 	std::cout << from << name << " has disconnected." << std::endl;
-
-	m_match.m_teams[m_clientList[name].getTeam()]--;
 
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		m_socket.send(packet, it->second.getAddress(), it->second.getPort());
@@ -587,6 +589,11 @@ void Server::pingClients()
 
 			for (auto it2 = m_clientList.begin(); it2 != m_clientList.end(); ++it2){
 				m_socket.send(retPacket, it2->second.getAddress(), it2->second.getPort());
+			}
+			m_match.m_teams[m_clientList[it->first].getTeam()]--;
+			if (m_match.m_teams[m_clientList[it->first].getTeam()] == 0)
+			{
+				m_match.m_teams.erase(m_clientList[it->first].getTeam());
 			}
 			std::cout << it->first << " has disconnected" << std::endl;
 			m_clientList.erase(it++);
