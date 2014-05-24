@@ -168,45 +168,72 @@ sf::Packet Server::simulateGameState() {
 		if (client->getHealth() > 0) {
 			float deltaTime = (float)input.getDeltaTime()/1000.f;
 			sf::Vector2<float> pos = client->getPosition();
+
+			bool hitWall = false;
+
 			switch (input.getInputType())
 			{
 			case cn::MoveUp:
-				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)))
+				for (int i = 0; i < ((client->getSpeed()*deltaTime) + (client->m_speedBoost*m_speedBoost*deltaTime)); i++)
+				{
+					if (m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y - i), 0))
+					{
+						client->setPosition(client->getPosition().x, m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y - i)).y + 64 + 20);
+						hitWall = true;
+						break;
+					}
+				}
+				if (!hitWall)
 				{
 					client->move(0, (-client->getSpeed()*deltaTime) - (client->m_speedBoost*m_speedBoost*deltaTime));
-				}else
-				{
-					client->setPosition(client->getPosition().x, m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y -client->getSpeed()*deltaTime)).y + 64 + 20);
 				}
 				break;
 
 			case cn::MoveDown:
-				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)))
+				for (int i = 0; i < ((client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime))); i++)
+				{
+					if (m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + i), 1))
+					{
+						client->setPosition(client->getPosition().x, m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + i)).y - 20);
+						hitWall = true;
+						break;
+					}
+				}
+				if (!hitWall)
 				{
 					client->move(0, client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime));
-				}else
-				{
-					client->setPosition(client->getPosition().x, m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + client->getSpeed()*deltaTime)).y - 20);
 				}
 				break;
 
 			case cn::MoveLeft:
-				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)))
+				for (int i = 0; i < client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime); i++)
+				{
+					if (m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x - i, client->getPosition().y), 2))
+					{
+						client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x - i, client->getPosition().y)).x + 64 + 20, client->getPosition().y);
+						hitWall = true;
+						break;
+					}
+				}
+				if (!hitWall)
 				{
 					client->move(-client->getSpeed()*deltaTime - (client->m_speedBoost*m_speedBoost*deltaTime), 0);
-				}else
-				{
-					client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x -client->getSpeed()*deltaTime, client->getPosition().y)).x + 64 + 20, client->getPosition().y);
 				}
 				break;
 
 			case cn::MoveRight:
-				if (!m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)))
+				for (int i = 0; i < client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime); i++)
+				{
+					if (m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x + i, client->getPosition().y), 3))
+					{
+						client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + i, client->getPosition().y)).x - 20, client->getPosition().y);
+						hitWall = true;
+						break;
+					}
+				}
+				if (!hitWall)
 				{
 					client->move(client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime), 0);
-				}else
-				{
-					client->setPosition(m_map.getIntersectingWall(sf::Vector2<float>(client->getPosition().x + client->getSpeed()*deltaTime, client->getPosition().y)).x - 20, client->getPosition().y);
 				}
 				break;
 			}
@@ -326,6 +353,7 @@ sf::Packet Server::simulateGameState() {
 							if (m_clientList[iter->getName()].getTeam() != m_clientList[it->getName()].getTeam())
 							{
 								if (math::LineIntersectsCircle(it->getPosition(), it->getPosition() + sf::Vector2<float>(it->getVelocity().x/2, it->getVelocity().y/2), sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f) ||
+									math::LineIntersectsCircle(it->getPosition(), it->getPosition() + sf::Vector2<float>(it->getVelocity().x, it->getVelocity().y), sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f) ||
 									math::circleIntersectsRect(sf::Vector2<float>(iter->getBounds().left, iter->getBounds().top), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))//if (math::circleIntersectsRect(sf::Vector2<float>(m_clientList[iter->getName()].getPosition().x - 20.f, m_clientList[iter->getName()].getPosition().y - 20.f), 20.f, sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)))
 								{
 									if (iter->getName() != it->getName() && m_clientList[iter->getName()].getHealth() > 0)

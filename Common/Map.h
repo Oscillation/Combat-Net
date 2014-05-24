@@ -17,7 +17,9 @@ public:
 	std::vector<std::vector<Tile>> m_tiles;
 	std::vector<PowerTile> getPowerTiles() const;
 
-	bool intersectsWall(const sf::Vector2<float> & p_position);
+	///<summary>Players.</summary>
+	bool intersectsWall(const sf::Vector2<float> & p_position, const unsigned short p_direction);
+
 	bool intersectsWall(const sf::Vector2<float> & p_p1, const sf::Vector2<float> & p_p2);
 	bool intersectsWall(const sf::Rect<float> & p_position);
 

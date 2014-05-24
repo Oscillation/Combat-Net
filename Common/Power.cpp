@@ -23,7 +23,7 @@ void Power::activate(Client & p_client){
 
 		m_power(p_client);
 
-		ptr_tile->m_time = 2.5f;
+		ptr_tile->m_time = 0.5f;
 		ptr_tile->m_hasPower = false;
 	}
 }

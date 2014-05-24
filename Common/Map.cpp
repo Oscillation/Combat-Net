@@ -6,11 +6,11 @@ bool math::circleIntersectsRect(const sf::Vector2<T> & p_pos, const float & p_ra
 	distance.x = std::abs(p_pos.x - p_rect.left);
 	distance.y = std::abs(p_pos.y - p_rect.top);
 
-	if (distance.x > (p_rect.width/2 + p_radius))
+	if (distance.x > (p_rect.width/2 + p_radius + 1))
 	{
 		return false;
 	}
-	if (distance.y > (p_rect.height/2 + p_radius))
+	if (distance.y > (p_rect.height/2 + p_radius + 1))
 	{
 		return false;
 	}
@@ -26,7 +26,7 @@ bool math::circleIntersectsRect(const sf::Vector2<T> & p_pos, const float & p_ra
 
 	float cornerDistance = std::pow((distance.x - p_rect.width/2), 2) + std::pow((distance.y - p_rect.height/2), 2);
 
-	return (cornerDistance <= std::pow(p_radius, 2));
+	return (cornerDistance <= std::pow(p_radius + 1, 2));
 }
 
 Tile::Tile(const unsigned short & p_x, const unsigned short & p_y, const TileType::Type & p_type) : m_x(p_x), m_y(p_y), m_type(p_type){
@@ -135,7 +135,7 @@ std::vector<PowerTile> Map::getPowerTiles() const{
 	return ret;
 }
 
-bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
+bool Map::intersectsWall(const sf::Vector2<float> & p_position, const unsigned short p_direction) {
 	unsigned int x = p_position.x/64 - 1, y = p_position.y/64 - 1;
 	for (x = p_position.x/64 - 1, y = p_position.y/64 - 1; x < p_position.x/64 + 1; x++)
 	{
@@ -147,6 +147,33 @@ bool Map::intersectsWall(const sf::Vector2<float> & p_position) {
 				{
 					if (math::circleIntersectsRect(sf::Vector2<float>(p_position.x - 33, p_position.y - 33), 17, sf::Rect<float>(x*64, y*64, 64, 64)))
 					{
+						switch (p_direction){
+							case 0:
+								if (getIntersectingWall(sf::Rect<float>(p_position.x - 10, p_position.y - 19, 20, 10)) == sf::Vector2<float>(-1, -1))
+								{
+									return false;
+								}
+							break;
+							case 1:
+							if (getIntersectingWall(sf::Rect<float>(p_position.x - 10, p_position.y + 9, 20, 10)) == sf::Vector2<float>(-1, -1))
+								{
+									return false;
+								}
+							break;
+							case 2:
+							if (getIntersectingWall(sf::Rect<float>(p_position.x - 19, p_position.y - 10, 10, 38)) == sf::Vector2<float>(-1, -1))
+								{
+									return false;
+								}
+							break;
+							case 3:
+							if (getIntersectingWall(sf::Rect<float>(p_position.x + 19, p_position.y - 10, 10, 38)) == sf::Vector2<float>(-1, -1))
+								{
+									return false;
+								}
+							break;	
+						}
+
 						return true;
 					}
 				}
@@ -216,6 +243,7 @@ sf::Vector2<float> Map::getIntersectingWall(const sf::Vector2<float> & p_positio
 			}
 		}
 	}
+	return sf::Vector2<float>(-1, -1);
 }
 
 sf::Vector2<float> Map::getIntersectingWall(const sf::Vector2<float> & p_p1, const sf::Vector2<float> & p_p2){
@@ -236,6 +264,7 @@ sf::Vector2<float> Map::getIntersectingWall(const sf::Vector2<float> & p_p1, con
 			}
 		}
 	}
+	return sf::Vector2<float>(-1, -1);
 }
 
 sf::Vector2<float> Map::getIntersectingWall(const sf::Rect<float> & p_position){
@@ -256,6 +285,7 @@ sf::Vector2<float> Map::getIntersectingWall(const sf::Rect<float> & p_position){
 			}
 		}
 	}
+	return sf::Vector2<float>(-1, -1);
 }
 
 sf::Packet& operator<<(sf::Packet& packet, const TileType::Type & type){
