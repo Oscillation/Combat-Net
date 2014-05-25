@@ -46,7 +46,7 @@ sf::Packet & PowerManager::update(const sf::Time & p_deltaTime){
 					Power power = Power(([this](Client & p_client) {
 						if (p_client.m_speedBoost < 100)
 						{
-							p_client.m_speedBoost += 10.f;
+							p_client.m_speedBoost += 2.5f;
 						}
 					}), PowerType::Speed, m_id++);
 					m_powers.push_back(power);

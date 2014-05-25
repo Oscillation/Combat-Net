@@ -7,7 +7,7 @@
 #include <iostream>
 
 MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, States::ID id) :
-	serverTimeout(sf::milliseconds(500)),
+	serverTimeout(sf::milliseconds(1000)),
 	m_scoreboard(m_players),
 	m_lastServerUpdateTime(0),
 	State(stateStack, context, id),
@@ -425,7 +425,9 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 		{
 			Projectile projectile = Projectile();
 			projectile.setName(m_name);
-			projectile.setPosition(m_players[m_name].get()->getPosition());
+			projectile.setPosition(m_players[m_name]->getPosition());
+			projectile.setTargetPosition(m_players[m_name]->getPosition());
+
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
 				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - 1));
@@ -516,6 +518,7 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 			std::vector<Projectile>::iterator iter = findID(id);
 			if (iter != m_projectiles.end())
 			{
+				iter->setPosition(pos);
 				iter->setTargetPosition(pos);
 				iter->setVelocity(vel);
 				iter->setTargetTime(p_time);
@@ -578,6 +581,8 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 			sound->play();*/
 			m_projectiles.erase(it);
 			//shakeView(sf::seconds(0.05f));
+		}else {
+			it->setTargetPosition(position);
 		}
 	}
 }

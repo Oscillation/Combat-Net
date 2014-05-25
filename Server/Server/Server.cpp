@@ -174,7 +174,7 @@ sf::Packet Server::simulateGameState() {
 			switch (input.getInputType())
 			{
 			case cn::MoveUp:
-				for (int i = 0; i < ((client->getSpeed()*deltaTime) + (client->m_speedBoost*m_speedBoost*deltaTime)); i++)
+				for (int i = ((client->getSpeed()*deltaTime) + (client->m_speedBoost*m_speedBoost*deltaTime)); i > 0; i--)
 				{
 					if (m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y - i), 0))
 					{
@@ -190,7 +190,7 @@ sf::Packet Server::simulateGameState() {
 				break;
 
 			case cn::MoveDown:
-				for (int i = 0; i < ((client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime))); i++)
+				for (int i = ((client->getSpeed()*deltaTime) + (client->m_speedBoost*m_speedBoost*deltaTime)); i > 0; i--)
 				{
 					if (m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x, client->getPosition().y + i), 1))
 					{
@@ -206,7 +206,7 @@ sf::Packet Server::simulateGameState() {
 				break;
 
 			case cn::MoveLeft:
-				for (int i = 0; i < client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime); i++)
+				for (int i = ((client->getSpeed()*deltaTime) + (client->m_speedBoost*m_speedBoost*deltaTime)); i > 0; i--)
 				{
 					if (m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x - i, client->getPosition().y), 2))
 					{
@@ -222,7 +222,7 @@ sf::Packet Server::simulateGameState() {
 				break;
 
 			case cn::MoveRight:
-				for (int i = 0; i < client->getSpeed()*deltaTime + (client->m_speedBoost*m_speedBoost*deltaTime); i++)
+				for (int i = ((client->getSpeed()*deltaTime) + (client->m_speedBoost*m_speedBoost*deltaTime)); i > 0; i--)
 				{
 					if (m_map.intersectsWall(sf::Vector2<float>(client->getPosition().x + i, client->getPosition().y), 3))
 					{
@@ -319,15 +319,76 @@ sf::Packet Server::simulateGameState() {
 		{
 			bool erase = false;
 
-			erase = m_map.intersectsWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5));
+			if (it->getVelocity().x != 0 && it->getVelocity().y == 0)
+			{
+				if (it->getVelocity().x > 0)
+				{
+					for (int x = it->getVelocity().x; x > 0; --x)
+					{
+						if (m_map.intersectsWall(sf::Rect<float>(it->getPosition().x + x, it->getPosition().y, 5, 5)))
+						{
+							erase = true;
+							it->setPosition(sf::Vector2<float>(it->getPosition().x + x, it->getPosition().y));
+							break;
+						}
+					}
+				}else if (it->getVelocity().x < 0)
+				{
+					for (int x = it->getVelocity().x; x < 0; ++x)
+					{
+						if (m_map.intersectsWall(sf::Rect<float>(it->getPosition().x + x, it->getPosition().y, 5, 5)))
+						{
+							erase = true;
+							it->setPosition(sf::Vector2<float>(it->getPosition().x + x, it->getPosition().y));
+							break;
+						}
+					}
+				}
+			}else if (it->getVelocity().x == 0 && it->getVelocity().y != 0)
+			{
+				if (it->getVelocity().y > 0)
+				{
+					for (int y = it->getVelocity().y; y > 0; --y)
+					{
+						if (m_map.intersectsWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y + y, 5, 5)))
+						{
+							erase = true;
+							it->setPosition(sf::Vector2<float>(it->getPosition().x, it->getPosition().y + y));
+							break;
+						}
+					}
+				}else if (it->getVelocity().y < 0)
+				{
+					for (int y = it->getVelocity().y; y < 0; ++y)
+					{
+						if (m_map.intersectsWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y + y, 5, 5)))
+						{
+							erase = true;
+							it->setPosition(sf::Vector2<float>(it->getPosition().x, it->getPosition().y + y));
+							break;
+						}
+					}
+				}
+			}
+			
 
 			if (erase)
 			{
 				//it->setPosition(m_map.getIntersectingWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)));
-				it->setVelocity(sf::Vector2<float>());
+				//it->setVelocity(sf::Vector2<float>());
 				m_eraseProjectileIDs.push_back(it->m_id);
 			}else
 			{
+				/*for (int i = std::sqrt(std::pow(it->getVelocity().x, 2) + std::pow(it->getVelocity().y, 2)); i > 0; --i)
+				{
+					if (m_map.intersectsWall(it->getPosition(), it->getPosition() + sf::Vector2<float>(it->getVelocity().x/i, it->getVelocity().y/i)))
+					{
+						erase = true;
+						it->setPosition(it->getPosition() + sf::Vector2<float>(it->getVelocity().x/i, it->getVelocity().y/i));
+						it->setVelocity(sf::Vector2<float>());
+						break;
+					}
+				}*/
 				if (it->getVelocity().x != 0 && it->getVelocity().y != 0)
 				{
 					erase = m_map.intersectsWall(it->getPosition(), it->getPosition() + it->getVelocity());
@@ -545,7 +606,7 @@ void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_a
 	std::string name;
 	p_packet >> name;
 	m_match.m_teams[m_clientList[name].getTeam()]--;
-	if (m_match.m_teams[m_clientList[name].getTeam()] == 0)
+	if (m_match.m_teams[m_clientList[name].getTeam()] <= 0)
 	{
 		m_match.m_teams.erase(m_clientList[name].getTeam());
 	}
@@ -592,6 +653,8 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 				if (it->m_id == -1) {
 					it->m_id = m_projectileID;
 					it->m_damage = m_clientList[projectiles.begin()->getName()].getDamage();
+					it->setPosition(m_clientList[projectiles.begin()->getName()].getPosition());
+					it->setTargetPosition(m_clientList[projectiles.begin()->getName()].getPosition());
 					m_projectileID++;
 				}
 				it->setVelocity(sf::Vector2<float>(it->getVelocity().x*m_projectileSpeed, it->getVelocity().y*m_projectileSpeed));
@@ -621,7 +684,7 @@ void Server::pingClients()
 				m_socket.send(retPacket, it2->second.getAddress(), it2->second.getPort());
 			}
 			m_match.m_teams[m_clientList[it->first].getTeam()]--;
-			if (m_match.m_teams[m_clientList[it->first].getTeam()] == 0)
+			if (m_match.m_teams[m_clientList[it->first].getTeam()] <= 0)
 			{
 				m_match.m_teams.erase(m_clientList[it->first].getTeam());
 			}
@@ -744,14 +807,14 @@ void Server::loadConfig()
 				break;
 
 			default:
-				std::cout << "Dafuq?\n";
+				std::cout << "Unexpected line" << currentLine << "\n";
 				break;
 			}
 		}
 	}
 	else
 	{
-		std::cout << "Failed to open server.cfg\nUsing default config.\n";
+		std::cout << "Failed to open server.cfg\nUsing default configuration.\n";
 		m_match.type = cn::FreeForAll;
 		m_match.maxPlayers = 10;
 		m_match.maps.push_back("map.map");

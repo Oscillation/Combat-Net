@@ -18,14 +18,7 @@ Node::Node(const unsigned short & p_divisions, const unsigned short & p_maxDivis
 }
 
 Node::~Node(){
-	for (int i = 0; i < 4; i++)
-	{
-		if (ptr_children[i] != nullptr)
-		{
-			ptr_children[i]->m_objects.clear();
-			delete ptr_children[i];
-		}
-	}
+	clean();
 }
 
 void Node::insert(const Object & p_object){
@@ -139,6 +132,9 @@ void Node::clean(){
 		if (ptr_children[i] != nullptr)
 		{
 			ptr_children[i]->clean();
+			ptr_children[i] = nullptr;
+		}else{
+			return;
 		}
 	}
 }

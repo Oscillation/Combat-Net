@@ -23,8 +23,8 @@ Text written in *cursive* represents an example value.
 * Speed(pixels/frame) : *25*
 * Speed-Range() : *0 5*
 
-Libs used
----------
+Libs and other stuff that we use
+--------------------------------
 
 [SFML](http://www.sfml-dev.org/download.php)
 
@@ -33,3 +33,5 @@ Libs used
 [OpenAL](http://kcat.strangesoft.net/openal.html)
 
 [libsndfile-1](http://www.mega-nerd.com/libsndfile/)
+
+[MSVCP110](http://www.microsoft.com/en-us/download/details.aspx?id=30679)
