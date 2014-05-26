@@ -98,7 +98,7 @@ void Server::run(){
 			if (getHightestScore() >= m_match.pointsToWin)
 			{
 				m_match.active = false;
-				std::cout << "Some dude one\n";
+				std::cout << "Some dude won :)\n";
 
 				sf::Packet matchDone;
 
