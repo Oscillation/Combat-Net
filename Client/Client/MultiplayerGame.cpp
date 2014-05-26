@@ -581,8 +581,6 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 			sound->play();*/
 			m_projectiles.erase(it);
 			//shakeView(sf::seconds(0.05f));
-		}else {
-			it->setTargetPosition(position);
 		}
 	}
 }
