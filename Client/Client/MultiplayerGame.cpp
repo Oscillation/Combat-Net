@@ -226,9 +226,12 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 
 		for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
+			if (it->targetPos == sf::Vector2<float>(0, 0))
+			{
+				it->setTargetPosition(m_players[it->getName()]->getPosition());
+			}
 			if (it->m_updated)
 			{
-				
 				it->update(p_deltaTime, m_elapsedGameTime);
 			}else
 			{
@@ -444,6 +447,7 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 			}
 
 			projectiles.push_back(projectile);
+			m_projectiles.push_back(projectile);
 		}
 
 		if (!projectiles.empty())
@@ -518,7 +522,6 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 			std::vector<Projectile>::iterator iter = findID(id);
 			if (iter != m_projectiles.end())
 			{
-				iter->setPosition(pos);
 				iter->setTargetPosition(pos);
 				iter->setVelocity(vel);
 				iter->setTargetTime(p_time);

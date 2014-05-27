@@ -4,7 +4,7 @@
 
 namespace gui
 {
-	Textbox::Textbox(std::string p_text = "")
+	Textbox::Textbox(const std::string & p_text)
 	{
 		m_active = false;
 		m_background.setOutlineColor(sf::Color::Black);
@@ -23,7 +23,7 @@ namespace gui
 	{
 
 	}
-
+	
 	void Textbox::activate()
 	{
 		m_active = true;

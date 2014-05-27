@@ -100,4 +100,21 @@ private:
 	float m_speedBoost;
 
 	PowerManager m_powerManager;
+
+	//----Simulate Gamestate----
+
+	///<summary>Update playerpositions.</summary>
+	void playerMovement();
+
+	///<summary>Fill p_retPacket with power information that the clients need.</summary>
+	void updatePowers(sf::Packet & p_retPacket);
+
+	///<summary>Fill p_retPacket with player information that the clients need.</summary>
+	void updatePlayers(sf::Packet & p_retPacket);
+
+	///<summary>Fill p_retPakcet with projectile information that the clients need.</summary>
+	void updateProjectiles(sf::Packet & p_retPacket);
+
+	///<summary>Fill p_retPacket with score information that the clients need.</summary>
+	void sendScore(sf::Packet & p_retPacket);
 };

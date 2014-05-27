@@ -12,7 +12,7 @@ namespace gui
 	class Textbox : public sf::Transformable, public sf::Drawable
 	{
 	public:
-		Textbox(std::string p_text);
+		Textbox(const std::string & p_text);
 		~Textbox();
 
 		void activate();

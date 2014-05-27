@@ -31,7 +31,10 @@ struct Projectile : public sf::Transformable, public sf::Drawable{
 	void setTargetTime(int p_targetTime);
 	void setTargetPosition(sf::Vector2f p_targetPos);
 
-	bool erase, m_updated;
+	bool erase;
+
+	///<summary>In order to remove any projectiles that may have been lost in outdated packets.</summary>
+	bool m_updated;
 
 	bool operator==(Projectile & p_projectile) const;
 
@@ -47,11 +50,17 @@ private:
 	int prevTime, targetTime;
 	sf::Vector2f prevPos;
 };
+
 template <typename T>
 sf::Packet& operator>>(sf::Packet & p_packet, sf::Vector2<T> & p_vec);
+
 template <typename T>
 sf::Packet& operator<<(sf::Packet & p_packet, const sf::Vector2<T> & p_vec);
+
 sf::Packet& operator>>(sf::Packet & p_packet, Projectile & p_projectile);
+
 sf::Packet& operator<<(sf::Packet & p_packet, Projectile & p_projectile);
+
 sf::Packet& operator>>(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles);
+
 sf::Packet& operator<<(sf::Packet & p_packet, std::vector<Projectile> & p_projectiles);

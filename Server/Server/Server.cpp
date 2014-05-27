@@ -159,10 +159,26 @@ sf::Packet Server::simulateGameState() {
 	sf::Packet retPacket;
 
 	retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::MegaPacket;
+	
+	m_eraseProjectileIDs.clear();
+	m_quadtree.clean();
 
-	m_powerManager.update(m_clock.getElapsedTime());
+	playerMovement();
 
-#pragma region Player movement
+	m_clientInputs.clear();
+
+	updatePowers(retPacket);
+
+	updatePlayers(retPacket);
+
+	updateProjectiles(retPacket);
+
+	sendScore(retPacket);
+
+	return retPacket;
+}
+
+void Server::playerMovement(){
 	for (InputData input : m_clientInputs) {
 		Client* client = &m_clientList[input.getPlayer()];
 		if (client->getHealth() > 0) {
@@ -239,22 +255,19 @@ sf::Packet Server::simulateGameState() {
 			}
 		}
 	}
-#pragma endregion
+}
 
-#pragma region Clean
-	m_clientInputs.clear();
-	m_eraseProjectileIDs.clear();
-	//m_gameManager.clean();
-	m_quadtree.clean();
-#pragma endregion
+void Server::updatePowers(sf::Packet & p_retPacket){
+	m_powerManager.update(m_clock.getElapsedTime());
 
-#pragma region Update powers
 	for (auto it = m_powerManager.m_powers.begin(); it != m_powerManager.m_powers.end(); ++it){
 		m_quadtree.m_root.insert(*it);
 	}
-#pragma endregion
 
-#pragma region Update players
+	p_retPacket << cn::Power << m_powerManager.m_powers;
+}
+
+void Server::updatePlayers(sf::Packet & p_retPacket){
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 		m_quadtree.m_root.insert(it->second);
 		std::vector<Object> objects;
@@ -287,7 +300,7 @@ sf::Packet Server::simulateGameState() {
 						m_powerManager.erase(*power);
 						if (sendHealth)
 						{
-							retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
+							p_retPacket << cn::PlayerHealth << it->second.getName() << it->second.getHealth();
 						}
 					}
 				}
@@ -302,18 +315,15 @@ sf::Packet Server::simulateGameState() {
 			it->second.m_respawnTime -= m_clock.getElapsedTime().asSeconds();
 			if (it->second.m_respawnTime <= 0)
 			{
-				respawnPlayerPacket(it->second, retPacket);
+				respawnPlayerPacket(it->second, p_retPacket);
 			}
 		}
 
-		retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
+		p_retPacket << cn::PlayerMove << it->second.getName() << it->second.getPosition().x << it->second.getPosition().y;
 	}
+}
 
-#pragma endregion
-
-	retPacket << cn::Power << m_powerManager.m_powers;
-
-#pragma region Update projectiles
+void Server::updateProjectiles(sf::Packet & p_retPacket){
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it){
 		if (it != m_projectiles.end())
 		{
@@ -424,7 +434,7 @@ sf::Packet Server::simulateGameState() {
 											m_clientList[iter->getName()].damage(it->m_damage);
 										}
 
-										retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
+										p_retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
 
 										m_eraseProjectileIDs.push_back(it->m_id);
 
@@ -433,7 +443,7 @@ sf::Packet Server::simulateGameState() {
 											m_clientList[it->getName()].m_score.m_kills++;
 											m_clientList[it->getName()].m_score.m_points++;
 
-											retPacket << cn::PlayerKilled << it->getName() << iter->getName();
+											p_retPacket << cn::PlayerKilled << it->getName() << iter->getName();
 										}
 									}
 								}
@@ -478,18 +488,15 @@ sf::Packet Server::simulateGameState() {
 			}
 		}
 	}
-#pragma endregion
-
-#pragma region Erase projectiles
 	if (!m_eraseProjectileIDs.empty())
 	{
-		retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
+		p_retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
 		for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
 
 			std::vector<Projectile>::iterator iter = findID(*it);
 			if (iter != m_projectiles.end())
 			{
-				retPacket << *it << (m_map.intersectsWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)) ? m_map.getIntersectingWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)):iter->getPosition());
+				p_retPacket << *it << (m_map.intersectsWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)) ? m_map.getIntersectingWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)):iter->getPosition());
 
 				//m_gameManager.erase(*iter);
 				m_projectiles.erase(iter);
@@ -497,21 +504,18 @@ sf::Packet Server::simulateGameState() {
 		}
 		m_eraseProjectileIDs.clear();
 	}
-#pragma endregion
 
-#pragma region Send projectiles
 	if (!m_projectiles.empty())
 	{
-		retPacket << cn::Projectile << m_projectiles;
+		p_retPacket << cn::Projectile << m_projectiles;
 	}
-#pragma endregion
+}
 
+void Server::sendScore(sf::Packet & p_retPacket){
 	for (auto i = m_clientList.begin(); i != m_clientList.end(); i++)
 	{
-		retPacket << cn::ScoreUpdate << i->second.getName() << i->second.m_score;
+		p_retPacket << cn::ScoreUpdate << i->second.getName() << i->second.m_score;
 	}
-
-	return retPacket;
 }
 
 bool Server::nameTaken(const std::string & p_name){

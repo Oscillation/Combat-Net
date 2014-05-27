@@ -60,7 +60,7 @@ sf::Packet & PowerManager::update(const sf::Time & p_deltaTime){
 
 	return packet;
 }
-
+//im a huge faggot :-)))
 void PowerManager::activate(Power & p_power, Client & p_client){
 	p_power.activate(p_client);
 }
