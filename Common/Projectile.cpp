@@ -7,12 +7,12 @@ Projectile::Projectile() :
 	
 }
 
-Projectile::Projectile(const int & p_id, const int& p_damage) : 
+Projectile::Projectile(const int & p_id, const int& p_damage, const sf::Vector2<float> & p_position) : 
 	m_id(p_id),
 	m_damage(p_damage),
 	m_updated(true)
 {
-	
+	setTargetPosition(p_position);
 }
 
 Projectile::~Projectile(){

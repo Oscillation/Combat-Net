@@ -500,6 +500,7 @@ void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
 
 void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 {
+	std::cout << "receiving projectiles:\n";
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it)
 	{
 		it->m_updated = false;
@@ -518,16 +519,21 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 			std::vector<Projectile>::iterator iter = findID(id);
 			if (iter != m_projectiles.end())
 			{
+				iter->setPosition(pos);
 				iter->setTargetPosition(pos);
 				iter->setVelocity(vel);
 				iter->setTargetTime(p_time);
 				iter->m_updated = true;
+				std::cout << iter->getPosition().x << ":" << iter->getPosition().y << "\n";
 			}else
 			{
-				Projectile projectile = Projectile(id, 0);
+				Projectile projectile = Projectile(id, 0, m_players[m_name]->getPosition());
+				projectile.setPosition(pos);
 				projectile.setTargetPosition(pos);
 				projectile.setVelocity(vel);
 				projectile.setName(name);
+				projectile.m_updated = true;
+				std::cout << "[:::::::NEW PROJECTILE:::::::]" << projectile.getPosition().x << ":" << projectile.getPosition().y << "\n";
 				m_projectiles.push_back(projectile);
 			}
 		}
@@ -542,6 +548,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 	{
 		int id;
 		sf::Vector2<float> position;
+		
 		p_packet >> id >> position;
 		std::vector<Projectile>::iterator it = findID(id);
 		if (it != m_projectiles.end())

@@ -14,7 +14,7 @@
 
 struct Projectile : public sf::Transformable, public sf::Drawable{
 	Projectile();
-	Projectile(const int & p_id, const int& p_damage);
+	Projectile(const int & p_id, const int& p_damage, const sf::Vector2<float> & p_position);
 	~Projectile();
 
 	int m_id;
