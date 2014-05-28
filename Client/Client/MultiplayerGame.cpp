@@ -207,6 +207,8 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 					it->second->setHealth(0);
 				}
 
+				m_projectiles.clear();
+
 				setRespawnTimer(3.f);
 				m_map.getPowerTiles().clear();
 				m_map.m_tiles.clear();
@@ -226,10 +228,6 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		}
 
 		for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it) {
-			if (it->targetPos == sf::Vector2<float>(0, 0))
-			{
-				it->setTargetPosition(m_players[it->getName()]->getPosition());
-			}
 			if (it->m_updated)
 			{
 				it->update(p_deltaTime, m_elapsedGameTime);
@@ -427,10 +425,9 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 		{
 			Projectile projectile = Projectile();
-			projectile.setName(m_name);
 			projectile.setPosition(m_players[m_name]->getPosition());
-			projectile.setTargetPosition(m_players[m_name]->getPosition());
-
+			projectile.setName(m_name);
+			
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
 				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - 1));
@@ -447,7 +444,6 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 			}
 
 			projectiles.push_back(projectile);
-			m_projectiles.push_back(projectile);
 		}
 
 		if (!projectiles.empty())
@@ -529,7 +525,6 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 			}else
 			{
 				Projectile projectile = Projectile(id, 0);
-				projectile.setPosition(pos);
 				projectile.setTargetPosition(pos);
 				projectile.setVelocity(vel);
 				projectile.setName(name);

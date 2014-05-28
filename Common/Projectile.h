@@ -38,7 +38,7 @@ struct Projectile : public sf::Transformable, public sf::Drawable{
 
 	bool operator==(Projectile & p_projectile) const;
 
-	sf::Vector2<float> targetPos;
+	sf::Vector2<float> m_targetPos;
 
 	operator Object() const;
 
@@ -47,8 +47,8 @@ private:
 	std::string m_name;
 	virtual void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;
 
-	int prevTime, targetTime;
-	sf::Vector2f prevPos;
+	int m_prevTime, m_targetTime;
+	sf::Vector2f m_prevPos;
 };
 
 template <typename T>

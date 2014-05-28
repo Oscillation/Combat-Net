@@ -1,10 +1,18 @@
 #include "Projectile.h"
 
-Projectile::Projectile() : m_id(-1), m_updated(true){
+Projectile::Projectile() : 
+	m_id(-1),
+	m_updated(true)
+{
+	
 }
 
 Projectile::Projectile(const int & p_id, const int& p_damage) : 
-	m_id(p_id), m_damage(p_damage), m_updated(true){
+	m_id(p_id),
+	m_damage(p_damage),
+	m_updated(true)
+{
+	
 }
 
 Projectile::~Projectile(){
@@ -31,24 +39,24 @@ void Projectile::update(sf::Time p_deltaTime, int p_elapsedGameTime)
 {
 	move(getVelocity());
 
-	if (targetPos != getPosition())
+	if (m_targetPos != getPosition())
 	{
-		float t = (float)(p_elapsedGameTime) / (float)(targetTime - prevTime);
-		sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(prevPos, targetPos, t);
+		float t = (float)(p_elapsedGameTime) / (float)(m_targetTime - m_prevTime);
+		sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(m_prevPos, m_targetPos, t);
 		setPosition(sf::Vector2f(pos));
 	}
 }
 
 void Projectile::setTargetTime(int p_targetTime)
 {
-	prevTime = targetTime;
-	targetTime = p_targetTime;
+	m_prevTime = m_targetTime;
+	m_targetTime = p_targetTime;
 }
 
 void Projectile::setTargetPosition(sf::Vector2f p_targetPosition)
 {
-	prevPos = targetPos;
-	targetPos = p_targetPosition;
+	m_prevPos = m_targetPos;
+	m_targetPos = p_targetPosition;
 }
 
 void Projectile::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const{

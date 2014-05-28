@@ -115,6 +115,8 @@ void Server::run(){
 				}
 
 				matchDone << 0 << cn::MatchEnd << m_map;
+				m_projectiles.clear();
+				m_projectileID = 0;
 				for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
 					m_socket.send(matchDone, it->second.getAddress(), it->second.getPort());
 					it->second.setHealth(0);
@@ -616,7 +618,7 @@ void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_a
 	}
 	m_clientList.erase(name);
 	sf::Packet packet;
-	packet << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerDisconnected << name;
+	packet << 0 << cn::PlayerDisconnected << name;
 	std::cout << from << name << " has disconnected." << std::endl;
 
 	for (auto it = m_clientList.begin(); it != m_clientList.end(); ++it){
@@ -658,7 +660,6 @@ sf::Packet Server::projectile(sf::Packet & p_packet, const sf::IpAddress & p_add
 					it->m_id = m_projectileID;
 					it->m_damage = m_clientList[projectiles.begin()->getName()].getDamage();
 					it->setPosition(m_clientList[projectiles.begin()->getName()].getPosition());
-					it->setTargetPosition(m_clientList[projectiles.begin()->getName()].getPosition());
 					m_projectileID++;
 				}
 				it->setVelocity(sf::Vector2<float>(it->getVelocity().x*m_projectileSpeed, it->getVelocity().y*m_projectileSpeed));
