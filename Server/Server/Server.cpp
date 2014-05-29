@@ -569,11 +569,6 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 					team = m_match.m_teams[i];
 					m_match.m_teams[i]++;
 					broken = true;
-					break;
-				}
-				if (broken)
-				{
-					break;
 				}
 			}
 			if (!broken)

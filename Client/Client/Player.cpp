@@ -16,6 +16,8 @@ Player::Player(std::string p_name, sf::Font& p_font, bool p_remote)
 	m_health(100),
 	m_score()
 {
+	m_circleShape = sf::CircleShape(m_radius);
+	m_circleShape.setOrigin(m_radius, m_radius);
 	std::cout << "Called constructor for: " << p_name << "\n";
 	nameText.setStyle(sf::Text::Bold);
 	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
@@ -59,30 +61,6 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
 
-	sf::CircleShape player(m_radius);
-	switch (m_team)
-	{
-	case 0:
-		player.setFillColor(sf::Color::Red);
-		break;
-	case 1:
-		player.setFillColor(sf::Color::Blue);
-		break;
-	case 2:
-		player.setFillColor(sf::Color::Green);
-		break;
-	case 3:
-		player.setFillColor(sf::Color::Magenta);
-		break;
-	case 4:
-		player.setFillColor(sf::Color::Cyan);
-	case 5:
-		break;
-	default:
-		break;
-	}
-	player.setOrigin(m_radius, m_radius);
-
 	sf::RectangleShape healthBackground(sf::Vector2<float>(40.f, 5));
 	sf::RectangleShape health(sf::Vector2<float>(40.f*((float)getHealth()/100), 5));
 
@@ -92,7 +70,7 @@ void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	healthBackground.setOrigin(m_radius, m_radius + 10);
 	health.setOrigin(m_radius, m_radius + 10);
 
-	target.draw(player, states);
+	target.draw(m_circleShape, states);
 	target.draw(healthBackground, states);
 	target.draw(health, states);
 	target.draw(nameText, states);

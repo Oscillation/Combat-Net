@@ -97,9 +97,11 @@ bool MultiplayerGame::connect(){
 				newPlayer->setTargetPosition(position);
 				newPlayer->setTargetTime(100);
 				newPlayer->m_team = team;
+
 				std::cout << team << "\n";
 
 				m_players[name] = std::move(newPlayer);
+				m_players[name]->m_circleShape.setFillColor(sf::Color(200, 200, 200));
 
 				m_socket.setBlocking(false);
 
@@ -465,6 +467,14 @@ void MultiplayerGame::handlePlayerConnect(sf::Packet& packet)
 	newPlayer->m_team = team;
 
 	m_players[name] = std::move(newPlayer);
+
+	if (m_players[name]->m_team == m_players[m_name]->m_team)
+	{
+		m_players[name]->m_circleShape.setFillColor(sf::Color(200, 200, 200));
+	}else
+	{
+		m_players[name]->m_circleShape.setFillColor(sf::Color::Red);
+	}
 }
 
 void MultiplayerGame::handlePlayerDisconnect(sf::Packet& packet)

@@ -4,6 +4,7 @@
 #include <SFML\Graphics\Text.hpp>
 #include <SFML\Graphics\Font.hpp>
 #include <SFML\Graphics\RectangleShape.hpp>
+#include <SFML\Graphics\CircleShape.hpp>
 
 #include <SFML\System\String.hpp>
 #include <SFML\System\Time.hpp>
@@ -34,6 +35,8 @@ public:
 	unsigned short m_team;
 
 	Score m_score;
+
+	sf::CircleShape m_circleShape;
 
 	operator Object() const;
 
