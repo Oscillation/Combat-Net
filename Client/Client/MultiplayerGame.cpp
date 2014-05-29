@@ -63,15 +63,11 @@ void MultiplayerGame::initialize()
 
 bool MultiplayerGame::connect(){
 	sf::Packet packet;
+	m_name = getContext()->username;
+	packet << 0 << (int)cn::PlayerConnected << std::string(m_name);
+	m_socket.send(packet, server_address, server_port);
 
 	sf::TcpSocket tcpSocket;
-
-	m_name = getContext()->username;
-
-	packet << 0 << (int)cn::PlayerConnected << std::string(m_name);
-
-	m_socket.setBlocking(true);
-	m_socket.send(packet, server_address, server_port);
 
 	if (tcpSocket.connect(server_address, server_port, sf::seconds(5)) == sf::Socket::Status::Done){
 		// Wait for the PlayerConnected packet from the server

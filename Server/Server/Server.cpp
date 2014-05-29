@@ -534,6 +534,14 @@ bool Server::nameTaken(const std::string & p_name){
 }
 
 void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_address, const unsigned short & p_port){
+
+	sf::TcpListener listener;
+	listener.listen(2828);
+	listener.setBlocking(true);
+
+	sf::TcpSocket client;
+	listener.accept(client);
+
 	std::string from = "[" + p_address.toString() + ":" + std::to_string(p_port) + "]: ";
 	std::string data;
 	sf::Packet retPacket;
@@ -546,13 +554,6 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		m_clientList[data].setPosition(sf::Vector2<float>(spawn.x*64 + 25, spawn.y*64 + 25));
 		m_clientList[data].hasRespondedToPing = true;
 
-		sf::TcpListener listener;
-		listener.listen(2828);
-		listener.setBlocking(false);
-
-		sf::TcpSocket client;
-		listener.accept(client);
-
 		int team;
 		int low = 0;
 
@@ -561,7 +562,7 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		switch (m_match.type)
 		{
 		case cn::MatchType::FreeForAll:
-			for (int i = 0; i < m_match.m_teams.size(); ++i)
+			for (int i = 0; i < m_match.m_teams.size(); i++)
 			{
 				if (m_match.m_teams[i] <= 0)
 				{
