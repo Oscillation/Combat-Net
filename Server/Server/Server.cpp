@@ -23,6 +23,14 @@ Server::Server() : m_projectileID(0), m_speedBoost(5){
 	m_updateTime = sf::milliseconds(50);
 	m_timeBetweenMatches = sf::seconds(5);
 
+	if (m_match.type == cn::MatchType::TeamDeathmatch)
+	{
+		for (int i = 0; i < m_match.teamAmount; ++i)
+		{
+			m_match.m_teams[i] = 0;
+		}
+	}
+
 	m_match.active = false;
 
 	run();
@@ -161,7 +169,7 @@ sf::Packet Server::simulateGameState() {
 	sf::Packet retPacket;
 
 	retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::MegaPacket;
-	
+
 	m_eraseProjectileIDs.clear();
 	m_quadtree.clean();
 
@@ -382,7 +390,7 @@ void Server::updateProjectiles(sf::Packet & p_retPacket){
 					}
 				}
 			}
-			
+
 
 			if (erase)
 			{
@@ -393,13 +401,13 @@ void Server::updateProjectiles(sf::Packet & p_retPacket){
 			{
 				/*for (int i = std::sqrt(std::pow(it->getVelocity().x, 2) + std::pow(it->getVelocity().y, 2)); i > 0; --i)
 				{
-					if (m_map.intersectsWall(it->getPosition(), it->getPosition() + sf::Vector2<float>(it->getVelocity().x/i, it->getVelocity().y/i)))
-					{
-						erase = true;
-						it->setPosition(it->getPosition() + sf::Vector2<float>(it->getVelocity().x/i, it->getVelocity().y/i));
-						it->setVelocity(sf::Vector2<float>());
-						break;
-					}
+				if (m_map.intersectsWall(it->getPosition(), it->getPosition() + sf::Vector2<float>(it->getVelocity().x/i, it->getVelocity().y/i)))
+				{
+				erase = true;
+				it->setPosition(it->getPosition() + sf::Vector2<float>(it->getVelocity().x/i, it->getVelocity().y/i));
+				it->setVelocity(sf::Vector2<float>());
+				break;
+				}
 				}*/
 				if (it->getVelocity().x != 0 && it->getVelocity().y != 0)
 				{
@@ -542,17 +550,37 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		listener.listen(2828);
 
 		sf::TcpSocket client;
+		client.setBlocking(true);
 
 		listener.accept(client);
 
 		int team;
 		int low = 0;
 
+		bool broken = false;
+
 		switch (m_match.type)
 		{
 		case cn::MatchType::FreeForAll:
-			team = m_match.m_teams.size();
-			m_match.m_teams[m_match.m_teams.size()]++;
+			for (int i = 0; i < m_match.m_teams.size(); ++i)
+			{
+				if (m_match.m_teams[i] <= 0)
+				{
+					team = m_match.m_teams[i];
+					m_match.m_teams[i]++;
+					broken = true;
+					break;
+				}
+				if (broken)
+				{
+					break;
+				}
+			}
+			if (!broken)
+			{
+				team = m_match.m_teams.size();
+				m_match.m_teams[m_match.m_teams.size()]++;
+			}
 			break;
 		case cn::MatchType::TeamDeathmatch:
 			for (int i = 0; i < m_match.m_teams.size(); i++)
@@ -612,10 +640,6 @@ void Server::playerDisconnected(sf::Packet & p_packet, const sf::IpAddress & p_a
 	std::string name;
 	p_packet >> name;
 	m_match.m_teams[m_clientList[name].getTeam()]--;
-	if (m_match.m_teams[m_clientList[name].getTeam()] <= 0)
-	{
-		m_match.m_teams.erase(m_clientList[name].getTeam());
-	}
 	m_clientList.erase(name);
 	sf::Packet packet;
 	packet << 0 << cn::PlayerDisconnected << name;
@@ -689,10 +713,6 @@ void Server::pingClients()
 				m_socket.send(retPacket, it2->second.getAddress(), it2->second.getPort());
 			}
 			m_match.m_teams[m_clientList[it->first].getTeam()]--;
-			if (m_match.m_teams[m_clientList[it->first].getTeam()] <= 0)
-			{
-				m_match.m_teams.erase(m_clientList[it->first].getTeam());
-			}
 			std::cout << it->first << " has disconnected" << std::endl;
 			m_clientList.erase(it++);
 
