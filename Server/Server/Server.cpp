@@ -548,9 +548,10 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 
 		sf::TcpListener listener;
 		listener.listen(2828);
+		listener.setBlocking(false);
 
 		sf::TcpSocket client;
-		client.setBlocking(true);
+		client.setBlocking(false);
 
 		listener.accept(client);
 
@@ -578,8 +579,8 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 			}
 			if (!broken)
 			{
-				team = m_match.m_teams.size();
-				m_match.m_teams[m_match.m_teams.size()]++;
+				team = m_match.m_teams.size() - 1;
+				m_match.m_teams[m_match.m_teams.size() - 1]++;
 			}
 			break;
 		case cn::MatchType::TeamDeathmatch:
