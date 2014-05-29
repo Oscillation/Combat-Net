@@ -551,8 +551,6 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 		listener.setBlocking(false);
 
 		sf::TcpSocket client;
-		client.setBlocking(false);
-
 		listener.accept(client);
 
 		int team;
