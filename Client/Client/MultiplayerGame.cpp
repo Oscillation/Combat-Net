@@ -530,7 +530,6 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 				iter->setVelocity(vel);
 				iter->setTargetTime(p_time);
 				iter->m_updated = true;
-				std::cout << iter->getPosition().x << ":" << iter->getPosition().y << "\n";
 			}else
 			{
 				Projectile projectile = Projectile(id, 0, m_players[m_name]->getPosition());
@@ -539,7 +538,6 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 				projectile.setVelocity(vel);
 				projectile.setName(name);
 				projectile.m_updated = true;
-				std::cout << "[:::::::NEW PROJECTILE:::::::]" << projectile.getPosition().x << ":" << projectile.getPosition().y << "\n";
 				m_projectiles.push_back(projectile);
 			}
 		}

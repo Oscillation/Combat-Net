@@ -566,9 +566,13 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 			{
 				if (m_match.m_teams[i] <= 0)
 				{
-					team = m_match.m_teams[i];
+					team = i;
 					m_match.m_teams[i]++;
 					broken = true;
+				}
+				if (broken)
+				{
+					break;
 				}
 			}
 			if (!broken)
@@ -592,7 +596,10 @@ void Server::playerConnected(sf::Packet & p_packet, const sf::IpAddress & p_addr
 			break;
 		}
 
-		std::cout << team << "\n";
+		/*for (int i = 0; i < m_match.m_teams.size(); i++)
+		{
+			std::cout << "Team " << i << ": " << m_match.m_teams[i] << "\n";
+		}*/
 
 		retPacket << m_elapsed.getElapsedTime().asMilliseconds() << cn::PlayerConnected << data << m_clientList[data].getPosition().x << m_clientList[data].getPosition().y << m_map << m_projectiles << m_powerManager.m_powers << team;
 		m_socket.send(retPacket, p_address, p_port);
