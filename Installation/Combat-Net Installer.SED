@@ -23,7 +23,7 @@ SourceFiles=SourceFiles
 [Strings]
 InstallPrompt=
 DisplayLicense=
-FinishMessage=
+FinishMessage=Installation complete.
 TargetName=C:\Users\Cognizance\Documents\Combat-Net\Installation\Combat-Net Installer.EXE
 FriendlyName=Combat-Net Installer
 AppLaunched=
