@@ -9,9 +9,7 @@ It's a simple 2d shooter with zero objectives.
 Play the Game
 -------------
 
-<iframe src="//itch.io/embed/8143?dark=true&linkback=true" width="552" height="167" frameborder="0">
-	
-</iframe>
+<iframe src="//itch.io/embed/8143?dark=true&linkback=true" width="552" height="167" frameborder="0"></iframe>
 
 
 TODO
