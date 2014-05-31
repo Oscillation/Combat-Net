@@ -5,11 +5,20 @@ This is a simple game by two geeks.
 
 It's a simple 2d shooter with zero objectives. 
 
-*potato*
+
+Play the Game
+-------------
+
+<iframe src="//itch.io/embed/8143?dark=true&linkback=true" width="552" height="167" frameborder="0">
+	
+</iframe>
+
 
 TODO
 ----
+
 * See [Issues](https://github.com/Oscillation/Combat-Net/issues)
+
 
 Particle File Structure
 -----------------------
@@ -22,6 +31,7 @@ Text written in *cursive* represents an example value.
 * B-Range : *0 255*
 * Speed(pixels/frame) : *25*
 * Speed-Range() : *0 5*
+
 
 Libs and other stuff that we use
 --------------------------------
