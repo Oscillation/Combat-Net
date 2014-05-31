@@ -35,3 +35,9 @@ Libs and other stuff that we use
 [libsndfile-1](http://www.mega-nerd.com/libsndfile/)
 
 [MSVCP110](http://www.microsoft.com/en-us/download/details.aspx?id=30679)
+
+
+Versions
+--------
+
+Version 1.0 [Windows](http://www.mediafire.com/download/8laai8we95a0046/Combat-Net+Installer.EXE)
