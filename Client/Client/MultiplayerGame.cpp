@@ -506,7 +506,6 @@ void MultiplayerGame::handlePlayerMove(sf::Packet& packet)
 
 void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 {
-	std::cout << "receiving projectiles:\n";
 	for (auto it = m_projectiles.begin(); it != m_projectiles.end(); ++it)
 	{
 		it->m_updated = false;
@@ -580,7 +579,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 			}
 			sf::Vector2<float> velocity = sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1);
-			m_particleEmitter.Emit("test", position, velocity);
+			m_particleEmitter.Emit("test", position, velocity, 10);
 			m_particleEmitter.Emit("projectile", position + velocity);
 
 			m_audioPlayer.playSound("projectile_hit_wall", sf::Vector3<float>((position.x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (position.y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));

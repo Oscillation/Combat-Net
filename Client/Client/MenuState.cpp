@@ -9,7 +9,7 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 	m_ipbox("ip:port"),
 	m_namebox("username")
 {
-	m_button.setPosition(400, 400);
+	m_button.setPosition(1280/2, 400);
 	m_button.setAction([this]() {
 		State::Context* con = getContext();
 		std::string address = m_ipbox.getValue();
@@ -31,13 +31,13 @@ MenuState::MenuState(StateStack& stateStack, Context& context, States::ID id)
 	});
 	m_button.setText("Connect");
 
-	m_ipbox.setPosition(400, 350);
 	m_ipbox.setSize(sf::Vector2f(400, 30));
+	m_ipbox.setPosition(1280/2, 350);
 	m_ipbox.setFont(*context.font);
 	m_ipbox.deactivate();
 
-	m_namebox.setPosition(400, 300);
 	m_namebox.setSize(sf::Vector2f(400, 30));
+	m_namebox.setPosition(1280/2, 300);
 	m_namebox.setFont(*context.font);
 	m_namebox.activate();
 }

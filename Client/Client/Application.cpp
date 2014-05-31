@@ -7,7 +7,7 @@
 
 Application::Application()
 	:
-	m_window(sf::VideoMode(1280, 720), "Combat Net", sf::Style::Close),
+	m_window(sf::VideoMode(1280, 720), "Combat-Net", sf::Style::Close),
 	m_socket(),
 	m_stateStack(State::Context(m_window, m_socket, m_font, sf::IpAddress::None, 2828)),
 	m_running(true),

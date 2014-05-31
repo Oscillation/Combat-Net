@@ -27,7 +27,7 @@ AudioPlayer::AudioPlayer(){
 			}
 
 			sf::Sound sound = sf::Sound(m_buffers[key]);
-			sound.setAttenuation(50.f);
+			//sound.setAttenuation(50.f);
 			//sound.setRelativeToListener(true);
 
 			m_sounds[key] = sound;
