@@ -545,7 +545,6 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 			}else
 			{
 				Projectile projectile = Projectile(id, 0, m_players[name]->getPosition());
-				projectile.m_rectangleShape.setFillColor((m_players[name]->m_team == m_players[m_name]->m_team) ? sf::Color(200, 200, 200):sf::Color(255, 0, 0));
 				projectile.setPosition(pos);
 				projectile.setTargetPosition(pos);
 				projectile.setVelocity(vel);
