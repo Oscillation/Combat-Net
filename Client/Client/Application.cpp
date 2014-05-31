@@ -65,10 +65,14 @@ void Application::handleEvents()
 	sf::Event event;
 	while (m_window.pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed || (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)))
+		if (event.type == sf::Event::Closed)
 		{
 			m_window.close();
 			m_running = false;
+		}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		{
+			m_stateStack.clearStates();
+			m_stateStack.pushState(States::ID::Menu);
 		}else if (event.type == sf::Event::GainedFocus){
 			m_active = true;
 		} else if (event.type == sf::Event::LostFocus) {

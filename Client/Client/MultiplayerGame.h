@@ -46,6 +46,7 @@ private:
 	void initialize();
  
 	bool connect();
+	void disconnect();
 
 	// Returns true if the packet has been filled with data
 	bool handleInput(sf::Packet & p_packet, const int & p_deltaTime);

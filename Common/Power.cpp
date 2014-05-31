@@ -36,10 +36,10 @@ void Power::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const{
 	switch (m_powerType)
 	{
 	case Health:
-		rectShape.setFillColor(sf::Color::Green);
+		rectShape.setFillColor(sf::Color(200, 200, 200));
 		break;
 	default:
-		rectShape.setFillColor(sf::Color::Magenta);
+		rectShape.setFillColor(sf::Color(200, 200, 0));
 		break;
 	}
 

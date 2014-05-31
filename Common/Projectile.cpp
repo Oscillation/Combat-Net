@@ -4,7 +4,9 @@ Projectile::Projectile() :
 	m_id(-1),
 	m_updated(true)
 {
-	
+	m_rectangleShape = sf::RectangleShape(sf::Vector2<float>(5, 5));
+	m_rectangleShape.setFillColor(sf::Color(200, 200, 200));
+	m_rectangleShape.setOrigin(2.5f, 2.5f);
 }
 
 Projectile::Projectile(const int & p_id, const int& p_damage, const sf::Vector2<float> & p_position) : 
@@ -13,6 +15,9 @@ Projectile::Projectile(const int & p_id, const int& p_damage, const sf::Vector2<
 	m_updated(true)
 {
 	setTargetPosition(p_position);
+	m_rectangleShape = sf::RectangleShape(sf::Vector2<float>(5, 5));
+	m_rectangleShape.setFillColor(sf::Color(200, 200, 200));
+	m_rectangleShape.setOrigin(2.5f, 2.5f);
 }
 
 Projectile::~Projectile(){
@@ -38,12 +43,13 @@ void Projectile::setName(const std::string & p_name){
 void Projectile::update(sf::Time p_deltaTime, int p_elapsedGameTime)
 {
 	move(getVelocity());
-
+	
 	if (m_targetPos != getPosition())
 	{
 		float t = (float)(p_elapsedGameTime) / (float)(m_targetTime - m_prevTime);
 		sf::Vector2i pos = (sf::Vector2i)math::interpolateVector(m_prevPos, m_targetPos, t);
 		setPosition(sf::Vector2f(pos));
+		m_rectangleShape.setPosition(getPosition());
 	}
 }
 
@@ -60,11 +66,8 @@ void Projectile::setTargetPosition(sf::Vector2f p_targetPosition)
 }
 
 void Projectile::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const{
-	p_states.transform *= getTransform();
-	sf::RectangleShape rect(sf::Vector2<float>(5, 5));
-	rect.setFillColor(sf::Color(200, 200, 200));
-	rect.setOrigin(2.5f, 2.5f);
-	p_target.draw(rect, p_states);
+	//p_states.transform = getTransform();
+	p_target.draw(m_rectangleShape);//, p_states);
 }
 
 bool Projectile::operator==(Projectile & p_projectile) const{

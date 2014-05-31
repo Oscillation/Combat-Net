@@ -31,6 +31,8 @@ struct Projectile : public sf::Transformable, public sf::Drawable{
 	void setTargetTime(int p_targetTime);
 	void setTargetPosition(sf::Vector2f p_targetPos);
 
+	sf::RectangleShape m_rectangleShape;
+
 	bool erase;
 
 	///<summary>In order to remove any projectiles that may have been lost in outdated packets.</summary>

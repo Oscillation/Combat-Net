@@ -88,7 +88,7 @@ bool MultiplayerGame::connect(){
 				packet >> m_map;
 				packet >> m_projectiles;
 				packet >> m_powers;
-				
+
 				int team;
 				packet >> team;
 
@@ -122,6 +122,13 @@ bool MultiplayerGame::connect(){
 	return false;
 }
 
+void MultiplayerGame::disconnect()
+{
+	sf::Packet packet;
+	packet << 0 << cn::PlayerDisconnected << m_name;
+	m_socket.unbind();
+}
+
 bool MultiplayerGame::handleEvents(const sf::Event& event)
 {
 	if (event.type == sf::Event::GainedFocus){
@@ -131,6 +138,9 @@ bool MultiplayerGame::handleEvents(const sf::Event& event)
 		}
 	} else if (event.type == sf::Event::LostFocus) {
 		m_active = false;
+	}else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	{
+		disconnect();
 	}
 	return false;
 }
@@ -192,7 +202,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 				default:
 					break;
 				}
-				
+
 				/*sf::Sound* sound = new sf::Sound(m_audioPlayer.m_sounds["power"]);
 				sound->setPosition(sf::Vector3<float>((m_players[m_name]->getPosition().x - (m_view.getCenter().x - (m_view.getSize().x/2)))/m_view.getSize().x, (m_players[m_name]->getPosition().y - (m_view.getCenter().y - (m_view.getSize().y/2)))/m_view.getSize().y, 0.f));
 				sound->play();*/
@@ -343,7 +353,7 @@ bool MultiplayerGame::draw()
 			}
 	}
 
-	
+
 
 	for (auto it = m_powers.begin(); it != m_powers.end(); ++it) {
 		window->draw(*it);
@@ -425,7 +435,7 @@ bool MultiplayerGame::handleProjectileInput(sf::Packet& packet, const int & p_de
 			Projectile projectile = Projectile();
 			projectile.setPosition(m_players[m_name]->getPosition());
 			projectile.setName(m_name);
-			
+
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
 				projectile.setVelocity(sf::Vector2<float>(projectile.getVelocity().x, projectile.getVelocity().y - 1));
@@ -483,7 +493,10 @@ void MultiplayerGame::handlePlayerDisconnect(sf::Packet& packet)
 	packet >> name;
 	if (name != m_name)
 	{
-		m_players.erase(name);
+		if (m_players.find(name) != m_players.end())
+		{
+			m_players.erase(name);
+		}
 	}
 }
 
@@ -531,7 +544,8 @@ void MultiplayerGame::handleProjectile(sf::Packet& p_packet, const int & p_time)
 				iter->m_updated = true;
 			}else
 			{
-				Projectile projectile = Projectile(id, 0, m_players[m_name]->getPosition());
+				Projectile projectile = Projectile(id, 0, m_players[name]->getPosition());
+				projectile.m_rectangleShape.setFillColor((m_players[name]->m_team == m_players[m_name]->m_team) ? sf::Color(200, 200, 200):sf::Color(255, 0, 0));
 				projectile.setPosition(pos);
 				projectile.setTargetPosition(pos);
 				projectile.setVelocity(vel);
@@ -551,7 +565,7 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 	{
 		int id;
 		sf::Vector2<float> position;
-		
+
 		p_packet >> id >> position;
 		std::vector<Projectile>::iterator it = findID(id);
 		if (it != m_projectiles.end())

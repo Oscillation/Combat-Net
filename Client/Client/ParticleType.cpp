@@ -13,34 +13,34 @@ ParticleType::ParticleType(const std::string & p_path) :
 	{
 		std::string line;
 
-#pragma region Time
-		{
-			std::string minTime, maxTime;
-			bool next = false;
-			std::getline(file, line);
-			for (int i = 0; i < line.length(); i++)
+		#pragma region Time
 			{
-				if (line[i] != ' ')
+				std::string minTime, maxTime;
+				bool next = false;
+				std::getline(file, line);
+				for (int i = 0; i < line.length(); i++)
 				{
-					if (!next)
+					if (line[i] != ' ')
 					{
-						minTime.push_back(line[i]);
+						if (!next)
+						{
+							minTime.push_back(line[i]);
+						}else
+						{
+							maxTime.push_back(line[i]);
+						}
 					}else
 					{
-						maxTime.push_back(line[i]);
+						m_timeRange.x = std::atof(minTime.c_str());
+						next = true;
 					}
-				}else
-				{
-					m_timeRange.x = std::atof(minTime.c_str());
-					next = true;
 				}
+				m_timeRange.y = std::atof(maxTime.c_str());
+				line.clear();
 			}
-			m_timeRange.y = std::atof(maxTime.c_str());
-			line.clear();
-		}
-#pragma endregion
+	#pragma endregion
 
-#pragma region Color
+		#pragma region Color
 #pragma region R
 		{
 			std::string minR, maxR;
@@ -121,7 +121,7 @@ ParticleType::ParticleType(const std::string & p_path) :
 #pragma endregion
 #pragma endregion
 
-#pragma region Speed
+		#pragma region Speed
 		{
 			std::string speed;
 			std::getline(file, speed);
@@ -129,7 +129,7 @@ ParticleType::ParticleType(const std::string & p_path) :
 		}
 #pragma endregion
 
-#pragma region Speed offset
+		#pragma region Speed offset
 		{
 			std::string minOffset, maxOffset;
 			bool next = false;
