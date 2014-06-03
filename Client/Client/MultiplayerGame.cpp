@@ -656,6 +656,7 @@ void MultiplayerGame::handleMegaPacket(sf::Packet & p_packet, int const& p_time)
 			m_players[name]->setHealth(health);
 			if (name == m_name)
 			{
+				shakeView(sf::seconds(0.2));
 				if (m_players[name]->getHealth() <= 0)
 				{
 					m_particleEmitter.Emit("player_death", m_players[name]->getPosition(), 50);
