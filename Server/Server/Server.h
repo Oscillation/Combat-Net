@@ -18,13 +18,15 @@
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
 #include "..\..\Common\GeneralMath.h"
+
 #include "Match.h"
 #include "PowerManager.h"
-
 #include "Client.h"
 #include "InputData.h"
 #include "GameManager.h"
 #include "Quadtree.h"
+#include "Erase.h"
+
 
 class Server{
 public:
@@ -78,7 +80,7 @@ private:
 
 	std::vector<Projectile> m_projectiles;
 	
-	std::vector<int> m_eraseProjectileIDs;
+	std::vector<Erase> m_eraseProjectileIDs;
 
 	int m_projectileID;
 

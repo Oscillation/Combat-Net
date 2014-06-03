@@ -16,19 +16,21 @@
 
 #include <SFML\Audio\Listener.hpp>
 
-#include "Player.h"
+#include <map>
+#include <memory>
+
+
 #include "..\..\Common\Map.h"
 #include "..\..\Common\Projectile.h"
 #include "..\..\Common\Power.h"
+
+
 #include "Scoreboard.h"
 #include "ParticleLoader.h"
 #include "ParticleEmitter.h"
 #include "AudioPlayer.h"
 #include "Killfeed.h"
-
-#include <map>
-#include <memory>
-
+#include "Player.h"
 #include "State.h"
 
 class MultiplayerGame : public State

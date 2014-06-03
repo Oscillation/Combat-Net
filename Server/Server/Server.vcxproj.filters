@@ -90,6 +90,9 @@
     <ClCompile Include="Object.cpp">
       <Filter>Source Files\Server\GameManager\Quadtree</Filter>
     </ClCompile>
+    <ClCompile Include="Erase.cpp">
+      <Filter>Source Files\Projectile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Server.h">
@@ -142,6 +145,9 @@
     </ClInclude>
     <ClInclude Include="Match.h">
       <Filter>Source Files\Match</Filter>
+    </ClInclude>
+    <ClInclude Include="Erase.h">
+      <Filter>Source Files\Projectile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -396,7 +396,7 @@ void Server::updateProjectiles(sf::Packet & p_retPacket){
 			{
 				//it->setPosition(m_map.getIntersectingWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5)));
 				//it->setVelocity(sf::Vector2<float>());
-				m_eraseProjectileIDs.push_back(it->m_id);
+				m_eraseProjectileIDs.push_back(Erase(it->m_id, m_map.getIntersectingWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5))));
 			}else
 			{
 				/*for (int i = std::sqrt(std::pow(it->getVelocity().x, 2) + std::pow(it->getVelocity().y, 2)); i > 0; --i)
@@ -416,8 +416,7 @@ void Server::updateProjectiles(sf::Packet & p_retPacket){
 
 				if (erase)
 				{
-					it->setVelocity(sf::Vector2<float>());
-					m_eraseProjectileIDs.push_back(it->m_id);
+					m_eraseProjectileIDs.push_back(Erase(it->m_id, m_map.getIntersectingWall(sf::Rect<float>(it->getPosition().x, it->getPosition().y, 5, 5))));
 				}else
 				{
 					it->move(it->getVelocity());
@@ -446,7 +445,7 @@ void Server::updateProjectiles(sf::Packet & p_retPacket){
 
 										p_retPacket << cn::PlayerHealth << iter->getName() << m_clientList[iter->getName()].getHealth();
 
-										m_eraseProjectileIDs.push_back(it->m_id);
+										m_eraseProjectileIDs.push_back(Erase(it->m_id, m_clientList[iter->getName()].getPosition(), true));
 
 										if (m_clientList[iter->getName()].getHealth() <= 0) {
 											m_clientList[iter->getName()].m_score.m_deaths++;
@@ -503,10 +502,10 @@ void Server::updateProjectiles(sf::Packet & p_retPacket){
 		p_retPacket << cn::EraseProjectile << m_eraseProjectileIDs.size();
 		for (auto it = m_eraseProjectileIDs.begin(); it != m_eraseProjectileIDs.end(); ++it){
 
-			std::vector<Projectile>::iterator iter = findID(*it);
+			std::vector<Projectile>::iterator iter = findID(it->m_id);
 			if (iter != m_projectiles.end())
 			{
-				p_retPacket << *it << (m_map.intersectsWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)) ? m_map.getIntersectingWall(sf::Rect<float>(iter->getPosition().x, iter->getPosition().y, 5, 5)):iter->getPosition());
+				p_retPacket << it->m_id << it->m_position << it->m_hitPlayer;
 
 				//m_gameManager.erase(*iter);
 				m_projectiles.erase(iter);

@@ -564,32 +564,37 @@ void MultiplayerGame::handleEraseProjectile(sf::Packet & p_packet){
 	{
 		int id;
 		sf::Vector2<float> position;
+		bool hitPlayer = false;
 
-		p_packet >> id >> position;
+		p_packet >> id >> position >> hitPlayer;
 		std::vector<Projectile>::iterator it = findID(id);
 		if (it != m_projectiles.end())
 		{
-			if (it->getVelocity().x == 0)
+			if (!hitPlayer)
 			{
-				position.x = it->getPosition().x;
-
-				if (it->getVelocity().y < 0)
+				if (it->getVelocity().x == 0)
 				{
-					position.y += 64;
-				}
-			}else if (it->getVelocity().y == 0)
-			{
-				position.y = it->getPosition().y;
+					position.x = it->getPosition().x;
 
-				if (it->getVelocity().x < 0)
+					if (it->getVelocity().y < 0)
+					{
+						position.y += 64;
+					}
+				}else if (it->getVelocity().y == 0)
 				{
-					position.x += 64;
+					position.y = it->getPosition().y;
+
+					if (it->getVelocity().x < 0)
+					{
+						position.x += 64;
+					}
+				}else
+				{
+					position.x = it->getPosition().x + it->getVelocity().x;
+					position.y = it->getPosition().y + it->getVelocity().y;
 				}
-			}else
-			{
-				position.x = it->getPosition().x + it->getVelocity().x;
-				position.y = it->getPosition().y + it->getVelocity().y;
 			}
+
 			sf::Vector2<float> velocity = sf::Vector2<float>(((it->getVelocity().x)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1,
 				((it->getVelocity().y)/(std::sqrt(std::pow(it->getVelocity().x, 2)) + (std::sqrt(std::pow(it->getVelocity().y, 2)))))*-1);
 			m_particleEmitter.Emit("test", position, velocity, 10);
