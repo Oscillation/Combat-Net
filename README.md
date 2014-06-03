@@ -42,4 +42,6 @@ Libs and other stuff that we use
 Versions
 --------
 
-Version 1.0 [Windows](http://oscillation.itch.io/combat-net)
+Version 1.1 [Windows](http://oscillation.itch.io/combat-net)
+
+Version 1.0 [Windows](http://www.mediafire.com/download/8laai8we95a0046/Combat-Net+Installer.EXE)
