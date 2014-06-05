@@ -1,6 +1,9 @@
 #include "Server.h"
 
-Server::Server() : m_projectileID(0), m_speedBoost(5){
+Server::Server() :
+	m_projectileID(0),
+	m_speedBoost(5)
+{
 
 	loadConfig();
 	while (m_socket.bind(m_port) != sf::Socket::Done)
@@ -52,6 +55,8 @@ void Server::run(){
 		unsigned short port;
 		sf::Packet packet;
 		sf::Packet retPacket;
+
+		m_chatServer.update();
 
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{

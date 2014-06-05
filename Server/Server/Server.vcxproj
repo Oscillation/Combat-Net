@@ -77,6 +77,7 @@
     <ClCompile Include="..\..\Common\Power.cpp" />
     <ClCompile Include="..\..\Common\Projectile.cpp" />
     <ClCompile Include="..\..\Common\Score.cpp" />
+    <ClCompile Include="ChatServer.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Erase.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="..\..\Common\Protocol.h" />
     <ClInclude Include="..\..\Common\Score.h" />
     <ClInclude Include="..\..\Common\Tile.h" />
+    <ClInclude Include="ChatServer.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Erase.h" />
     <ClInclude Include="GameManager.h" />

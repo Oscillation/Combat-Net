@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Match\Score">
       <UniqueIdentifier>{1435fc04-4313-4cbf-b5ec-6ddb02301ca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Chat">
+      <UniqueIdentifier>{a1788bcb-08a6-4442-82af-6d09fd2832da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -92,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="Erase.cpp">
       <Filter>Source Files\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatServer.cpp">
+      <Filter>Source Files\Chat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="Erase.h">
       <Filter>Source Files\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatServer.h">
+      <Filter>Source Files\Chat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

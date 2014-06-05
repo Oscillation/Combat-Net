@@ -26,6 +26,7 @@
 #include "GameManager.h"
 #include "Quadtree.h"
 #include "Erase.h"
+#include "ChatServer.h"
 
 
 class Server{
@@ -65,7 +66,8 @@ private:
 	int getHightestScore(); // need to fix this 
 	void resetScores();
 
-private:
+	ChatServer m_chatServer;
+
 	sf::Clock m_clock, m_elapsed;
 	sf::Time m_updateTime;
 	sf::Clock pingTimer;
@@ -84,15 +86,18 @@ private:
 
 	int m_projectileID;
 
-	Map m_map;
-
 	Match m_match;
 	sf::Time m_timeBetweenMatches;
-	GameManager m_gameManager;
 
 	void loadConfig();
 
+	Map m_map;
+
 	Quadtree m_quadtree;
+
+	PowerManager m_powerManager;
+
+	GameManager m_gameManager;
 
 	static const unsigned short m_projectileSpeed = 50;
 
@@ -101,7 +106,6 @@ private:
 
 	float m_speedBoost;
 
-	PowerManager m_powerManager;
 
 	//----Simulate Gamestate----
 
