@@ -13,6 +13,7 @@
 #include <memory>
 #include <fstream>
 #include <sstream>
+#include <thread>
 
 #include "..\..\Common\Protocol.h"
 #include "..\..\Common\Map.h"

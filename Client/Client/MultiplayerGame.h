@@ -95,6 +95,9 @@ private:
 
 	sf::UdpSocket& m_socket;
 
+	///<summary>Used to communicate with the chat server.</summary>
+	sf::TcpSocket m_tcpSocket;
+
 	sf::Font gameFont;
 
 	int m_elapsedGameTime; // this is a delta time, doesn't total elapsedGameTime

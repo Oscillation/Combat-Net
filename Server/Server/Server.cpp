@@ -46,6 +46,8 @@ Server::~Server(){
 void Server::run(){
 	bool run = true;
 	m_socket.setBlocking(false);
+	
+	std::thread chatServer(m_chatServer.update, m_port + 1);
 
 	startMatch();
 
@@ -55,8 +57,6 @@ void Server::run(){
 		unsigned short port;
 		sf::Packet packet;
 		sf::Packet retPacket;
-
-		m_chatServer.update();
 
 		if (m_socket.receive(packet, address, port) == sf::Socket::Done)
 		{

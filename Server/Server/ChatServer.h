@@ -3,19 +3,15 @@
 #include <SFML\Network\TcpListener.hpp>
 #include <SFML\Network\Packet.hpp>
 #include <map>
+#include <iostream>
 
 #include "Client.h"
 
 class ChatServer
 {
 public:
-	ChatServer(const unsigned short & p_port = 2828);
+	ChatServer();
 	~ChatServer();
 
-	void update();
-
-private:
-	sf::TcpListener m_listener;
-
-	unsigned short m_port;
+	static void update(const unsigned short & p_port);
 };

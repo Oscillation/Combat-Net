@@ -1,21 +1,31 @@
 #include "ChatServer.h"
 
-ChatServer::ChatServer(const unsigned short & p_port) :
-	m_port(p_port)
+ChatServer::ChatServer()
 {
-	m_listener.listen(m_port);
+
 }
 
 ChatServer::~ChatServer()
 {
 }
 
-void ChatServer::update()
+void ChatServer::update(const unsigned short & p_port = 2828)
 {
-	sf::TcpSocket client;
+	sf::TcpListener listener;
 
-	if (m_listener.accept(client) == sf::Socket::Status::Done)
+	listener.listen(p_port);
+
+	while (true)
 	{
-		
+		sf::TcpSocket client;
+
+		if (listener.accept(client) == sf::Socket::Status::Done)
+		{
+			sf::Packet packet;
+			packet << "Connected to chat server.\n";
+
+			client.send(packet);
+			std::cout << "Connection from: " << client.getRemoteAddress() << ":" << client.getRemotePort() << "\n";
+		}
 	}
 }

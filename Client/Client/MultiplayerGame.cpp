@@ -69,6 +69,7 @@ bool MultiplayerGame::connect(){
 
 	sf::TcpSocket tcpSocket;
 
+	// Connect to the game server
 	if (tcpSocket.connect(server_address, server_port, sf::seconds(5)) == sf::Socket::Status::Done){
 		// Wait for the PlayerConnected packet from the server
 		// When the client get's the PlayerConnected packet with the players name
@@ -109,6 +110,20 @@ bool MultiplayerGame::connect(){
 				m_view.setCenter(m_players[m_name].get()->getPosition());
 
 				m_connected = true;
+
+				// Connect to the chat server
+				if (m_tcpSocket.connect(server_address, server_port + 1, sf::seconds(5)) == sf::Socket::Status::Done)
+				{
+					std::string text;
+					sf::Packet chatPacket;
+
+					if (m_tcpSocket.receive(chatPacket) == sf::Socket::Status::Done)
+					{
+						chatPacket >> text;
+						std::cout << text;
+					}
+				}
+
 				return true;
 			}else if ((cn::PacketType)type == cn::NameTaken)
 			{
@@ -117,6 +132,8 @@ bool MultiplayerGame::connect(){
 			}
 		}
 	}
+
+
 
 	std::cout << "Couldn't connect to server.\n";
 	return false;
