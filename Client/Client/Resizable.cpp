@@ -40,52 +40,66 @@ Resizable::~Resizable()
 
 void Resizable::update(const sf::RenderWindow & p_window)
 {
-		if (move)
+	if (move)
+	{
+		sf::Vector2<int> delta = sf::Vector2<int>(m_position.x - sf::Mouse::getPosition(p_window).x, m_position.y - sf::Mouse::getPosition(p_window).y);
+
+		m_position = sf::Mouse::getPosition(p_window);
+
+		resizable_ptr_bounds->left -= delta.x;
+		resizable_ptr_bounds->top -= delta.y;
+
+		setSides();
+
+	}else if(resize)
+	{
+
+		if (up)
 		{
-			sf::Vector2<int> delta = sf::Vector2<int>(m_position.x - sf::Mouse::getPosition(p_window).x, m_position.y - sf::Mouse::getPosition(p_window).y);
-
-			m_position = sf::Mouse::getPosition(p_window);
-
-			resizable_ptr_bounds->left -= delta.x;
-			resizable_ptr_bounds->top -= delta.y;
+			int delta = m_position.y - sf::Mouse::getPosition(p_window).y;
+			resizable_ptr_bounds->top -= delta;
+			resizable_ptr_bounds->height += delta;
 
 			setSides();
-
-		}else if(resize)
+		}else if (down)
 		{
-			if (up)
+			int delta = sf::Mouse::getPosition(p_window).y - m_position.y;
+
+			if (resizable_ptr_bounds->height + delta > 10)
 			{
-				int delta = m_position.y - sf::Mouse::getPosition(p_window).y;
-				resizable_ptr_bounds->top -= delta;
 				resizable_ptr_bounds->height += delta;
 
-				setSides();
-			}else if (down)
-			{
-				int delta = sf::Mouse::getPosition(p_window).y - m_position.y;
-				resizable_ptr_bounds->height += delta;
-
-				setSides();
-			}
-
-			if (left)
-			{
-				int delta = m_position.x - sf::Mouse::getPosition(p_window).x;
-				resizable_ptr_bounds->left -= delta;
-				resizable_ptr_bounds->width += delta;
-
-				setSides();
-			}else if (right)
-			{
-				int delta = sf::Mouse::getPosition(p_window).x - m_position.x;
-				resizable_ptr_bounds->width += delta;
-
-				setSides();
+			}else{
+				resizable_ptr_bounds->height = 10;
 			}
 
 			setSides();
-			m_position = sf::Mouse::getPosition(p_window);
 		}
+
+		if (left)
+		{
+			int delta = m_position.x - sf::Mouse::getPosition(p_window).x;
+			resizable_ptr_bounds->left -= delta;
+			resizable_ptr_bounds->width += delta;
+
+			setSides();
+		}else if (right)
+		{
+			int delta = sf::Mouse::getPosition(p_window).x - m_position.x;
+
+			if (resizable_ptr_bounds->width + delta > 10)
+			{
+				resizable_ptr_bounds->width += delta;
+
+			}else{
+				resizable_ptr_bounds->width = 10;
+			}
+
+			setSides();
+		}
+
+		m_position = sf::Mouse::getPosition(p_window);
+	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
@@ -124,18 +138,19 @@ void Resizable::update(const sf::RenderWindow & p_window)
 		pressed = false;
 	}
 
-		if (!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(*resizable_ptr_bounds) && 
-			!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(m_sides[0]) && 
-			!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(m_sides[1]) && 
-			!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(m_sides[2]) && 
-			!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(m_sides[3]))
+	if (!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(*resizable_ptr_bounds) && 
+		!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(m_sides[0]) && 
+		!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(m_sides[1]) && 
+		!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(m_sides[2]) && 
+		!sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(m_sides[3]) &&
+		!pressed)
+	{
+		for (int i = 0; i < 4; ++i)
 		{
-			for (int i = 0; i < 4; ++i)
-			{
-				m_sides[i] = sf::Rect<int>(0, 0, 0, 0);
-			}
-			intersecting = false;
+			m_sides[i] = sf::Rect<int>(0, 0, 0, 0);
 		}
+		intersecting = false;
+	}
 
 	if (sf::Rect<int>(sf::Mouse::getPosition(p_window).x, sf::Mouse::getPosition(p_window).y, 1, 1).intersects(*resizable_ptr_bounds))
 	{
