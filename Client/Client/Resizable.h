@@ -23,7 +23,7 @@ public:
 private:
 	sf::Vector2<int> m_position;
 
-	bool pressed, intersecting, move, resize;
+	bool pressed, intersecting, move, resize, up, down, left, right;
 
 	sf::Rect<int> m_sides[4];
 

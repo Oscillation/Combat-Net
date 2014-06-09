@@ -11,10 +11,10 @@ Node::Node(const unsigned short & p_divisions, const unsigned short & p_maxDivis
 	m_maxObjects(p_maxObjects),
 	m_bounds(p_bounds)
 {
-	ptr_children[0] = nullptr;
-	ptr_children[1] = nullptr;
-	ptr_children[2] = nullptr;
-	ptr_children[3] = nullptr;
+	ptr_children[0] = NULL;
+	ptr_children[1] = NULL;
+	ptr_children[2] = NULL;
+	ptr_children[3] = NULL;
 }
 
 Node::~Node(){
@@ -22,7 +22,7 @@ Node::~Node(){
 }
 
 void Node::insert(const Object & p_object){
-	if (ptr_children[0] != nullptr)
+	if (ptr_children[0] != NULL)
 	{
 		int index = getIndex(p_object);
 
@@ -38,7 +38,7 @@ void Node::insert(const Object & p_object){
 
 	if (m_objects.size() > m_maxObjects && m_divisions < m_maxDivisions)
 	{
-		if (ptr_children[0] == nullptr)
+		if (ptr_children[0] == NULL)
 		{
 			split();
 		}
@@ -115,7 +115,7 @@ int Node::getIndex(const Object & p_object) const{
 
 void Node::getObjects(std::vector<Object> & p_objects, const Object & p_object){
 	int index = getIndex(p_object);
-	if (index != -1 && ptr_children[0] != nullptr) {
+	if (index != -1 && ptr_children[0] != NULL) {
 		ptr_children[index]->getObjects(p_objects, p_object);
 	}
 
@@ -127,14 +127,14 @@ void Node::clean(){
 	{
 		m_objects.clear();
 	}
+
 	for (int i = 0; i < 4; i++)
 	{
-		if (ptr_children[i] != nullptr)
+		if (ptr_children[i] != NULL)
 		{
 			ptr_children[i]->clean();
-			ptr_children[i] = nullptr;
-		}else{
-			return;
+			delete ptr_children[i];
+			ptr_children[i] = NULL;
 		}
 	}
 }
