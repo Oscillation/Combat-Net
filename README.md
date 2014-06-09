@@ -22,7 +22,7 @@ Text written in *cursive* represents an example value.
 * G-Range : *0 255*
 * B-Range : *0 255*
 * Speed(pixels/frame) : *25*
-* Speed-Range() : *0 5*
+* Amount : *0 5*
 
 
 Libs and other stuff that we use

@@ -32,6 +32,7 @@
 #include "Killfeed.h"
 #include "Player.h"
 #include "State.h"
+#include "ChatBox.h"
 
 class MultiplayerGame : public State
 {
@@ -118,4 +119,6 @@ private:
 	sf::Listener m_listener;
 
 	Killfeed m_killfeed;
+
+	ChatBox m_chatBox;
 };

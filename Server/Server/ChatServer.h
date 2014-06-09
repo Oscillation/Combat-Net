@@ -14,4 +14,7 @@ public:
 	~ChatServer();
 
 	static void update(const unsigned short & p_port);
+
+private:
+	std::vector<sf::TcpSocket*> m_clients;
 };

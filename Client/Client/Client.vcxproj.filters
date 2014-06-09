@@ -36,6 +36,9 @@
     <Filter Include="Source Files\Audio">
       <UniqueIdentifier>{8a463bae-731c-43ef-8af6-a1e9bbd8ac12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Chat">
+      <UniqueIdentifier>{e2221965-a4e7-405f-b986-afbd9fbf1f58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -115,6 +118,15 @@
     </ClCompile>
     <ClCompile Include="Killfeed.cpp">
       <Filter>Source Files\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="TextLog.cpp">
+      <Filter>Source Files\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatBox.cpp">
+      <Filter>Source Files\Chat</Filter>
+    </ClCompile>
+    <ClCompile Include="Resizable.cpp">
+      <Filter>Source Files\Gui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +213,15 @@
     </ClInclude>
     <ClInclude Include="Killfeed.h">
       <Filter>Source Files\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="TextLog.h">
+      <Filter>Source Files\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatBox.h">
+      <Filter>Source Files\Chat</Filter>
+    </ClInclude>
+    <ClInclude Include="Resizable.h">
+      <Filter>Source Files\Gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,8 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 	m_connected(false),
 	m_active(true),
 	gameFont(*context.font),
-	m_killfeed(*context.font)
+	m_killfeed(*context.font),
+	m_chatBox(context.font)
 {
 	initialize();
 
@@ -58,7 +59,7 @@ void MultiplayerGame::initialize()
 
 	m_scoreboard.setPosition(1280/2, 300);
 
-	m_killfeed.setPosition(1260, 20); 
+	m_killfeed.setPosition(1260, 20);
 }
 
 bool MultiplayerGame::connect(){
@@ -333,6 +334,8 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 		m_listener.setDirection(0, 0, 0);*/
 
 		m_audioPlayer.update();
+
+		m_chatBox.update(*getContext()->window);
 	}
 
 	return false;
@@ -402,6 +405,8 @@ bool MultiplayerGame::draw()
 	}
 
 	window->draw(m_killfeed);
+
+	window->draw(m_chatBox);
 
 	return false;
 }

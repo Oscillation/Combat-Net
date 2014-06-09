@@ -40,6 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <IncludePath>$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -84,6 +85,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="AudioPlayer.cpp" />
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ChatBox.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Killfeed.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -95,11 +97,13 @@
     <ClCompile Include="ParticleType.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PreMatchState.cpp" />
+    <ClCompile Include="Resizable.cpp" />
     <ClCompile Include="Scoreboard.cpp" />
     <ClCompile Include="ScoreText.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateStack.cpp" />
     <ClCompile Include="Textbox.cpp" />
+    <ClCompile Include="TextLog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\GeneralMath.h" />
@@ -114,6 +118,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="ChatBox.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Killfeed.h" />
     <ClInclude Include="MenuState.h" />
@@ -124,12 +129,14 @@
     <ClInclude Include="ParticleType.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PreMatchState.h" />
+    <ClInclude Include="Resizable.h" />
     <ClInclude Include="Scoreboard.h" />
     <ClInclude Include="ScoreText.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="StateIdentifiers.h" />
     <ClInclude Include="StateStack.h" />
     <ClInclude Include="Textbox.h" />
+    <ClInclude Include="TextLog.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Common\GeneralMath.inl" />

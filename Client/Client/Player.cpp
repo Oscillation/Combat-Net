@@ -18,7 +18,6 @@ Player::Player(std::string p_name, sf::Font& p_font, bool p_remote)
 {
 	m_circleShape = sf::CircleShape(m_radius);
 	m_circleShape.setOrigin(m_radius, m_radius);
-	std::cout << "Called constructor for: " << p_name << "\n";
 	nameText.setStyle(sf::Text::Bold);
 	nameText.setPosition(-nameText.getLocalBounds().width/2, 24);
 	nameText.setColor(sf::Color(150, 150, 150));
