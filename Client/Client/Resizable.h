@@ -14,7 +14,7 @@ public:
 	Resizable(sf::Rect<int>* ptr_bounds);
 	~Resizable();
 
-	void update(const sf::RenderWindow & p_window);
+	bool update(const sf::RenderWindow & p_window);
 
 	sf::Rect<int>*  resizable_ptr_bounds;
 

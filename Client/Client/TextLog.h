@@ -10,16 +10,18 @@ class TextLog : public sf::Drawable
 {
 public:
 	TextLog();
-	TextLog(const sf::Font* ptr_font);
+	TextLog(const sf::Font & p_font, sf::Rect<int>* ptr_bounds);
 	~TextLog();
 
 	void push_back(const sf::Text & p_text);
 
-	sf::Rect<int>* textLog_ptr_bounds;
+	sf::Rect<int>* ptr_bounds;
 
-	const sf::Font* ptr_font;
+	sf::Font m_font;
 
 	void draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const;
+
+	void align(const sf::Rect<int> & p_rect);
 
 private:
 	std::vector<sf::Text> m_log;

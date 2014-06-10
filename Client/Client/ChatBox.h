@@ -5,10 +5,10 @@
 class ChatBox : public sf::Drawable
 {
 public:
-	ChatBox(const sf::Font* ptr_font, const sf::Rect<int> & p_bounds = sf::Rect<int>(20, 572, 256, 128));
+	ChatBox(const sf::Font & ptr_font, const sf::Rect<int> & p_bounds = sf::Rect<int>(20, 572, 256, 128));
 	~ChatBox();
 
-	void update(const sf::RenderWindow & p_window);
+	void update(const sf::RenderWindow & p_window, const sf::Time & p_deltaTime);
 
 private:
 	sf::Rect<int> m_bounds;
@@ -18,4 +18,6 @@ private:
 	Resizable m_resizable;
 
 	TextLog m_textLog;
+
+	float m_timer;
 };

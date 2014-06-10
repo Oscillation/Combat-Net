@@ -16,7 +16,7 @@ MultiplayerGame::MultiplayerGame(StateStack& stateStack, Context& context, State
 	m_active(true),
 	gameFont(*context.font),
 	m_killfeed(*context.font),
-	m_chatBox(context.font)
+	m_chatBox(*context.font)
 {
 	initialize();
 
@@ -335,7 +335,7 @@ bool MultiplayerGame::update(sf::Time & p_deltaTime)
 
 		m_audioPlayer.update();
 
-		m_chatBox.update(*getContext()->window);
+		m_chatBox.update(*getContext()->window, p_deltaTime);
 	}
 
 	return false;

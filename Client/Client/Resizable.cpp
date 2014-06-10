@@ -38,8 +38,10 @@ Resizable::~Resizable()
 
 }
 
-void Resizable::update(const sf::RenderWindow & p_window)
+bool Resizable::update(const sf::RenderWindow & p_window)
 {
+	bool result = false;
+
 	if (move)
 	{
 		sf::Vector2<int> delta = sf::Vector2<int>(m_position.x - sf::Mouse::getPosition(p_window).x, m_position.y - sf::Mouse::getPosition(p_window).y);
@@ -48,6 +50,11 @@ void Resizable::update(const sf::RenderWindow & p_window)
 
 		resizable_ptr_bounds->left -= delta.x;
 		resizable_ptr_bounds->top -= delta.y;
+
+		if (delta.x != 0 || delta.y != 0)
+		{
+			result = true;
+		}
 
 		setSides();
 
@@ -60,6 +67,11 @@ void Resizable::update(const sf::RenderWindow & p_window)
 			resizable_ptr_bounds->top -= delta;
 			resizable_ptr_bounds->height += delta;
 
+			if (delta != 0)
+			{
+				result = true;
+			}
+
 			setSides();
 		}else if (down)
 		{
@@ -69,6 +81,10 @@ void Resizable::update(const sf::RenderWindow & p_window)
 			{
 				resizable_ptr_bounds->height += delta;
 
+				if (delta != 0)
+				{
+					result = true;
+				}
 			}else{
 				resizable_ptr_bounds->height = 10;
 			}
@@ -82,6 +98,11 @@ void Resizable::update(const sf::RenderWindow & p_window)
 			resizable_ptr_bounds->left -= delta;
 			resizable_ptr_bounds->width += delta;
 
+			if (delta != 0)
+			{
+				result = true;
+			}
+
 			setSides();
 		}else if (right)
 		{
@@ -90,6 +111,11 @@ void Resizable::update(const sf::RenderWindow & p_window)
 			if (resizable_ptr_bounds->width + delta > 10)
 			{
 				resizable_ptr_bounds->width += delta;
+
+				if (delta != 0)
+				{
+					result = true;
+				}
 
 			}else{
 				resizable_ptr_bounds->width = 10;
@@ -157,6 +183,8 @@ void Resizable::update(const sf::RenderWindow & p_window)
 		setSides();
 		intersecting = true;
 	}
+
+	return result;
 }
 
 void Resizable::draw(sf::RenderTarget & p_target, sf::RenderStates p_states) const
